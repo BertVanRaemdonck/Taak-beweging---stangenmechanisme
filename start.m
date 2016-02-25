@@ -24,21 +24,54 @@ fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
 fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
-r1 = 0.1397;
-r2 = 0.0508;
-r3 = 0.1524;
-r4 = 0.0762;
-phi1 = 0;
+r2k = 2.406;                % eccentric crank circle diameter
+r2l = 2.0;                  % 'langere' zijde van de eccentric crank
+r3 = 9.750;                 % eccentric rod
+a = 1.844;                  % vervang lengte van link crank (dg) (verticaal)
+b = 0.454;                  % vervang lengte van link crank (dg) (horizontaal)
+r6k = 1.625;                % radius rod extension
+r6l = 9.125;                % radius rod
+r7 = 1.625;                 % lifting link
+r8k = 0.336;                % combination lever upper
+r8l = 3.664;                % combination lever lower
+r10 = 2.922;                % union link
+r11 = 1;                    % drop link to cross head vert
+r12 = 16.5;                 % main rod
+
+x4 = 10.330;                % zelf berekend
+y4 = 3.538;                 % zelf berekend
+x7 = 8.442;                 % zelf berekend
+y7 = 3.474;                 % zelf berekend
+y9 = 3.789;                 % zelf berekend
+
 
 % dynamic parameters, defined in a local frame on each of the bars.
-X2 = r2/2;               % X coordinates of cog (centre of gravity)
-X3 = r3/2;
-X4 = r4/2;
+% NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
+X3 = r3/2;                  % zwaartepunt
+X4 = a/2;
+X6 = (r6k + r6l)/2;
+X7 = r7/2;
+X8 = (r8k + r8l)/2;
+X10 = r10/2;
+X11 = r11/2;
+X12 = r12/2;
 
-Y2 = 0;                  % Y coordinates of cog
-Y3 = 0.0102362;
-Y4 = 0;
+% zwaartepunt van driehoek constructie 2 nog berekenen voor algemene geval
+X2 = r2k/3;
+Y2 = r2l/3;
+% zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
+%       nodig want r11 is al in gebruik)
 
+Y3 = 0;                     % Y coordinates of cog
+Y4 = b/2;
+Y6 = 0;
+Y7 = 0;
+Y8 = 0;
+Y10 = 0;
+Y11 = 0;
+Y12 = 0;
+
+%Vanaf hieronder nog aanpassen:
 m2 = r2*1.76;
 m3 = r3*1.76;
 m4 = r4*0.54;
@@ -53,8 +86,14 @@ J4 = m4*r4^2/12;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % position analysis
-phi3_init = 0;    % initial condition for first step of position analysis with fsolve (phi3 and phi4)
-phi4_init = 0.2;  % VERY IMPORTANT because it determines which branch of the mechanism you're in
+
+% initial condition for first step of position analysis with fsolve (phi3 and phi4)
+% VERY IMPORTANT because it determines which branch of the mechanism you're in
+phi_init = [Pi; 2*Pi/3 ; 1.25 ; Pi/12 ; 2*Pi/3 ; 7*Pi/12 ; 2 ; 13*Pi/12 ; 1 ; Pi/12]    
+        %phi3=phi_init(1); %phi4=phi_init(2); %x5=phi_init(3); %phi6=phi_init(4);
+        %phi7=phi_init(5); %phi8=phi_init(6); %x9=phi_init(7); %phi10=phi_init(8);
+        %x11=phi_init(9);  %phi12=phi_init(10);
+
 
 t_begin = 0;                   % start time of simulation
 t_end = 10;                    % end time of simulation
