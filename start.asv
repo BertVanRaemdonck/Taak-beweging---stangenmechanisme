@@ -139,14 +139,20 @@ phi2 = omega*t + pi/2;
 dphi2 = omega;
 ddphi2 = 0;
 
+% omega = 0.5;
+% A = 1;
+% phi2=1+A*sin(omega*t);
+% dphi2=omega*A*cos(omega*t);
+% ddphi2=-omega^2*A*sin(omega*t);
+
 % calculation of the kinematics (see kin_4bar.m)
 [   phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11, ... 
     dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11, ...
     ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11   ] = ...
     kinematics_4bar(r2l, r2k, r3, a, b, r6, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
-                    phi1, phi2, dphi2, ddphi2, ...
-                    phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
-                    t, fig_kin_4bar);
+                    phi1, phi2, dphi2, ddphi2,...
+                    phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init
+[phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
