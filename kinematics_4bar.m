@@ -11,16 +11,48 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar)
+function [  phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 
+            dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11,   dphi12, ...
+            ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12   ] = ...
+            kinematics_4bar(r2l, r2k, r3, a, b, r6, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+                    phi1, phi2, dphi2, ddphi2, ...
+                    phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
+                    t, fig_kin_4bar)
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
-phi3 = zeros(size(t));
-phi4 = zeros(size(t));
-dphi3 = zeros(size(t));
-dphi4 = zeros(size(t));
-ddphi3 = zeros(size(t));
-ddphi4 = zeros(size(t));
+phi3    = zeros(size(t));
+phi4    = zeros(size(t));
+x5      = zeros(size(t));
+phi6    = zeros(size(t));
+phi7    = zeros(size(t));
+phi8    = zeros(size(t));
+x9      = zeros(size(t));
+phi10   = zeros(size(t));
+x11     = zeros(size(t));
+phi12   = zeros(size(t));
+
+dphi3    = zeros(size(t));
+dphi4    = zeros(size(t));
+dx5      = zeros(size(t));
+dphi6    = zeros(size(t));
+dphi7    = zeros(size(t));
+dphi8    = zeros(size(t));
+dx9      = zeros(size(t));
+dphi10   = zeros(size(t));
+dx11     = zeros(size(t));
+dphi12   = zeros(size(t));
+
+ddphi3    = zeros(size(t));
+ddphi4    = zeros(size(t));
+ddx5      = zeros(size(t));
+ddphi6    = zeros(size(t));
+ddphi7    = zeros(size(t));
+ddphi8    = zeros(size(t));
+ddx9      = zeros(size(t));
+ddphi10   = zeros(size(t));
+ddx11     = zeros(size(t));
+ddphi12   = zeros(size(t));
 
 % fsolve options (help fsolve, help optimset)
 optim_options = optimset('Display','off');
@@ -41,15 +73,27 @@ for k=1:t_size
     % argument a1 ... phi1: constants
     % return value x: solution for the unknown angles phi3 and phi4
     % return exitflag: indicates convergence of algorithm
-    [x, fval, exitflag]=fsolve('loop_closure_eqs',[phi3_init phi4_init]',optim_options,phi2(k),r1,r2,r3,r4,phi1);
+    [x, fval, exitflag] = fsolve('loop_closure_eqs',
+                                 [phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init]', ...
+                                 optim_options, ...
+                                 phi2(k), ...
+                                 r2l, r2k, r3, a, b, r6, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9);
     if (exitflag ~= 1)
         display 'The fsolve exit flag was not 1, probably no convergence!'
         exitflag
     end
     
     % save results of fsolve
-    phi3(k)=x(1);
-    phi4(k)=x(2);
+    phi3(k) =   x(1);
+    phi4(k) =   x(2);
+    x5(k)  =    x(3);
+    phi6(k) =   x(4);
+    phi7(k) =   x(5);
+    phi8(k) =   x(6);
+    x9(k) =     x(7);
+    phi10(k) =  x(8);
+    x11(k) =    x(9);
+    phi12(k) =  x(10);
     
     
     % *** velocity analysis ***
