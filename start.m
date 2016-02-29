@@ -99,9 +99,9 @@ m_piston_2 = 15;            % voorlopig gekozen
 
 %Vanaf hieronder nog aanpassen:
 
-J2 = m2*r2^2/12;
-J3 = m3*r3^2/12;
-J4 = m4*r4^2/12;
+%J2 = m2*r2^2/12;
+%J3 = m3*r3^2/12;
+%J4 = m4*r4^2/12;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,7 +112,7 @@ J4 = m4*r4^2/12;
 
 % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 % VERY IMPORTANT because it determines which branch of the mechanism you're in
-phi_init = [Pi; 2*Pi/3 ; 1.25 ; Pi/12 ; 2*Pi/3 ; 7*Pi/12 ; 2 ; 13*Pi/12 ; 1 ; Pi/12]    
+phi_init = [pi; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; 13*pi/12 ; 1 ; pi/12]    
         %phi3=phi_init(1); %phi4=phi_init(2); %x5=phi_init(3); %phi6=phi_init(4);
         %phi7=phi_init(5); %phi8=phi_init(6); %x9=phi_init(7); %phi10=phi_init(8);
         %x11=phi_init(9);  %phi12=phi_init(10);

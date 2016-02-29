@@ -11,7 +11,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar)
+function [phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = example_kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar)
 
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
@@ -41,7 +41,7 @@ for k=1:t_size
     % argument a1 ... phi1: constants
     % return value x: solution for the unknown angles phi3 and phi4
     % return exitflag: indicates convergence of algorithm
-    [x, fval, exitflag]=fsolve('loop_closure_eqs',[phi3_init phi4_init]',optim_options,phi2(k),r1,r2,r3,r4,phi1);
+    [x, fval, exitflag]=fsolve('example_loop_closure_eqs',[phi3_init phi4_init]',optim_options,phi2(k),r1,r2,r3,r4,phi1);
     if (exitflag ~= 1)
         display 'The fsolve exit flag was not 1, probably no convergence!'
         exitflag

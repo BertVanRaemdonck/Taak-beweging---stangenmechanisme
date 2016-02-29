@@ -69,7 +69,7 @@ dphi2=omega*A*cos(omega*t);
 ddphi2=-omega^2*A*sin(omega*t);
 
 % calculation of the kinematics (see kin_4bar.m)
-[phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar);
+[phi3,phi4,dphi3,dphi4,ddphi3,ddphi4] = example_kinematics_4bar(r1,r2,r3,r4,phi1,phi2,dphi2,ddphi2,phi3_init,phi4_init,t,fig_kin_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
