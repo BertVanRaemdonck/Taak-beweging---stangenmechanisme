@@ -24,11 +24,11 @@ fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
 fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
-r2k = 2.406;                % eccentric crank circle diameter
+r2k = 1.203;                % eccentric crank circle diameter
 r2l = 2.0;                  % 'langere' zijde van de eccentric crank
 r3 = 9.750;                 % eccentric rod
-a = 1.844;                  % vervang lengte van link crank (dg) (verticaal)
-b = 0.454;                  % vervang lengte van link crank (dg) (horizontaal)
+a = 3.021;                  % vervang lengte van link crank (dg) (verticaal) = link crank vert
+b = 0.801;                  % vervang lengte van link crank (dg) (horizontaal) = link crank back set
 r6k = 1.625;                % radius rod extension
 r6l = 9.125;                % radius rod
 r7 = 1.625;                 % lifting link
@@ -38,8 +38,8 @@ r10 = 2.922;                % union link
 r11 = 1;                    % drop link to cross head vert
 r12 = 16.5;                 % main rod
 
-x4 = 10.330;                % zelf berekend
-y4 = 3.538;                 % zelf berekend
+x4 = 10.297;                % link center pivot horizontal
+y4 = 3.500;                 % link center pivot vertical
 x7 = 8.442;                 % zelf berekend
 y7 = 3.474;                 % zelf berekend
 y9 = 3.789;                 % zelf berekend
@@ -59,6 +59,7 @@ X12 = r12/2;
 % zwaartepunt van driehoek constructie 2 nog berekenen voor algemene geval
 X2 = r2k/3;
 Y2 = r2l/3;
+
 % zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
 %       nodig want r11 is al in gebruik)
 
@@ -71,10 +72,32 @@ Y10 = 0;
 Y11 = 0;
 Y12 = 0;
 
+
+% massa's (nog na te kijken)
+rho_l = 10;                 % massa per lengte stang, voorlopig genomen als waarde
+rho_A = 10;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
+
+m2 = ((r2k*r2l)/2) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
+m3 = r3 * rho_l;
+m4 = (a+b) * rho_l;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
+ma = a * rho_l;
+mb = b * rho_l;
+m6 = (r6k+r6l) * rho_l;     % totale massa van stang 6, m6k en m6l zijn de massa's van de aparte delen
+m6k = r6k * rho_l;
+m6l = r6l * rho_l;
+m7 = r7 * rho_l;
+m8 = (r8k +r8l) * rho_l;    % totale massa van stang 8, m8k en m8l zijn de massa's van de aparte dele
+m8k = r8k * rho_l;
+m8l = r8l * rho_l;
+m10 = r10 * rho_l;
+m11 = r11 * rho_l;
+m12 = r12 * rho_l;
+
+m_piston_1 = 20;            % voorlopig gekozen
+m_piston_2 = 15;            % voorlopig gekozen
+
+
 %Vanaf hieronder nog aanpassen:
-m2 = r2*1.76;
-m3 = r3*1.76;
-m4 = r4*0.54;
 
 J2 = m2*r2^2/12;
 J3 = m3*r3^2/12;
