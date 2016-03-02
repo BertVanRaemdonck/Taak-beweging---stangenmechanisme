@@ -99,7 +99,7 @@ for k=1:t_size
     A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
          0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
          0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  1,                  0;
-         0,                 0,                  0,                  0,                  0,                  -r8l*cos(phi8(k)),  0,                  -r10*cos(phi10(k)), 0,                  0;
+         0,                 0,                  0,                  0,                  0,                  r8l*cos(phi8(k)),  0,                  -r10*cos(phi10(k)), 0,                  0;
          0,                 -x5(k)*sin(phi4(k)),cos(phi4(k)),       -r6k*sin(phi6(k)),  r7*sin(phi7(k)),    0,                  0,                  0,                  0,                  0;
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
          0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
@@ -121,26 +121,58 @@ for k=1:t_size
     x = A\B;
     
     % save results
-    dphi3(k) = x(1);
-    dphi4(k) = x(2);
-    
+    dphi3(k)  = x(1);
+    dphi4(k)  = x(2);
+    dx5(k)    = x(3);
+    dphi6(k)  = x(4);
+    dphi7(k)  = x(5);
+    dphi8(k)  = x(6);
+    dx9(k)    = x(7);
+    dphi10(k) = x(8);
+    dx11(k)   = x(9);
+    dphi12(k) = x(10);
     
     % *** acceleration analysis ***
-        
-    A = [-r3*sin(phi3(k)),  r4*sin(phi4(k));
-         r3*cos(phi3(k)), -r4*cos(phi4(k))];
-    B = [r2*cos(phi2(k))*dphi2(k)^2+r2*sin(phi2(k))*ddphi2(k)+r3*cos(phi3(k))*dphi3(k)^2-r4*cos(phi4(k))*dphi4(k)^2;
-         r2*sin(phi2(k))*dphi2(k)^2-r2*cos(phi2(k))*ddphi2(k)+r3*sin(phi3(k))*dphi3(k)^2-r4*sin(phi4(k))*dphi4(k)^2];
+    
+    % A = zelfde als daarnet
+    
+    B = [-r2l*sin(phi2(k))*ddphi2(k) - r2l*cos(phi2(k))*dphi2(k)^2 + r12*cos(phi12(k))*dphi12(k)^2;
+         r2l*cos(phi2(k))*ddphi2(k) - r2l*sin(phi2(k))*dphi2(k)^2 + r12*sin(phi12(k))*dphi12(k)^2;
+         -r10*cos(phi10(k))*dphi10(k)^2 + r8l*cos(phi8(k))*dphi8(k)^2;
+         -r10*sin(phi10(k))*dphi10(k)^2 + r8l*sin(phi8(k))*dphi8(k)^2;
+         -r7*cos(phi7(k))*dphi7(k)^2 + r6k*cos(phi6(k))*dphi6(k)^2 + 2*sin(phi4(k))*dphi4(k)*dx5(k) + x5(k)*cos(phi4(k))*dphi4(k)^2;
+         -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
+         -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 + r8k*cos(phi8(k))*dphi8(k)^2;
+         -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
+         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 - r3*cos(phi3(k))*dphi3(k)^2 - (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
+         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 - r3*sin(phi3(k))*dphi3(k)^2 - (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
     
     x = A\B;
+    
     % save results
-    ddphi3(k) = x(1);
-    ddphi4(k) = x(2);
+    ddphi3(k)  = x(1);
+    ddphi4(k)  = x(2);
+    ddx5(k)    = x(3);
+    ddphi6(k)  = x(4);
+    ddphi7(k)  = x(5);
+    ddphi8(k)  = x(6);
+    ddx9(k)    = x(7);
+    ddphi10(k) = x(8);
+    ddx11(k)   = x(9);
+    ddphi12(k) = x(10);
     
     
     % *** calculate initial values for next iteration step ***
-    phi3_init = phi3(k)+Ts*dphi3(k);
-    phi4_init = phi4(k)+Ts*dphi4(k);
+    phi3_init  = phi3(k) + Ts*dphi3(k);
+    phi4_init  = phi4(k) + Ts*dphi4(k);
+    x5_init    = x5(k) + Ts*dx5(k);
+    phi6_init  = phi6(k) + Ts*dphi6(k);
+    phi7_init  = phi7(k) + Ts*dphi7(k);
+    phi8_init  = phi8(k) + Ts*dphi8(k);
+    x9_init    = x9(k) + Ts*dx9(k);
+    phi10_init = phi10(k) + Ts*dphi10(k);
+    x11_init   = x11(k) + Ts*dx11(k);
+    phi12_init = phi12(k) + Ts*dphi12(k);
     
     
 end % loop over positions
