@@ -114,7 +114,7 @@ m_piston_2 = 15;            % voorlopig gekozen
 
 % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 % VERY IMPORTANT because it determines which branch of the mechanism you're in
-phi_init = [pi; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; 13*pi/12 ; 1 ; pi/12]    
+phi_init = [pi; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; 13*pi/12 ; 1 ; pi/12];    
         
 phi3_init =  phi_init(1);
 phi4_init =  phi_init(2);

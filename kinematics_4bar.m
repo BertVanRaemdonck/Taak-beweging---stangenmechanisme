@@ -95,14 +95,29 @@ for k=1:t_size
     x11(k) =    x(9);
     phi12(k) =  x(10);
     
-    
     % *** velocity analysis ***
-    
-    A = [-r3*sin(phi3(k)),  r4*sin(phi4(k));
-         r3*cos(phi3(k)), -r4*cos(phi4(k))];
-    B = [ r2*sin(phi2(k))*dphi2(k);
-         -r2*cos(phi2(k))*dphi2(k)];
+    A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
+         0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
+         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  1,                  0;
+         0,                 0,                  0,                  0,                  0,                  -r8l*cos(phi8(k)),  0,                  -r10*cos(phi10(k)), 0,                  0;
+         0,                 -x5(k)*sin(phi4(k)),cos(phi4(k)),       -r6k*sin(phi6(k)),  r7*sin(phi7(k)),    0,                  0,                  0,                  0,                  0;
+         0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
+         0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
+         0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
+         r3*sin(phi3(k)),   a*sin(phi4(k))-b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
+         -r3*cos(phi3(k)),  -a*cos(phi4(k))-b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
      
+    B = [-r2l*sin(phi2(k))*dphi2(k);
+         r2l*cos(phi2(k))*dphi2(k);
+         0;
+         0;
+         0;
+         0;
+         0;
+         0;
+         -r2k*cos(phi2(k))*dphi2(k);
+         -r2k*sin(phi2(k))*dphi2(k)];
+        
     x = A\B;
     
     % save results
@@ -111,7 +126,7 @@ for k=1:t_size
     
     
     % *** acceleration analysis ***
-    
+        
     A = [-r3*sin(phi3(k)),  r4*sin(phi4(k));
          r3*cos(phi3(k)), -r4*cos(phi4(k))];
     B = [r2*cos(phi2(k))*dphi2(k)^2+r2*sin(phi2(k))*ddphi2(k)+r3*cos(phi3(k))*dphi3(k)^2-r4*cos(phi4(k))*dphi4(k)^2;
