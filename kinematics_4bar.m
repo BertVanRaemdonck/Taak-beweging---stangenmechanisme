@@ -181,10 +181,13 @@ end % loop over positions
 
 % *** create movie ***
 
-% point P = fixed
-P = 0;
-% point S = fixed
-S = r1*exp(j*phi1);
+% startpunt
+% nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
+sch_1_2 = 0;
+% andere vaste punten (coördinaten = complexe getallen)
+sch_1_7 = (x7 + j*y7)*exp(j*phi1);
+sch_1_4 = (x4 + j*y7)*exp(j*phi1);
+
 % define which positions we want as frames in our movie
 frames = 40;    % number of frames in movie
 delta = floor(t_size/frames); % time between frames
@@ -194,10 +197,10 @@ index_vec = [1:delta:t_size]';
 % This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
 % axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
 % plots.
-x_left = -1.5*r2;
-y_bottom = -1.5*max(r2,r4);
-x_right = r1+1.5*r4;
-y_top = 1.5*max(r2,r4);
+x_left = -1.5*r2l;
+y_bottom = -1.5*max(r2l, r11);
+x_right = x7 + 1.5*r7 + r6;
+y_top = 1.2*y7 
 
 figure(10)
 hold on
