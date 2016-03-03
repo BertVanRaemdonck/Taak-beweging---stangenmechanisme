@@ -186,10 +186,13 @@ end % loop over positions
 
 % *** create movie ***
 
-% point P = fixed
-P = 0;
-% point S = fixed
-S = r1*exp(j*phi1);
+% startpunt
+% nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
+sch_1_2 = 0;
+% andere vaste punten (coördinaten = complexe getallen)
+sch_1_7 = (x7 + j*y7)*exp(j*phi1);
+sch_1_4 = (x4 + j*y7)*exp(j*phi1);
+
 % define which positions we want as frames in our movie
 frames = 40;    % number of frames in movie
 delta = floor(t_size/frames); % time between frames
@@ -199,10 +202,10 @@ index_vec = [1:delta:t_size]';
 % This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
 % axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
 % plots.
-x_left = -1.5*r2;
-y_bottom = -1.5*max(r2,r4);
-x_right = r1+1.5*r4;
-y_top = 1.5*max(r2,r4);
+x_left = -1.5*r2l;
+y_bottom = -1.5*max(r2l, r11);
+x_right = x7 + 1.5*r7 + r6;
+y_top = 1.2*y7 
 
 figure(10)
 hold on
@@ -213,16 +216,31 @@ movie_axes = axis;   %save current axes into movie_axes
 % draw and save movie frame
 for m=1:length(index_vec)
     index = index_vec(m);
-    Q = P + r2 * exp(j*phi2(index));
-    R1 = Q + r3 * exp(j*phi3(index));
-    R2 = S + r4 * exp(j*phi4(index));
     
-    loop1 = [P Q R1 R2 S];
+    sch_2_12  = sch_1_2 + r2l*exp(j*phi2(index) + pi);
+    sch_2_3   = sch_1_2 + r2k*exp(j*phi2(index) - pi/2);
+    sch_3_4   = sch_2_3 + r3*exp(j*phi3(index) + pi);
+    sch_5_6   = sch_1_4 + x5(index)*exp(j*phi4(index)); % Het blokje dat over de roterende staaf glijdt
+    sch_6_7   = sch_1_7 + r7*exp(j*phi7(index) + pi);
+    sch_6_8   = sch_6_7 + r6*exp(j*phi6(index));
+    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+    sch_8_10  = sch_6_8 + (r8l + r8k)*exp(j*phi8(index) + pi);
+    sch_10_11 = r2l + r12 + x11(index) - j*r11;
+    sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+    
+    hoekpunt_4 = sch_1_4 + a*exp(j*phi4(index)); % Het hoekpunt van staaf 4
+    
+    staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8 sch_5_6 sch_6_7 sch_1_7]
+    loop2  = [sch_1_4 hoekpunt_4 sch_3_4 sch_2_3];
+    
     
     figure(10)
     clf
     hold on
-    plot(real(loop1),imag(loop1),'-o')
+    plot(real(staaf2), imag(staaf2), '-o')
+    plot(real(loop1), imag(loop1), '-o')
+    plot(real(loop2), imag(loop2), '-o')
     
     axis(movie_axes);     % set axes as in movie_axes
     Movie(m) = getframe;  % save frame to a variable Film
@@ -239,14 +257,33 @@ if fig_kin_4bar
     
     %plot assembly at a certain timestep 
     index = 1; %select 1st timestep
-    P = 0;
-    S = r1*exp(j*phi1);
-    Q = P + r2 * exp(j*phi2(index));
-    R = Q + r3 * exp(j*phi3(index));
+    sch_1_2 = 0;
+    sch_1_7 = (x7 + j*y7)*exp(j*phi1);
+    sch_1_4 = (x4 + j*y7)*exp(j*phi1);
+    
+    sch_2_12  = sch_1_2 + r2l*exp(j*phi2(index) + pi);
+    sch_2_3   = sch_1_2 + r2k*exp(j*phi2(index) - pi/2);
+    sch_3_4   = sch_2_3 + r3*exp(j*phi3(index) + pi);
+    sch_5_6   = sch_1_4 + x5(index)*exp(j*phi4(index)); % Het blokje dat over de roterende staaf glijdt
+    sch_6_7   = sch_1_7 + r7*exp(j*phi7(index) + pi);
+    sch_6_8   = sch_6_7 + r6*exp(j*phi6(index));
+    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+    sch_8_10  = sch_6_8 + (r8l + r8k)*exp(j*phi8(index) + pi);
+    sch_10_11 = r2l + r12 + x11(index) - j*r11;
+    sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+    
+    hoekpunt_4 = sch_1_4 + a*exp(j*phi4(index)); % Het hoekpunt van staaf 4
     
     figure
-    assembly=[P, Q, R, S];
-    plot(real(assembly),imag(assembly),'ro-')
+    
+    staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8 sch_5_6 sch_6_7 sch_1_7]
+    loop2  = [sch_1_4 hoekpunt_4 sch_3_4 sch_2_3];
+    
+    plot(real(staaf2), imag(staaf2), 'ro-')
+    hold on;
+    plot(real(loop1), imag(loop1), 'ro-')
+    plot(real(loop2), imag(loop2), 'ro-')
     xlabel('[m]')
     ylabel('[m]')
     title('assembly')
