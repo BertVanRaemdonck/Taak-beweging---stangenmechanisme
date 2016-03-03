@@ -12,11 +12,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function F=loop_closure_eqs(phi_init,phi2,r2l,r2k,r3,a,b,r6,r6k,r7,r8l,r8k,r10,r11,r12,x4,y4,x7,y7,y9)
+function F=loop_closure_eqs(phi_init,phi2,r2l,r2k,r3,a,b,r6l,r6k,r7,r8l,r8k,r10,r11,r12,x4,y4,x7,y7,y9)
 
 % first argument: the initial values of the unknown angles phi3 and phi4
 % argument phi2: input angle phi2 for which we want to calculate the unknown angles phi3 and phi4
 % arguments a1 ... phi1: constants
+
+% declaration of new variable
+r6 = r6k + r6l;
 
 % copy initial values of unknown angles phi3 and phi4
 phi3=phi_init(1);
@@ -39,6 +42,6 @@ F(5)=-r7*cos(phi7)+r6k*cos(phi6)+x5*cos(phi4)-x4+x7;
 F(6)=-r7*sin(phi7)+r6k*sin(phi6)+x5*sin(phi4)-y4+y7;
 F(7)=-r7*cos(phi7)+r6*cos(phi6)-r8k*cos(phi8)-(r2l+r12+x9)+x7;
 F(8)=-r7*sin(phi7)+r6*sin(phi6)-r8k*sin(phi8)-y9+y7;
-F(9)=r2k*cos(phi2-Pi/2)-r3*cos(phi3)-a*cos(phi4)-b*cos(phi4-Pi/2)-x4;
-F(10)=r2k*sin(phi2-Pi/2)-r3*sin(phi3)-a*sin(phi4)-b*sin(phi4-Pi/2)-y4;
+F(9)=r2k*cos(phi2-pi/2)-r3*cos(phi3)-a*cos(phi4)-b*cos(phi4-pi/2)-x4;
+F(10)=r2k*sin(phi2-pi/2)-r3*sin(phi3)-a*sin(phi4)-b*sin(phi4-pi/2)-y4;
 
