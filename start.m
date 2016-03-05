@@ -132,7 +132,7 @@ phi12_init = phi_init(10);
 
 
 t_begin = 0;                   % start time of simulation
-t_end = 10;                    % end time of simulation
+t_end = 50;                    % end time of simulation
 Ts = 0.05;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
