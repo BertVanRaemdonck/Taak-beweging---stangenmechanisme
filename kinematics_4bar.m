@@ -217,23 +217,32 @@ movie_axes = axis;   %save current axes into movie_axes
 for m=1:length(index_vec)
     index = index_vec(m);
     
-    sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
-    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
-    sch_3_4   = sch_2_3 + r3*exp(j*(phi3(index) + pi));
-    sch_5_6   = sch_1_4 + x5(index)*exp(j*(phi4(index) + pi)); % Het blokje dat over de roterende staaf glijdt, staat toch ook naar 'beneden' gericht?
-    sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
-    sch_6_8   = sch_6_7 + r6*exp(j*phi6(index));
-    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
-    sch_8_10  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
-    sch_10_11 = r2l + r12 + x11(index) - j*r11;
-    sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
+    % opzichte van elkaar.
     
-    hoekpunt_4 = sch_1_4 + b*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
+    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
+    
+    sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+    sch_10_11 = sch_11_12 - j*r11;
+    sch_8_10  = sch_10_11 + r10*exp(j*(phi10(index) + pi));
+    
+    sch_8_9   = sch_8_10 + r8l*exp(j*phi8(index)); % De bovenste van de twee zuigers
+    
+    sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
+    sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
+    sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
+    
+    hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
-    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8 sch_5_6 sch_6_7 sch_1_7]
-    loop2  = [sch_1_4 hoekpunt_4 sch_3_4 sch_2_3];
-    
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8];
+    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8]; 
+    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
+    staaf3  = [sch_2_3 sch_3_4];  
+      
     
     figure(10)
     clf
@@ -241,6 +250,9 @@ for m=1:length(index_vec)
     plot(real(staaf2), imag(staaf2), '-o')
     plot(real(loop1), imag(loop1), '-o')
     plot(real(loop2), imag(loop2), '-o')
+    plot(real(staaf4), imag(staaf4), '-o')
+    plot(real(staaf3), imag(staaf3), '-o')
+       
     
     axis(movie_axes);     % set axes as in movie_axes
     Movie(m) = getframe;  % save frame to a variable Film
@@ -259,28 +271,41 @@ if fig_kin_4bar
     index = 1; %select 1st timestep
     sch_1_2 = 0;
     sch_1_7 = (x7 + j*y7)*exp(j*phi1);
-    sch_1_4 = (x4 + j*y7)*exp(j*phi1);
+    sch_1_4 = (x4 + j*y4)*exp(j*phi1);
+    
+    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
+    % opzichte van elkaar.
     
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
-    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
-    sch_3_4   = sch_2_3 + r3*exp(j*(phi3(index) + pi));
-    sch_5_6   = sch_1_4 + x5(index)*exp(j*(phi4(index) + pi)); % Het blokje dat over de roterende staaf glijdt, staat toch ook naar 'beneden' gericht?
-    sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
-    sch_6_8   = sch_6_7 + r6*exp(j*phi6(index));
-    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
-    sch_8_10  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
-    sch_10_11 = r2l + r12 + x11(index) - j*r11;
+    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
+    
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+    sch_10_11 = sch_11_12 - j*r11;
+    sch_8_10  = sch_10_11 + r10*exp(j*(phi10(index) + pi));
     
-    hoekpunt_4 = sch_1_4 + b*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_8_9   = sch_8_10 + r8l*exp(j*phi8(index)); % De bovenste van de twee zuigers
     
+    sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
+    sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
+    sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
+    
+    hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    
+        
     figure
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
-    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8 sch_5_6 sch_6_7 sch_1_7]
-    loop2  = [sch_1_4 hoekpunt_4 sch_3_4 sch_2_3];
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8];
+    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8]; 
+    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
+    staaf3  = [sch_2_3 sch_3_4];
+    
     
     plot(real(staaf2), imag(staaf2), 'ro-')
+    plot(real(staaf4), imag(staaf4), 'ro-')
+    plot(real(staaf3), imag(staaf3), 'ro-')
+    
     hold on;
     plot(real(loop1), imag(loop1), 'ro-')
     plot(real(loop2), imag(loop2), 'ro-')
