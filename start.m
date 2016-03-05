@@ -42,9 +42,9 @@ r12 = 16.5 * conv;          % main rod
 
 x4 = 10.297 * conv;         % link center pivot horizontal
 y4 = 3.500 * conv;          % link center pivot vertical
-x7 = 8.442 * conv;          % zelf berekend
-y7 = 3.474 * conv;          % zelf berekend
-y9 = 3.789 * conv;          % zelf berekend
+x7 = 8.439 * conv;          % gemeten in simulatie programma
+y7 = 3.472 * conv;          % gemeten in simulatie programma
+y9 = 3.747 * conv;          % gemeten in simulatie programma
 
 phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 
@@ -158,8 +158,12 @@ ddphi2 = alpha;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % calculation of the dynamics (see dyn_4bar.m)
-[F_P_x,F_Q_x,F_R_x,F_S_x,F_P_y,F_Q_y,F_R_y,F_S_y,M_P] = dynamics_4bar(phi2,phi3,phi4,dphi2,dphi3,dphi4,ddphi2,ddphi3,ddphi4,r2,r3,r4, ...
-  m2,m3,m4,X2,X3,X4,Y2,Y3,Y4,J2,J3,J4,t,fig_dyn_4bar);
+
+% Uitgecommentarieerd zodat dit geen error geeft, aangezien we hier nog
+% niet mee bezig zijn.
+
+% [F_P_x,F_Q_x,F_R_x,F_S_x,F_P_y,F_Q_y,F_R_y,F_S_y,M_P] = dynamics_4bar(phi2,phi3,phi4,dphi2,dphi3,dphi4,ddphi2,ddphi3,ddphi4,r2,r3,r4, ...
+ % m2,m3,m4,X2,X3,X4,Y2,Y3,Y4,J2,J3,J4,t,fig_dyn_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
