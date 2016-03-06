@@ -225,23 +225,25 @@ for m=1:length(index_vec)
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_10  = sch_10_11 + r10*exp(j*(phi10(index) + pi));
-    
-    sch_8_9   = sch_8_10 + r8l*exp(j*phi8(index)); % De bovenste van de twee zuigers
-    
+    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index)));
+        
+    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+        
     sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
     sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
+    sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
     
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
-    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8];
-    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8]; 
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
+    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
     staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
-    staaf3  = [sch_2_3 sch_3_4];  
+    staaf3  = [sch_2_3 sch_3_4];
+    knoop810 = [sch_8_101 sch_8_102];
       
     
     figure(10)
@@ -252,6 +254,7 @@ for m=1:length(index_vec)
     plot(real(loop2), imag(loop2), '-o')
     plot(real(staaf4), imag(staaf4), '-o')
     plot(real(staaf3), imag(staaf3), '-o')
+    plot(real(knoop810), imag(knoop810), '-o')
        
     
     axis(movie_axes);     % set axes as in movie_axes
@@ -281,13 +284,14 @@ if fig_kin_4bar
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_10  = sch_10_11 + r10*exp(j*(phi10(index) + pi));
-    
-    sch_8_9   = sch_8_10 + r8l*exp(j*phi8(index)); % De bovenste van de twee zuigers
-    
+    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index)));
+        
+    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+        
     sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
     sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
+    sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
@@ -296,19 +300,21 @@ if fig_kin_4bar
     figure
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
-    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_10 sch_8_9 sch_6_8];
-    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8]; 
+    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
+    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
     staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
     staaf3  = [sch_2_3 sch_3_4];
+    knoop810 = [sch_8_101 sch_8_102];
     
     
-    plot(real(staaf2), imag(staaf2), 'ro-')
-    plot(real(staaf4), imag(staaf4), 'ro-')
-    plot(real(staaf3), imag(staaf3), 'ro-')
+    plot(real(knoop810), imag(knoop810),'ro-')
     
     hold on;
     plot(real(loop1), imag(loop1), 'ro-')
     plot(real(loop2), imag(loop2), 'ro-')
+    plot(real(staaf2), imag(staaf2), 'ro-')
+    plot(real(staaf4), imag(staaf4), 'ro-')
+    plot(real(staaf3), imag(staaf3), 'ro-')
     xlabel('[m]')
     ylabel('[m]')
     title('assembly')
@@ -350,6 +356,3 @@ if fig_kin_4bar
     ylabel('dd\phi_4 [rad/s^2]')
     xlabel('t [s]')
 end
-
-
-
