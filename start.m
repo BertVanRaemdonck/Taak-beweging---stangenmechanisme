@@ -78,7 +78,7 @@ Y12 = 0;
 
 
 % massa's (nog na te kijken)
-rho_l1 = 14,72;             % massa per lengte stang, alles behalve drijfstang
+rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
 rho_l2 = 71.76;             % massa per lengte drijfstang
 rho_A = 10;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
 
@@ -132,12 +132,12 @@ phi12_init = phi_init(10);
 
 
 t_begin = 0;                   % start time of simulation
-t_end = 50;                    % end time of simulation
+t_end = 100;                    % end time of simulation
 Ts = 0.05;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
-omega = 0.5;
+omega = -0.1;
 alpha = 0;
 phi2 = omega*t + pi/2;
 dphi2 = omega;
