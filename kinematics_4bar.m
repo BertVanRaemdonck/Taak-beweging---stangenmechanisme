@@ -109,8 +109,8 @@ for k=1:t_size
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
          0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
          0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
-         r3*sin(phi3(k)),   a*sin(phi4(k))-b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
-         -r3*cos(phi3(k)),  -a*cos(phi4(k))-b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
+         r3*sin(phi3(k)),   a*sin(phi4(k))+b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
+         -r3*cos(phi3(k)),  -a*cos(phi4(k))+b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
      
     B = [-r2l*sin(phi2(k))*dphi2(k);
          r2l*cos(phi2(k))*dphi2(k);
@@ -221,11 +221,12 @@ for m=1:length(index_vec)
     % opzichte van elkaar.
     
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
-    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
+    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
+    sch_3_4a  = sch_2_3 + r3*exp(j*(phi3(index) + pi));
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index)));
+    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index) + pi));
         
     sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
         
@@ -235,14 +236,14 @@ for m=1:length(index_vec)
     sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
     
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
     loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
     loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
-    staaf3  = [sch_2_3 sch_3_4];
+    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
+    staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
     knoop810 = [sch_8_101 sch_8_102];
       
     
@@ -281,10 +282,11 @@ if fig_kin_4bar
     
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
     sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
+    sch_3_4a  = sch_2_3 + r3*exp(j*(phi3(index) + pi));
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index)));
+    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index) + pi));
         
     sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
         
@@ -294,7 +296,7 @@ if fig_kin_4bar
     sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    sch_3_4   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
     
         
     figure
@@ -302,8 +304,8 @@ if fig_kin_4bar
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
     loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
     loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4];
-    staaf3  = [sch_2_3 sch_3_4];
+    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
+    staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
     knoop810 = [sch_8_101 sch_8_102];
     
     
