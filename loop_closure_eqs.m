@@ -36,7 +36,7 @@ phi12=phi_init(10);
 % loop closure equations:
 F(1)=-r2l*cos(phi2)+r12*cos(phi12)-(r2l+r12-x11);
 F(2)=-r2l*sin(phi2)+r12*sin(phi12);
-F(3)=-r10*cos(phi10)+r8l*cos(phi8)-x9+x11;
+F(3)=-r10*cos(phi10)+r8l*cos(phi8)-x9-x11;
 F(4)=-r11-r10*sin(phi10)+r8l*sin(phi8)-y9;
 F(5)=-r7*cos(phi7)+r6k*cos(phi6)+x5*cos(phi4)-x4+x7;
 F(6)=-r7*sin(phi7)+r6k*sin(phi6)+x5*sin(phi4)-y4+y7;

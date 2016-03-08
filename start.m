@@ -42,9 +42,10 @@ r12 = 16.5 * conv;          % main rod
 
 x4 = 10.297 * conv;         % link center pivot horizontal
 y4 = 3.500 * conv;          % link center pivot vertical
-x7 = 8.439 * conv;          % gemeten in simulatie programma
-y7 = 3.472 * conv;          % gemeten in simulatie programma
-y9 = 3.747 * conv;          % gemeten in simulatie programma
+rev_arm_angle = asin(1.30/2.344);                 % hoek tussen horizontale en lifting arm in de uiterste stand
+x7 = (6.164 + 2.75 * cos(rev_arm_angle)) * conv;  % horizontale positie scharnier 1-7 = reverse arm pivot hor + lifting arm length (met hoekcorrectie)
+y7 = (5.031 - 2.75 * sin(rev_arm_angle)) * conv;  % verticale positie scharnier 1-7 = reverse arm pivot vert + ligting arm length (met hoekcorrectie)
+y9 = 3.5 * conv;            % valve CL to cyl CL
 
 phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 

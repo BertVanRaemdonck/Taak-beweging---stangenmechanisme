@@ -103,7 +103,7 @@ for k=1:t_size
     % *** velocity analysis ***
     A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
          0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
-         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  1,                  0;
+         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  -1,                  0;
          0,                 0,                  0,                  0,                  0,                  r8l*cos(phi8(k)),  0,                  -r10*cos(phi10(k)), 0,                  0;
          0,                 -x5(k)*sin(phi4(k)),cos(phi4(k)),       -r6k*sin(phi6(k)),  r7*sin(phi7(k)),    0,                  0,                  0,                  0,                  0;
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
@@ -233,7 +233,7 @@ for m=1:length(index_vec)
     sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
     sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
-    sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
+    sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
