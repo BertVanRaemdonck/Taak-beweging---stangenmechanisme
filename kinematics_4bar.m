@@ -109,8 +109,8 @@ for k=1:t_size
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
          0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
          0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
-         r3*sin(phi3(k)),   a*sin(phi4(k))+b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
-         -r3*cos(phi3(k)),  -a*cos(phi4(k))+b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
+         r3*sin(phi3(k)),   -a*sin(phi4(k))+b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
+         -r3*cos(phi3(k)),  a*cos(phi4(k))+b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
      
     B = [-r2l*sin(phi2(k))*dphi2(k);
          r2l*cos(phi2(k))*dphi2(k);
@@ -149,8 +149,8 @@ for k=1:t_size
          -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
          -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 + r8k*cos(phi8(k))*dphi8(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
-         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 - r3*cos(phi3(k))*dphi3(k)^2 - (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
-         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 - r3*sin(phi3(k))*dphi3(k)^2 - (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
+         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 - r3*cos(phi3(k))*dphi3(k)^2 + (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
+         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 - r3*sin(phi3(k))*dphi3(k)^2 + (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
     
     x = A\B;
     
