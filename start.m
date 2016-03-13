@@ -128,18 +128,18 @@ m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 J2 = (r2l*(r2k^3))/12;   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
 J3 = m3*r3^2/12;
-J4 = m4*r4^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
+J4 = m4*a^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
 J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
 J6k = m6k*r6k^2/12;
 J6l = m6l*r6l^2/12;
-J6 = m6*r6^2/12;
+J6 = m6*(r6k+r6l)^2/12;
 J7 = m7*r7^2/12;
 J8k = m8k*r8k^2/12;
 J8l = m8l*r8l^2/12;
-J8 = m8*r8^2/12;
-J9 = mpiston1*((hoogte9^2)+(breedte9^2)) / 12 ;    % benaderd als volle balk
+J8 = m8*(r8k+r8l)^2/12;
+J9 = m_piston_1*((hoogte9^2)+(breedte9^2)) / 12 ;    % benaderd als volle balk
 J10 = m10*r10^2/12;
-J11 = mpiston2*((hoogte11^2)+(breedte11^2)) / 12;  % benaderd als volle balk
+J11 = m_piston_2*((hoogte11^2)+(breedte11^2)) / 12;  % benaderd als volle balk
 J12 = m12*r12^2/12;
 
 
@@ -203,7 +203,7 @@ ddphi2 = alpha;
 %                    dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
 %                    ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
 %                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
-%                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, mpiston1, mpiston2,...
+%                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
 %                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
 %                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
 %                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
