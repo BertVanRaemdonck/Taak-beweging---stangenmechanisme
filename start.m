@@ -54,11 +54,17 @@ phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 % NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
 X3 = r3/2;                  % zwaartepunt
 X4 = a/2;
+X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
+X6k = r6k/2;
+X6l = r6l/2;
 X6 = (r6k + r6l)/2;
 X7 = r7/2;
+X8k = r8k/2;
+X8l = r8l/2;
 X8 = (r8k + r8l)/2;
+% X9 = ???                  % Grote X9 is momenteel gekozen bij de momentenvergelijkingen als de afstand tussen het zwaartepunt van stang 8 en het scharnierpunt 8,9
 X10 = r10/2;
-X11 = r11/2;
+X11 = r11/2;                % NOG AAN TE PASSEN, IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
 X12 = r12/2;
 
 % zwaartepunt van driehoek constructie 2 nog berekenen voor algemene geval
@@ -70,13 +76,27 @@ Y2 = r2l/3;
 
 Y3 = 0;                     % Y coordinates of cog
 Y4 = b/2;
+y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
+Y6k = 0;
+Y6l = 0;
 Y6 = 0;
 Y7 = 0;
+Y8k = 0;
+Y8l = 0;
 Y8 = 0;
+Y9 = 0;
 Y10 = 0;
 Y11 = 0;
 Y12 = 0;
 
+
+% Definitie extra parameters:   (voorlopig gekozen)
+breedte5 = 0.05;            % breedte schuifscharnier
+hoogte5 = 0.05;             % hoogte schuifscharnier
+breedte9 = 0.2;             % breedte piston1, stang 9
+hoogte9 = 0.1;              % hoogte piston1, stang 9
+breedte11 = 0.3;            % breedte piston2, stang 11
+hoogte11 = 0.2;             % hoogte piston2, stang11
 
 % massa's (nog na te kijken)
 rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
@@ -88,6 +108,7 @@ m3 = r3 * rho_l1;
 m4 = (a+b) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = a * rho_l1;
 mb = b * rho_l1;
+m5 = 1;                      % massa van schuifscharnier
 m6 = (r6k+r6l) * rho_l1;     % totale massa van stang 6, m6k en m6l zijn de massa's van de aparte delen
 m6k = r6k * rho_l1;
 m6l = r6l * rho_l1;
@@ -99,15 +120,27 @@ m10 = r10 * rho_l1;
 m11 = r11 * rho_l1;
 m12 = r12 * rho_l2;
 
-m_piston_1 = 20;            % voorlopig gekozen
-m_piston_2 = 15;            % voorlopig gekozen
+m_piston_1 = 15;            % voorlopig gekozen, stang 9
+m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 
-%Vanaf hieronder nog aanpassen:
+%Vanaf hieronder nog aanpassen en controleren:
 
-%J2 = m2*r2^2/12;
-%J3 = m3*r3^2/12;
-%J4 = m4*r4^2/12;
+J2 = (r2l*(r2k^3))/12;   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
+J3 = m3*r3^2/12;
+J4 = m4*r4^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
+J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
+J6k = m6k*r6k^2/12;
+J6l = m6l*r6l^2/12;
+J6 = m6*r6^2/12;
+J7 = m7*r7^2/12;
+J8k = m8k*r8k^2/12;
+J8l = m8l*r8l^2/12;
+J8 = m8*r8^2/12;
+J9 = mpiston1*((hoogte9^2)+(breedte9^2)) / 12 ;    % benaderd als volle balk
+J10 = m10*r10^2/12;
+J11 = mpiston2*((hoogte11^2)+(breedte11^2)) / 12;  % benaderd als volle balk
+J12 = m12*r12^2/12;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -133,7 +166,7 @@ phi12_init = phi_init(10);
 
 
 t_begin = 0;                   % start time of simulation
-t_end = 100;                    % end time of simulation
+t_end = 100;                   % end time of simulation
 Ts = 0.05;                     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
@@ -163,8 +196,17 @@ ddphi2 = alpha;
 % Uitgecommentarieerd zodat dit geen error geeft, aangezien we hier nog
 % niet mee bezig zijn.
 
-% [F_P_x,F_Q_x,F_R_x,F_S_x,F_P_y,F_Q_y,F_R_y,F_S_y,M_P] = dynamics_4bar(phi2,phi3,phi4,dphi2,dphi3,dphi4,ddphi2,ddphi3,ddphi4,r2,r3,r4, ...
- % m2,m3,m4,X2,X3,X4,Y2,Y3,Y4,J2,J3,J4,t,fig_dyn_4bar);
+% [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
+%    F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
+%    M12, M19, M111, M45] ...
+%    = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
+%                    dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
+%                    ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
+%                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+%                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, mpiston1, mpiston2,...
+%                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
+%                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
+%                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
