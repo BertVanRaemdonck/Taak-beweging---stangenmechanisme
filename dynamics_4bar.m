@@ -44,14 +44,17 @@ cog3_23_y = X3*sin(phi3);
 cog3_34_x = -(r3-X3)*cos(phi3);
 cog3_34_y = -(r3-X3)*sin(phi3);
 
-cog4_45 = X5;                           % voor stang 4 gerekend vanaf vaste punt
+proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
+proj_45_y = sin(phi4-pi/2);
+
+cog4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
 cog4_34_x = (b*cos(phi4)) + (a*cos(phi4+pi/2));
 cog4_34_y = (b*sin(phi4)) - (a*cos(phi4+pi/2));
 
-cog6_56_x = -(r6k-X6)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
-cog6_56_y = -(r6k-X6)*sin(phi6);
-cog6_67_x = -r6k*cos(phi6);
-cog6_67_y = -r6k*sin(phi6);
+cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
+cog6_56_y = -(X6-r6k)*sin(phi6);
+cog6_67_x = -X6*cos(phi6);
+cog6_67_y = -X6*sin(phi6);
 cog6_68_x = (r6k + r6l - X6)*cos(phi6);
 cog6_68_y = (r6k + r6l - X6)*sin(phi6);
 
@@ -165,15 +168,28 @@ M45 = zeros(size(phi2));
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
 for k=1:t_size
-  A = [ 1           0            1            0            0            0            0           0           0;
-        0           1            0            1            0            0            0           0           0;
-        0           0           -1            0           -1            0            0           0           0;
-        0           0            0           -1            0           -1            0           0           0;
-        0           0            0            0            1            0            1           0           0;
-        0           0            0            0            0            1            0           1           0;
-       -cog2_P_y(k) cog2_P_x(k) -cog2_Q_y(k)  cog2_Q_x(k)  0            0            0           0           1;
-        0           0            cog3_Q_y(k) -cog3_Q_x(k)  cog3_R_y(k) -cog3_R_x(k)  0           0           0;
-        0           0            0            0           -cog4_R_y(k)  cog4_R_x(k) -cog4_S_y(k) cog4_S_x(k) 0];
+  A = [ 1           0            1             0             1              0            0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           1            0             1             0              1            0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            cog2_23_y(k) -cog2_23_x(k)  cog2_212_y(k) -cog2_212_x   0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           1           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0           -1             0             0              0           -1             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0            -1             0              0            0            -1                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            cog3_23_y(k) -cog3_23_x(k)  0              0            cog3_34_y(k) -cog3_34_x(k)       0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            1             0                  1          0           proj_45_x(k) 0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             1                  0          1           proj_45_y(k) 0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            cog4_34_y(k) -cog4_34_x(k)       0          0           cog4_45(k)   0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           1;
+        0           0            0             0             0              0            0             0                  0          0          -proj_45_x(k) 1             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0          -proj_45_y(k) 0             1            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           1;
+        0           0            0             0             0              0            0             0                  0          0           0           -1             0           -1             0            -1             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0            -1            0            -1             0            -1            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            cog6_56_y(k) -cog6_56_x(k) cog6_67_y(k) -cog6_67_x(k)  cog6_68_y(k) -cog6_68_x(k) 0           0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0             0            1             0             0             0            1           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0             0            0             1             0             0            0           1           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        0           0            0             0             0              0            0             0                  0          0           0            0             0            0             0             0             0            0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0;
+        
+        
+        0           0            0             0             0              0            0             0                  0          0           0            0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0            0           0];
     
   B = [ m2*acc_2x(k);
         m2*(acc_2y(k)+g);
