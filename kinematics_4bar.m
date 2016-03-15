@@ -54,6 +54,11 @@ ddphi10   = zeros(size(t));
 ddx11     = zeros(size(t));
 ddphi12   = zeros(size(t));
 
+% controlevariabelen
+dphi3_check = zeros(size(t));
+dphi4_check = zeros(size(t));
+
+
 % fsolve options (help fsolve, help optimset)
 optim_options = optimset('Display','off');
 
@@ -178,6 +183,20 @@ for k=1:t_size
     phi10_init = phi10(k) + Ts*dphi10(k);
     x11_init   = x11(k) + Ts*dx11(k);
     phi12_init = phi12(k) + Ts*dphi12(k);
+    
+    
+    % *** control calculations velocity ***
+    A_check_34 = [-r3*sin(phi3(k)-pi),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
+                  r3*cos(phi3(k)-pi),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
+              
+    B_check_34 = [dphi2(k)*r2k*sin(phi2(k)-pi/2);
+                  -dphi2(k)*r2k*cos(phi2(k)-pi/2)];
+              
+    x = A_check_34\B_check_34;
+    
+    % save results
+    dphi3_check(k) = x(1);
+    dphi4_check(k) = x(2);
     
     
 end % loop over positions
@@ -357,4 +376,13 @@ if fig_kin_4bar
     plot(t,ddphi4)
     ylabel('dd\phi_4 [rad/s^2]')
     xlabel('t [s]')
+    
+    % controle dphi3 en dphi4
+    figure
+    subplot(211)
+    plot(t, dphi3-dphi3_check)
+    ylabel('d\phi_3 - d\phi_{3,check} [rad/s]')
+    subplot(212)
+    plot(t, dphi4-dphi4_check)
+    ylabel('d\phi_4 - d\phi_{4,check} [rad/s]')
 end
