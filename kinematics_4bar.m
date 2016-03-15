@@ -19,6 +19,8 @@ function [  phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      
                     phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
                     t, fig_kin_4bar)
 
+%% **initialization**
+
 % allocation of the result vectors (this results in better performance because we don't have to reallocate and
 % copy the vector each time we add an element.
 phi3    = zeros(size(t));
@@ -65,12 +67,13 @@ dphi12_check = zeros(size(t));
 % fsolve options (help fsolve, help optimset)
 optim_options = optimset('Display','off');
 
-% *** loop over positions ***
+
+%% *** loop over positions ***
 Ts = t(2) - t(1);      % timestep
 t_size = size(t,1);    % number of simulation steps
 for k=1:t_size
     
-    % *** position analysis ***
+    %% *** position analysis ***
     
     % fsolve solves the non-linear set of equations
     % loop closure equations: see loop_closure_eqs.m
@@ -108,7 +111,7 @@ for k=1:t_size
     x11(k) =    x(9);
     phi12(k) =  x(10);
     
-    % *** velocity analysis ***
+    %% *** velocity analysis ***
     A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
          0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
          0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  -1,                  0;
@@ -145,7 +148,7 @@ for k=1:t_size
     dx11(k)   = x(9);
     dphi12(k) = x(10);
     
-    % *** acceleration analysis ***
+    %% *** acceleration analysis ***
     
     % A = zelfde als daarnet
     
@@ -175,7 +178,7 @@ for k=1:t_size
     ddphi12(k) = x(10);
     
     
-    % *** calculate initial values for next iteration step ***
+    %% *** calculate initial values for next iteration step ***
     phi3_init  = phi3(k) + Ts*dphi3(k);
     phi4_init  = phi4(k) + Ts*dphi4(k);
     x5_init    = x5(k) + Ts*dx5(k);
@@ -188,7 +191,7 @@ for k=1:t_size
     phi12_init = phi12(k) + Ts*dphi12(k);
     
     
-    % *** control calculations velocity ***
+    %% *** control calculations velocity ***
     A_check_34 = [-r3*sin(phi3(k)-pi),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
                   r3*cos(phi3(k)-pi),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
               
@@ -218,8 +221,7 @@ for k=1:t_size
 end % loop over positions
 
 
-
-% *** create movie ***
+%% *** create movie ***
 
 % startpunt
 % nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
@@ -302,7 +304,7 @@ save fourbar_movie Movie
 close(10)
 
 
-% *** plot figures ***
+%% *** plot figures ***
 
 if fig_kin_4bar
     
@@ -333,7 +335,7 @@ if fig_kin_4bar
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
     
-    % assembly figuur    
+    %% assembly figuur    
     figure
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
@@ -356,8 +358,11 @@ if fig_kin_4bar
     title('assembly')
     axis equal
     
-    % alle posities
-    figure
+    screen_size = get(groot, 'ScreenSize');
+    
+    %% alle posities
+    figure('Name', 'Posities', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
     subplot(6,2,1)
     plot(t, phi2)
     ylabel('\phi_2 [rad]')
@@ -390,46 +395,101 @@ if fig_kin_4bar
     ylabel('x_{11} [m]') 
     subplot(6,2,10)
     plot(t, phi12)
-    ylabel('phi_{12} [rad]')
+    ylabel('\phi_{12} [rad]')
     
-%     
-%     figure
-%     subplot(311)
-%     plot(t,phi2)
-%     ylabel('\phi_2 [rad]')
-%     subplot(312)
-%     plot(t,phi3)
-%     ylabel('\phi_3 [rad]')
-%     subplot(313)
-%     plot(t,phi4)
-%     ylabel('\phi_4 [rad]')
-%     xlabel('t [s]')
-%     
-%     figure
-%     subplot(311)
-%     plot(t,dphi2)
-%     ylabel('d\phi_2 [rad/s]')
-%     subplot(312)
-%     plot(t,dphi3)
-%     ylabel('d\phi_3 [rad/s]')
-%     subplot(313)
-%     plot(t,dphi4)
-%     ylabel('d\phi_4 [rad/s]')
-%     xlabel('t [s]')
-%     
-%     figure
-%     subplot(311)
-%     plot(t,ddphi2)
-%     ylabel('dd\phi_2 [rad/s^2]')
-%     subplot(312)
-%     plot(t,ddphi3)
-%     ylabel('dd\phi_3 [rad/s^2]')
-%     subplot(313)
-%     plot(t,ddphi4)
-%     ylabel('dd\phi_4 [rad/s^2]')
-%     xlabel('t [s]')
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Posities in functie van de tijd in s'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
     
-    % controle dphi3 en dphi4
+    %% alle snelheden
+        figure('Name', 'Snelheden', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(6,2,1)
+    plot(t, dphi2)
+    ylabel('d\phi_2 [rad/s]')
+    subplot(6,2,3)
+    plot(t, dphi3)
+    ylabel('d\phi_3 [rad/s]')
+    subplot(6,2,5)
+    plot(t, dphi4)
+    ylabel('d\phi_4 [rad/s]')
+    subplot(6,2,7)
+    plot(t, dx5)
+    ylabel('dx_5 [m/s]')
+    subplot(6,2,9)
+    plot(t, dphi6)
+    ylabel('d\phi_6 [rad/s]')
+    subplot(6,2,11)
+    plot(t, dphi7)
+    ylabel('d\phi_7 [rad/s]')
+    subplot(6,2,2)
+    plot(t, dphi8)
+    ylabel('d\phi_8 [rad/s]')
+    subplot(6,2,4)
+    plot(t, dx9)
+    ylabel('dx_9 [m/s]')
+    subplot(6,2,6)
+    plot(t, dphi10)
+    ylabel('d\phi_{10} [rad/s]')
+    subplot(6,2,8)
+    plot(t, dx11)
+    ylabel('dx_{11} [m/s]') 
+    subplot(6,2,10)
+    plot(t, dphi12)
+    ylabel('d\phi_{12} [rad/s]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Snelheden in functie van de tijd in s'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    %% alle versnellingen
+        figure('Name', 'Versnellingen', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(6,2,1)
+    plot(t, ddphi2)
+    ylabel('dd\phi_2 [rad/s^2]')
+    subplot(6,2,3)
+    plot(t, ddphi3)
+    ylabel('dd\phi_3 [rad/s^2]')
+    subplot(6,2,5)
+    plot(t, ddphi4)
+    ylabel('dd\phi_4 [rad/s^2]')
+    subplot(6,2,7)
+    plot(t, ddx5)
+    ylabel('ddx_5 [m/s^2]')
+    subplot(6,2,9)
+    plot(t, ddphi6)
+    ylabel('dd\phi_6 [rad/s^2]')
+    subplot(6,2,11)
+    plot(t, ddphi7)
+    ylabel('dd\phi_7 [rad/s^2]')
+    subplot(6,2,2)
+    plot(t, ddphi8)
+    ylabel('dd\phi_8 [rad/s^2]')
+    subplot(6,2,4)
+    plot(t, ddx9)
+    ylabel('ddx_9 [m/s^2]')
+    subplot(6,2,6)
+    plot(t, ddphi10)
+    ylabel('dd\phi_{10} [rad/s^2]')
+    subplot(6,2,8)
+    plot(t, ddx11)
+    ylabel('ddx_{11} [m/s^2]') 
+    subplot(6,2,10)
+    plot(t, ddphi12)
+    ylabel('dd\phi_{12} [rad/s^2]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Versnellingen in functie van de tijd in s'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    %% controle dphi3 en dphi4
     figure
     subplot(211)
     plot(t, dphi3-dphi3_check)
@@ -438,7 +498,7 @@ if fig_kin_4bar
     plot(t, dphi4-dphi4_check)
     ylabel('d\phi_4 - d\phi_{4,check} [rad/s]')
     
-    % controle dx11 en dphi12
+    %% controle dx11 en dphi12
     figure
     subplot(211)
     plot(t, dx11-dx11_check)
