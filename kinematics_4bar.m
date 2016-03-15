@@ -55,8 +55,11 @@ ddx11     = zeros(size(t));
 ddphi12   = zeros(size(t));
 
 % controlevariabelen
-dphi3_check = zeros(size(t));
-dphi4_check = zeros(size(t));
+dphi3_check =  zeros(size(t));
+dphi4_check =  zeros(size(t));
+dx11_check =   zeros(size(t));
+dphi12_check = zeros(size(t));
+
 
 
 % fsolve options (help fsolve, help optimset)
@@ -199,6 +202,19 @@ for k=1:t_size
     dphi4_check(k) = x(2);
     
     
+    A_check_1112 = [1, -r12*sin(phi12(k));
+                    0, r12*cos(phi12(k))];
+    
+    B_check_1112 = [dphi2(k)*r2l*sin(phi2(k)-pi);
+                    -dphi2(k)*r2l*cos(phi2(k)-pi)];
+                
+    x = A_check_1112\B_check_1112;
+    
+    % save results
+    dx11_check(k) =   x(1);
+    dphi12_check(k) = x(2);
+    
+    
 end % loop over positions
 
 
@@ -317,7 +333,7 @@ if fig_kin_4bar
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
     
-        
+    % assembly figuur    
     figure
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
@@ -328,8 +344,7 @@ if fig_kin_4bar
     knoop810 = [sch_8_101 sch_8_102];
     
     
-    plot(real(knoop810), imag(knoop810),'ro-')
-    
+    plot(real(knoop810), imag(knoop810),'ro-')   
     hold on;
     plot(real(loop1), imag(loop1), 'ro-')
     plot(real(loop2), imag(loop2), 'ro-')
@@ -341,41 +356,78 @@ if fig_kin_4bar
     title('assembly')
     axis equal
     
+    % alle posities
     figure
-    subplot(311)
-    plot(t,phi2)
+    subplot(6,2,1)
+    plot(t, phi2)
     ylabel('\phi_2 [rad]')
-    subplot(312)
-    plot(t,phi3)
+    subplot(6,2,3)
+    plot(t, phi3)
     ylabel('\phi_3 [rad]')
-    subplot(313)
-    plot(t,phi4)
+    subplot(6,2,5)
+    plot(t, phi4)
     ylabel('\phi_4 [rad]')
-    xlabel('t [s]')
+    subplot(6,2,7)
+    plot(t, x5)
+    ylabel('x_5 [m]')
+    subplot(6,2,9)
+    plot(t, phi6)
+    ylabel('\phi_6 [rad]')
+    subplot(6,2,11)
+    plot(t, phi7)
+    ylabel('\phi_7 [rad]')
+    subplot(6,2,2)
+    plot(t, phi8)
+    ylabel('\phi_8 [rad]')
+    subplot(6,2,4)
+    plot(t, x9)
+    ylabel('x_9 [m]')
+    subplot(6,2,6)
+    plot(t, phi10)
+    ylabel('\phi_{10} [rad]')
+    subplot(6,2,8)
+    plot(t, x11)
+    ylabel('x_{11} [m]') 
+    subplot(6,2,10)
+    plot(t, phi12)
+    ylabel('phi_{12} [rad]')
     
-    figure
-    subplot(311)
-    plot(t,dphi2)
-    ylabel('d\phi_2 [rad/s]')
-    subplot(312)
-    plot(t,dphi3)
-    ylabel('d\phi_3 [rad/s]')
-    subplot(313)
-    plot(t,dphi4)
-    ylabel('d\phi_4 [rad/s]')
-    xlabel('t [s]')
-    
-    figure
-    subplot(311)
-    plot(t,ddphi2)
-    ylabel('dd\phi_2 [rad/s^2]')
-    subplot(312)
-    plot(t,ddphi3)
-    ylabel('dd\phi_3 [rad/s^2]')
-    subplot(313)
-    plot(t,ddphi4)
-    ylabel('dd\phi_4 [rad/s^2]')
-    xlabel('t [s]')
+%     
+%     figure
+%     subplot(311)
+%     plot(t,phi2)
+%     ylabel('\phi_2 [rad]')
+%     subplot(312)
+%     plot(t,phi3)
+%     ylabel('\phi_3 [rad]')
+%     subplot(313)
+%     plot(t,phi4)
+%     ylabel('\phi_4 [rad]')
+%     xlabel('t [s]')
+%     
+%     figure
+%     subplot(311)
+%     plot(t,dphi2)
+%     ylabel('d\phi_2 [rad/s]')
+%     subplot(312)
+%     plot(t,dphi3)
+%     ylabel('d\phi_3 [rad/s]')
+%     subplot(313)
+%     plot(t,dphi4)
+%     ylabel('d\phi_4 [rad/s]')
+%     xlabel('t [s]')
+%     
+%     figure
+%     subplot(311)
+%     plot(t,ddphi2)
+%     ylabel('dd\phi_2 [rad/s^2]')
+%     subplot(312)
+%     plot(t,ddphi3)
+%     ylabel('dd\phi_3 [rad/s^2]')
+%     subplot(313)
+%     plot(t,ddphi4)
+%     ylabel('dd\phi_4 [rad/s^2]')
+%     xlabel('t [s]')
     
     % controle dphi3 en dphi4
     figure
@@ -385,4 +437,13 @@ if fig_kin_4bar
     subplot(212)
     plot(t, dphi4-dphi4_check)
     ylabel('d\phi_4 - d\phi_{4,check} [rad/s]')
+    
+    % controle dx11 en dphi12
+    figure
+    subplot(211)
+    plot(t, dx11-dx11_check)
+    ylabel('dx_{11} - dx_{11,check} [m/s]')
+    subplot(212)
+    plot(t, dphi12-dphi12_check)
+    ylabel('d\phi_{12} - d\phi_{12,check} [rad/s]')
 end
