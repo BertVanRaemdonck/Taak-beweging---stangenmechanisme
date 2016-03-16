@@ -67,9 +67,10 @@ X10 = r10/2;
 X11 = r11/2;                % NOG AAN TE PASSEN, IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
 X12 = r12/2;
 
-% zwaartepunt van driehoek constructie 2 nog berekenen voor algemene geval
-X2 = r2k/3;
-Y2 = r2l/3;
+% driehoek is geen driehoek maar cirkel dus cog in scharnier (kan eventueel
+% verwijderd worden)
+X2 = 0;
+Y2 = 0;
 
 % zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
 %       nodig want r11 is al in gebruik)

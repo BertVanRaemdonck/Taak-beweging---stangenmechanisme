@@ -47,9 +47,9 @@ cog3_34_y = (r3-X3)*sin(phi3);
 proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
 proj_45_y = sin(phi4-pi/2);
 
-cog4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
-cog4_34_x = (b*cos(phi4)) + (a*cos(phi4+pi/2));
-cog4_34_y = (b*sin(phi4)) - (a*cos(phi4+pi/2));
+vp4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
+vp4_34_x = (b*cos(phi4)) + (a*cos(phi4+pi/2));
+vp4_34_y = (b*sin(phi4)) - (a*cos(phi4+pi/2));
 
 cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
 cog6_56_y = -(X6-r6k)*sin(phi6);        % X6 vanaf scharnier 6,7
@@ -99,19 +99,41 @@ cog12_1112_y = (r12-X12)*sin(phi12);
 % cog4_R_x = (r4-X4)*cos(phi4)-Y4*cos(phi4+pi/2);
 % cog4_R_y = (r4-X4)*sin(phi4)-Y4*sin(phi4+pi/2);
 
-% 3D omega (dphi) and alpha (ddphi) vectors)    NOG AAN TE PASSEN!!!!
+% 3D omega (dphi) and alpha (ddphi) vectors)    
 omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
 omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
+omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
+omega7 = [zeros(size(phi2)) zeros(size(phi2)) dphi7];
+omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
+omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
+omega12 = [zeros(size(phi2)) zeros(size(phi2)) dphi12];
+
 alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
 alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
 alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
+alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
+alpha7 = [zeros(size(phi2)) zeros(size(phi2)) ddphi7];
+alpha8 = [zeros(size(phi2)) zeros(size(phi2)) ddphi8];
+alpha10 = [zeros(size(phi2)) zeros(size(phi2)) ddphi10];
+alpha12 = [zeros(size(phi2)) zeros(size(phi2)) ddphi12];
 
 % 3D model vectors    NOG AAN TE PASSEN!!!!
-P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
-Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
-S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
-PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+% P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
+% Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
+% S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
+% PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+
+vec_23_cog3 = [-cog3_23_x    -cog3_23_y   zeros(size(phi2))];
+vec_212_cog12 = [-cog12_212_x    -cog12_212_y   zeros(size(phi2))];
+vec_34_cog4 = [];
+vec_17_cog7 = [-cog7_17_x    -cog7_17_y   zeros(size(phi2))];
+vec_67_cog6 = [-cog6_67_x    -cog6_67_y   zeros(size(phi2))];
+vec_17_67 = [-r7*cos(phi7)   -r7*sin(phi7) zeros(size(phi2))];
+vec_68_cog8 = [-cog8_68_x    -cog8_68_y   zeros(size(phi2))];
+vec_67_68 = [r6*cos(phi6)   r6*sin(phi6)  zeros(size(phi2))];
+vec_68_810 = [-r8*cos(phi8)   -r8*sin(phi8)  zeros(size(phi2))];
+
 
 % acceleration vectors    NOG AAN TE PASSEN!!!
 acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
@@ -124,6 +146,7 @@ acc_3x = acc_3(:,1);
 acc_3y = acc_3(:,2);
 acc_4x = acc_4(:,1);
 acc_4y = acc_4(:,2);
+
 
 
 % **********************
@@ -180,7 +203,7 @@ for k=1:t_size
         0           0            cog3_23_y(k) -cog3_23_x(k)  0               0               cog3_34_y(k) -cog3_34_x(k)       0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               1             0                  1          0           proj_45_x(k) 0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             1                  0          1           proj_45_y(k) 0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
-        0           0            0             0             0               0               cog4_34_y(k) -cog4_34_x(k)       0          0           cog4_45(k)   0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           1;
+        0           0            0             0             0               0               vp4_34_y(k)  -vp4_34_x(k)        0          0           vp4_45(k)    0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           1;
         0           0            0             0             0               0               0             0                  0          0          -proj_45_x(k) 1             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             0                  0          0          -proj_45_y(k) 0             1            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           1;
