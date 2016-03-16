@@ -59,9 +59,28 @@ ddphi12   = zeros(size(t));
 % controlevariabelen
 dphi3_check =  zeros(size(t));
 dphi4_check =  zeros(size(t));
+dx5_check =    zeros(size(t));
+dphi6_check =  zeros(size(t));
+dphi7_check =  zeros(size(t));
+dphi8_check =  zeros(size(t));
+dx9_check =    zeros(size(t));
+dphi10_check = zeros(size(t));
 dx11_check =   zeros(size(t));
 dphi12_check = zeros(size(t));
 
+% hulpvariabelen voor controle
+v56_x_check =   zeros(size(t));
+v56_y_check =   zeros(size(t));
+v67_x_check =   zeros(size(t));
+v67_y_check =   zeros(size(t));
+v68_x_check =   zeros(size(t));
+v68_y_check =   zeros(size(t));
+v89_x_check =   zeros(size(t));
+v89_y_check =   zeros(size(t));
+v810_x_check =  zeros(size(t));
+v810_y_check =  zeros(size(t));
+v1011_x_check = zeros(size(t));
+v1011_y_check = zeros(size(t));
 
 
 % fsolve options (help fsolve, help optimset)
@@ -114,11 +133,11 @@ for k=1:t_size
     %% *** velocity analysis ***
     A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
          0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
-         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 -r10*sin(phi10(k)), -1,                  0;
+         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 -r10*sin(phi10(k)), -1,                 0;
          0,                 0,                  0,                  0,                  0,                  r8l*cos(phi8(k)),   0,                  r10*cos(phi10(k)),  0,                  0;
          0,                 -x5(k)*sin(phi4(k)),cos(phi4(k)),       -r6k*sin(phi6(k)),  r7*sin(phi7(k)),    0,                  0,                  0,                  0,                  0;
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
-         0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
+         0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
          0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
          -r3*sin(phi3(k)),  -a*sin(phi4(k))+b*cos(phi4(k)),  0,     0,                  0,                  0,                  0,                  0,                  0,                  0;
          r3*cos(phi3(k)),   a*cos(phi4(k))+b*sin(phi4(k)), 0,       0,                  0,                  0,                  0,                  0,                  0,                  0];
@@ -158,7 +177,7 @@ for k=1:t_size
          r10*sin(phi10(k))*dphi10(k)^2 + r8l*sin(phi8(k))*dphi8(k)^2;
          -r7*cos(phi7(k))*dphi7(k)^2 + r6k*cos(phi6(k))*dphi6(k)^2 + 2*sin(phi4(k))*dphi4(k)*dx5(k) + x5(k)*cos(phi4(k))*dphi4(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
-         -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 + r8k*cos(phi8(k))*dphi8(k)^2;
+         -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 - r8k*cos(phi8(k))*dphi8(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
          -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 + r3*cos(phi3(k))*dphi3(k)^2 + (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
          -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 + r3*sin(phi3(k))*dphi3(k)^2 + (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
@@ -192,6 +211,8 @@ for k=1:t_size
     
     
     %% *** control calculations velocity ***
+    
+    % dphi3 en dphi4
     A_check_34 = [-r3*sin(phi3(k)),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
                   r3*cos(phi3(k)),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
               
@@ -205,6 +226,7 @@ for k=1:t_size
     dphi4_check(k) = x(2);
     
     
+    % dx11 en dphi12
     A_check_1112 = [1, -r12*sin(phi12(k));
                     0, r12*cos(phi12(k))];
     
@@ -218,6 +240,68 @@ for k=1:t_size
     dphi12_check(k) = x(2);
     
     
+    % de rest
+    A_check_rest = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,                  0,                      0,                  0,                      0,  0;
+                    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,                  0,                      0,                  0,                      0,  0;
+                    0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  -1, 0,  0,                  0,                      0,                  0,                      0,  r10*sin(phi10(k));
+                    0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  -1, 0,                  0,                      0,                  0,                      0,  -r10*cos(phi10(k));
+                    0,  0,  0,  0,  0,  0,  1,  0,  -1, 0,  0,  0,  0,                  0,                      0,                  r8l*sin(phi8(k)),       0,  0;
+                    0,  0,  0,  0,  0,  0,  0,  1,  0,  -1, 0,  0,  0,                  0,                      0,                  -r8l*cos(phi8(k)),      0,  0;
+                    0,  0,  0,  0,  1,  0,  0,  0,  -1, 0,  0,  0,  0,                  0,                      0,                  (r8l+r8k)*sin(phi8(k)), 0,  0;
+                    0,  0,  0,  0,  0,  1,  0,  0,  0,  -1, 0,  0,  0,                  0,                      0,                  -(r8l+r8k)*cos(phi8(k)),0,  0;
+                    0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,                  0,                      r7*sin(phi7(k)-pi), 0,                      0,  0;
+                    0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,                  0,                      -r7*cos(phi7(k)-pi),0,                      0,  0;
+                    1,  0,  -1, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,                  r6k*sin(phi6(k)),       0,                  0,                      0,  0;
+                    0,  1,  0,  -1, 0,  0,  0,  0,  0,  0,  0,  0,  0,                  -r6k*cos(phi6(k)),      0,                  0,                      0,  0;
+                    0,  0,  -1, 0,  1,  0,  0,  0,  0,  0,  0,  0,  0,                  (r6k+r6l)*sin(phi6(k)), 0,                  0,                      0,  0;
+                    0,  0,  0,  -1, 0,  1,  0,  0,  0,  0,  0,  0,  0,                  -(r6k+r6l)*cos(phi6(k)),0,                  0,                      0,  0;
+                    1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  -cos(phi4(k)-pi),   0,                      0,                  0,                      0,  0;
+                    0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  -sin(phi4(k)-pi),   0,                      0,                  0,                      0,  0;
+                    0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,                  0,                      0,                  0,                      -1, 0;
+                    0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,                  0,                      0,                  0,                      0,  0];
+                
+    B_check_rest = [-dx11_check(k);
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    0;
+                    -dphi4_check(k)*x5(k)*sin(phi4(k)-pi);
+                    dphi4_check(k)*x5(k)*cos(phi4(k)-pi);
+                    0;
+                    0];
+                
+    x = A_check_rest\B_check_rest;
+    
+    % save results
+    v56_x_check(k) =   x(1);
+    v56_y_check(k) =   x(2);
+    v67_x_check(k) =   x(3);
+    v67_y_check(k) =   x(4);
+    v68_x_check(k) =   x(5);
+    v68_y_check(k) =   x(6);
+    v89_x_check(k) =   x(7);
+    v89_y_check(k) =   x(8);
+    v810_x_check(k) =  x(9);
+    v810_y_check(k) =  x(10);
+    v1011_x_check(k) = x(11);
+    v1011_y_check(k) = x(12);
+    dx5_check(k) =     x(13);
+    dphi6_check(k) =   x(14);
+    dphi7_check(k) =   x(15);
+    dphi8_check(k) =   x(16);
+    dx9_check(k) =     x(17);
+    dphi10_check(k) =  x(18);
+    
+                    
 end % loop over positions
 
 
@@ -404,7 +488,7 @@ if fig_kin_4bar
     set(h,'Visible','on')
     
     %% alle snelheden
-        figure('Name', 'Snelheden', 'NumberTitle', 'off', ...
+    figure('Name', 'Snelheden', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
     subplot(6,2,1)
     plot(t, dphi2)
@@ -447,7 +531,7 @@ if fig_kin_4bar
     set(h,'Visible','on')
     
     %% alle versnellingen
-        figure('Name', 'Versnellingen', 'NumberTitle', 'off', ...
+    figure('Name', 'Versnellingen', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
     subplot(6,2,1)
     plot(t, ddphi2)
@@ -489,21 +573,44 @@ if fig_kin_4bar
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
-    %% controle dphi3 en dphi4
-    figure
-    subplot(211)
+    %% alle controles
+    figure('Name', 'Controles', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(5,2,1)
     plot(t, dphi3-dphi3_check)
-    ylabel('d\phi_3 - d\phi_{3,check} [rad/s]')
-    subplot(212)
+    ylabel('\Deltad\phi_3 [rad/s]')
+    subplot(5,2,3)
     plot(t, dphi4-dphi4_check)
-    ylabel('d\phi_4 - d\phi_{4,check} [rad/s]')
-    
-    %% controle dx11 en dphi12
-    figure
-    subplot(211)
+    ylabel('\Deltad\phi_4 [rad/s]')
+    subplot(5,2,5)
+    plot(t, dx5-dx5_check)
+    ylabel('\Deltadx_5 [m/s]')
+    subplot(5,2,7)
+    plot(t, dphi6-dphi6_check)
+    ylabel('\Deltad\phi_6 [rad/s]')
+    subplot(5,2,9)
+    plot(t, dphi7-dphi7_check)
+    ylabel('\Deltad\phi_7 [rad/s]')
+    subplot(5,2,2)
+    plot(t, dphi8-dphi8_check)
+    ylabel('\Deltad\phi_8 [rad/s]')
+    subplot(5,2,4)
+    plot(t, dx9-dx9_check)
+    ylabel('\Deltadx_9 [m/s]')
+    subplot(5,2,6)
+    plot(t, dphi10-dphi10_check)
+    ylabel('\Deltad\phi_{10} [rad/s]')
+    subplot(5,2,8)
     plot(t, dx11-dx11_check)
-    ylabel('dx_{11} - dx_{11,check} [m/s]')
-    subplot(212)
+    ylabel('\Deltadx_{11} [m/s]')
+    subplot(5,2,10)
     plot(t, dphi12-dphi12_check)
-    ylabel('d\phi_{12} - d\phi_{12,check} [rad/s]')
+    ylabel('\Deltad\phi_{12} [rad/s]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controles van de snelheden'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
 end
