@@ -114,14 +114,14 @@ for k=1:t_size
     %% *** velocity analysis ***
     A = [0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  1,                  -r12*sin(phi12(k));
          0,                 0,                  0,                  0,                  0,                  0,                  0,                  0,                  0,                  r12*cos(phi12(k));
-         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 r10*sin(phi10(k)),  -1,                  0;
-         0,                 0,                  0,                  0,                  0,                  r8l*cos(phi8(k)),  0,                  -r10*cos(phi10(k)), 0,                  0;
+         0,                 0,                  0,                  0,                  0,                  -r8l*sin(phi8(k)),  -1,                 -r10*sin(phi10(k)), -1,                  0;
+         0,                 0,                  0,                  0,                  0,                  r8l*cos(phi8(k)),   0,                  r10*cos(phi10(k)),  0,                  0;
          0,                 -x5(k)*sin(phi4(k)),cos(phi4(k)),       -r6k*sin(phi6(k)),  r7*sin(phi7(k)),    0,                  0,                  0,                  0,                  0;
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
          0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    -r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
          0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
-         r3*sin(phi3(k)),   -a*sin(phi4(k))+b*cos(phi4(k)),  0,      0,                  0,                  0,                  0,                  0,                  0,                  0;
-         -r3*cos(phi3(k)),  a*cos(phi4(k))+b*sin(phi4(k)), 0,      0,                  0,                  0,                  0,                  0,                  0,                  0];
+         -r3*sin(phi3(k)),  -a*sin(phi4(k))+b*cos(phi4(k)),  0,     0,                  0,                  0,                  0,                  0,                  0,                  0;
+         r3*cos(phi3(k)),   a*cos(phi4(k))+b*sin(phi4(k)), 0,       0,                  0,                  0,                  0,                  0,                  0,                  0];
      
     B = [-r2l*sin(phi2(k))*dphi2(k);
          r2l*cos(phi2(k))*dphi2(k);
@@ -154,14 +154,14 @@ for k=1:t_size
     
     B = [-r2l*sin(phi2(k))*ddphi2(k) - r2l*cos(phi2(k))*dphi2(k)^2 + r12*cos(phi12(k))*dphi12(k)^2;
          r2l*cos(phi2(k))*ddphi2(k) - r2l*sin(phi2(k))*dphi2(k)^2 + r12*sin(phi12(k))*dphi12(k)^2;
-         -r10*cos(phi10(k))*dphi10(k)^2 + r8l*cos(phi8(k))*dphi8(k)^2;
-         -r10*sin(phi10(k))*dphi10(k)^2 + r8l*sin(phi8(k))*dphi8(k)^2;
+         r10*cos(phi10(k))*dphi10(k)^2 + r8l*cos(phi8(k))*dphi8(k)^2;
+         r10*sin(phi10(k))*dphi10(k)^2 + r8l*sin(phi8(k))*dphi8(k)^2;
          -r7*cos(phi7(k))*dphi7(k)^2 + r6k*cos(phi6(k))*dphi6(k)^2 + 2*sin(phi4(k))*dphi4(k)*dx5(k) + x5(k)*cos(phi4(k))*dphi4(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
          -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 + r8k*cos(phi8(k))*dphi8(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
-         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 - r3*cos(phi3(k))*dphi3(k)^2 + (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
-         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 - r3*sin(phi3(k))*dphi3(k)^2 + (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
+         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 + r3*cos(phi3(k))*dphi3(k)^2 + (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
+         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 + r3*sin(phi3(k))*dphi3(k)^2 + (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
     
     x = A\B;
     
@@ -192,8 +192,8 @@ for k=1:t_size
     
     
     %% *** control calculations velocity ***
-    A_check_34 = [-r3*sin(phi3(k)-pi),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
-                  r3*cos(phi3(k)-pi),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
+    A_check_34 = [-r3*sin(phi3(k)),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
+                  r3*cos(phi3(k)),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
               
     B_check_34 = [dphi2(k)*r2k*sin(phi2(k)-pi/2);
                   -dphi2(k)*r2k*cos(phi2(k)-pi/2)];
@@ -226,7 +226,7 @@ end % loop over positions
 % startpunt
 % nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
 sch_1_2 = 0;
-% andere vaste punten (coördinaten = complexe getallen)
+% andere vaste punten (coÃ¶rdinaten = complexe getallen)
 sch_1_7 = (x7 + j*y7)*exp(j*phi1);
 sch_1_4 = (x4 + j*y4)*exp(j*phi1);
 
@@ -254,16 +254,16 @@ movie_axes = axis;   %save current axes into movie_axes
 for m=1:length(index_vec)
     index = index_vec(m);
     
-    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
+    % Volgens mij moet je ze in de volgorde van de loop definiÃ«ren ten
     % opzichte van elkaar.
     
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
     sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
-    sch_3_4a  = sch_2_3 + r3*exp(j*(phi3(index) + pi));
+    sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index) + pi));
+    sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
         
     sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
         
@@ -307,6 +307,7 @@ close(10)
 %% *** plot figures ***
 
 if fig_kin_4bar
+    %% assembly figuur
     
     %plot assembly at a certain timestep 
     index = 1; %select 1st timestep
@@ -314,16 +315,16 @@ if fig_kin_4bar
     sch_1_7 = (x7 + j*y7)*exp(j*phi1);
     sch_1_4 = (x4 + j*y4)*exp(j*phi1);
     
-    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
+    % Volgens mij moet je ze in de volgorde van de loop definiÃ«ren ten
     % opzichte van elkaar.
     
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
     sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
-    sch_3_4a  = sch_2_3 + r3*exp(j*(phi3(index) + pi));
+    sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
     
     sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
     sch_10_11 = sch_11_12 - j*r11;
-    sch_8_101 = sch_10_11 + r10*exp(j*(phi10(index) + pi));
+    sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
         
     sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
         
@@ -334,8 +335,7 @@ if fig_kin_4bar
     
     hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
     sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
-    
-    %% assembly figuur    
+       
     figure
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
