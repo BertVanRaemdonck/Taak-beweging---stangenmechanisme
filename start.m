@@ -24,7 +24,7 @@ fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
 fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
 
 % kinematic parameters (link lengths)
-conv = 0.19;                % conversie factor reële waardes en lengtes simulatie programma
+conv = 0.19;                % conversie factor reÃ«le waardes en lengtes simulatie programma
 
 r2k = 1.203 * conv;         % eccentric crank circle diameter
 r2l = 2.0 * conv;           % 'langere' zijde van de eccentric crank
@@ -151,7 +151,7 @@ J12 = m12*r12^2/12;
 
 % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 % VERY IMPORTANT because it determines which branch of the mechanism you're in
-phi_init = [pi; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; 13*pi/12 ; 1 ; pi/12];    
+phi_init = [0; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; pi/12 ; 1 ; pi/12];    
         
 phi3_init =  phi_init(1);
 phi4_init =  phi_init(2);
@@ -216,4 +216,3 @@ ddphi2 = alpha;
 figure
 load fourbar_movie Movie
 movie(Movie)
-
