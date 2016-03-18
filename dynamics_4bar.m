@@ -126,26 +126,58 @@ alpha12 = [zeros(size(phi2)) zeros(size(phi2)) ddphi12];
 
 vec_23_cog3 = [-cog3_23_x    -cog3_23_y   zeros(size(phi2))];
 vec_212_cog12 = [-cog12_212_x    -cog12_212_y   zeros(size(phi2))];
-vec_34_cog4 = [];
-vec_17_cog7 = [-cog7_17_x    -cog7_17_y   zeros(size(phi2))];
+vec_vp7_cog7 = [-cog7_17_x    -cog7_17_y   zeros(size(phi2))];
 vec_67_cog6 = [-cog6_67_x    -cog6_67_y   zeros(size(phi2))];
-vec_17_67 = [-r7*cos(phi7)   -r7*sin(phi7) zeros(size(phi2))];
+vec_vp7_67 = [-r7*cos(phi7)   -r7*sin(phi7) zeros(size(phi2))];
 vec_68_cog8 = [-cog8_68_x    -cog8_68_y   zeros(size(phi2))];
 vec_67_68 = [r6*cos(phi6)   r6*sin(phi6)  zeros(size(phi2))];
 vec_68_810 = [-r8*cos(phi8)   -r8*sin(phi8)  zeros(size(phi2))];
 
+%Extra vectoren nodig:
+vec_vp2_cog2 = [X2 Y2 0];
+vec_212_cog2 = [-cog2_212_x    -cog2_212_y   zeros(size(phi2))];
+vec_23_cog2 = [-cog2_23_x    -cog2_23_y   zeros(size(phi2))];
+vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
+vec_vp4_cog4 = [(-X4*cos(pi/2-phi4))-(Y4*cos(phi4))  (X4*sin(pi/2-phi4))-(Y4*sin(phi4)) zeros(size(phi2))];                                 
+vec_vp4_cog5 = [-x5*cos(phi4)  -x5*sin(phi4)  zeros(size(phi2))];
+vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
 
 % acceleration vectors    NOG AAN TE PASSEN!!!
-acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
-acc_Q =       cross(omega2,cross(omega2,PQ_vec    ))+cross(alpha2,PQ_vec    );
-acc_3 = acc_Q+cross(omega3,cross(omega3,Q_cog3_vec))+cross(alpha3,Q_cog3_vec);
-acc_4 =       cross(omega4,cross(omega4,S_cog4_vec))+cross(alpha4,S_cog4_vec);
-acc_2x = acc_2(:,1);
-acc_2y = acc_2(:,2);
-acc_3x = acc_3(:,1);
-acc_3y = acc_3(:,2);
-acc_4x = acc_4(:,1);
-acc_4y = acc_4(:,2);
+% bv. acc_2 = versnelling massacentrum van stang 2
+%     acc_2_12 = versnelling van scharnierpunt 2,12
+
+acc_2 =             cross(omega2,cross(omega2,vec_vp2_cog2)) + cross(alpha2,vec_vp2_cog2);  % normaal gezien nul
+acc_2_12 = acc_2 +  cross(omega2,cross(omega2,vec_212_cog2)) + cross(alpha2,vec_212_cog2);
+acc_2_3 = acc_2 +   cross(omega2,cross(omega2,vec_23_cog2)) +  cross(alpha2,vec_23_cog2);
+
+acc_3 = acc_2_3 +   cross(omega3,cross(omega3,vec_23_cog3)) +  cross(alpha3,vec_23_cog3);
+acc_3_4 = acc_2_3 + cross(omega3,cross(omega3,vec_23_34)) +    cross(alpah3,vec_23_34);
+
+acc_4 =             cross(omega4,cross(omega4,vec_vp4_cog4)) + cross(alpha4,vec_vp4_cog4);
+
+acc_5_lin = [-ddx5*cos(phi4)  -ddx5*sin(phi4)  zeros(size(phi2))];
+acc_5 = acc_5_lin + cross(omega4,cross(omega4,vec_vp4_cog5)) + cross(alpha4,vec_vp4_cog5);
+
+acc_7 =             cross(omega7,cross(omega7,vec_vp7_cog7) +  cross(alpha7,vec_vp7_cog7);
+acc_7_6 =           cross(omega7,cross(omega7,vec_vp7_67) +    cross(alpha7,vec_vp7_67);
+
+acc_6 = acc_7_6 +   cross(omega6,cross(omega6,vec_67_cog6)) +  cross(alpha6,vec_67_cog6);
+acc_6_8 = acc_7_6 + cross(omega6,cross(omega6,vec_67_68)) +    cross(alpha6,vec_67_68);
+
+acc_8 = acc_6_8 +   cross(omega8,cross(omega8,vec_68_cog8)) +  cross(alpha8,vec_68_cog8);
+acc_8_9 = acc_6_8 + cross(omega8,cross(omega8,vec_68_89))   +  cross(alpha8,vec_68_89);
+
+% Voorbeeldcode versnellingen
+% acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
+% acc_Q =       cross(omega2,cross(omega2,PQ_vec    ))+cross(alpha2,PQ_vec    );
+% acc_3 = acc_Q+cross(omega3,cross(omega3,Q_cog3_vec))+cross(alpha3,Q_cog3_vec);
+% acc_4 =       cross(omega4,cross(omega4,S_cog4_vec))+cross(alpha4,S_cog4_vec);
+% acc_2x = acc_2(:,1);
+% acc_2y = acc_2(:,2);
+% acc_3x = acc_3(:,1);
+% acc_3y = acc_3(:,2);
+% acc_4x = acc_4(:,1);
+% acc_4y = acc_4(:,2);
 
 
 
