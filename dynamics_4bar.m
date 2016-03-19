@@ -18,7 +18,7 @@ function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56
     = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
                     dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
                     ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
-                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
                     m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, mpiston1, mpiston2,...
                     X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                     Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
@@ -65,10 +65,10 @@ cog7_17_y = X7*sin(phi7);               % X7 vanaf scharnier 1,7
 cog7_67_x = (r7-X7)*cos(phi7);
 cog7_67_y = -(r7-X7)*sin(phi7);
 
-cog8_68_x = (r8-X8)*cos(phi8);          % voor stang 8 gerekend vanaf massacentrum
-cog8_68_y = (r8-X8)*sin(phi8);          % X8 vanaf scharnier 8,10
-cog8_89_x = X9*cos(phi8);               % X9 de afstand van cog tot aangrijping F89
-cog8_89_y = X9*sin(phi8);
+cog8_68_x = (r8k + r8l -X8)*cos(phi8);          % voor stang 8 gerekend vanaf massacentrum
+cog8_68_y = (r8k + r8l -X8)*sin(phi8);          % X8 vanaf scharnier 8,10
+cog8_89_x = L9*cos(phi8);               % L9 de afstand van cog tot aangrijping F89
+cog8_89_y = L9*sin(phi8);
 cog8_810_x = -X8*cos(phi8);
 cog8_810_y = -X8*sin(phi8);
 
@@ -104,7 +104,7 @@ cog12_1112_y = (r12-X12)*sin(phi12);
 %% *** Declaratie 3D omega en alpha vectoren ***
 
 % 3D omega (dphi) and alpha (ddphi) vectors)    
-omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
+omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2*ones(size(phi2),1)];   % Als dphi2 verandert, dan moet dit aangepast worden (momenteel maar een cijfer ipv een vector
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
 omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
 omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
@@ -113,7 +113,7 @@ omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
 omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
 omega12 = [zeros(size(phi2)) zeros(size(phi2)) dphi12];
 
-alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
+alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2*ones(size(phi2),1)];
 alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
 alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
 alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
