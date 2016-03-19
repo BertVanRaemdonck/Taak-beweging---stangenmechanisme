@@ -33,6 +33,8 @@ function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56
 g = 9.81;           % valversnelling
 
 
+%% *** Declaratie afstandsvectoren matrix A ***
+
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
 cog2_23_x = -r2k*cos(phi2-pi/2);        % voor stang 2 gerekend vanaf vaste punt
 cog2_23_y = r2k*sin(phi2-pi/2);
@@ -99,6 +101,8 @@ cog12_1112_y = (r12-X12)*sin(phi12);
 % cog4_R_x = (r4-X4)*cos(phi4)-Y4*cos(phi4+pi/2);
 % cog4_R_y = (r4-X4)*sin(phi4)-Y4*sin(phi4+pi/2);
 
+%% *** Declaratie 3D omega en alpha vectoren ***
+
 % 3D omega (dphi) and alpha (ddphi) vectors)    
 omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
@@ -118,11 +122,9 @@ alpha8 = [zeros(size(phi2)) zeros(size(phi2)) ddphi8];
 alpha10 = [zeros(size(phi2)) zeros(size(phi2)) ddphi10];
 alpha12 = [zeros(size(phi2)) zeros(size(phi2)) ddphi12];
 
-% 3D model vectors    NOG AAN TE PASSEN!!!!
-% P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
-% Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
-% S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
-% PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+%% *** 3D vectoren voor versnellingen ***
+
+% 3D model vectors:
 
 vec_23_cog3 = [-cog3_23_x    -cog3_23_y   zeros(size(phi2))];
 vec_212_cog12 = [-cog12_212_x    -cog12_212_y   zeros(size(phi2))];
@@ -141,31 +143,75 @@ vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
 vec_vp4_cog4 = [(-X4*cos(pi/2-phi4))-(Y4*cos(phi4))  (X4*sin(pi/2-phi4))-(Y4*sin(phi4)) zeros(size(phi2))];                                 
 vec_vp4_cog5 = [-x5*cos(phi4)  -x5*sin(phi4)  zeros(size(phi2))];
 vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
+vec_1011_cog10 = [X10*cos(phi10)  Y10*sin(phi10)  zeros(size(phi2))];
 
-% acceleration vectors    NOG AAN TE PASSEN!!!
+% Voorbeeldcode
+% P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
+% Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
+% S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
+% PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+
+%% *** 3D versnellingsvectoren voor matrix B ***
+
+% acceleration vectors
 % bv. acc_2 = versnelling massacentrum van stang 2
 %     acc_2_12 = versnelling van scharnierpunt 2,12
 
-acc_2 =             cross(omega2,cross(omega2,vec_vp2_cog2)) + cross(alpha2,vec_vp2_cog2);  % normaal gezien nul
-acc_2_12 = acc_2 +  cross(omega2,cross(omega2,vec_212_cog2)) + cross(alpha2,vec_212_cog2);
-acc_2_3 = acc_2 +   cross(omega2,cross(omega2,vec_23_cog2)) +  cross(alpha2,vec_23_cog2);
+acc_2 =                cross(omega2,cross(omega2,vec_vp2_cog2)) +    cross(alpha2,vec_vp2_cog2);  % normaal gezien nul
+acc_2_12 = acc_2 +     cross(omega2,cross(omega2,vec_212_cog2)) +    cross(alpha2,vec_212_cog2);
+acc_2_3 = acc_2 +      cross(omega2,cross(omega2,vec_23_cog2)) +     cross(alpha2,vec_23_cog2);
 
-acc_3 = acc_2_3 +   cross(omega3,cross(omega3,vec_23_cog3)) +  cross(alpha3,vec_23_cog3);
-acc_3_4 = acc_2_3 + cross(omega3,cross(omega3,vec_23_34)) +    cross(alpah3,vec_23_34);
+acc_3 = acc_2_3 +      cross(omega3,cross(omega3,vec_23_cog3)) +     cross(alpha3,vec_23_cog3);
+acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpah3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
-acc_4 =             cross(omega4,cross(omega4,vec_vp4_cog4)) + cross(alpha4,vec_vp4_cog4);
+acc_4 =                cross(omega4,cross(omega4,vec_vp4_cog4)) +    cross(alpha4,vec_vp4_cog4);
 
 acc_5_lin = [-ddx5*cos(phi4)  -ddx5*sin(phi4)  zeros(size(phi2))];
-acc_5 = acc_5_lin + cross(omega4,cross(omega4,vec_vp4_cog5)) + cross(alpha4,vec_vp4_cog5);
+acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
 
-acc_7 =             cross(omega7,cross(omega7,vec_vp7_cog7) +  cross(alpha7,vec_vp7_cog7);
-acc_7_6 =           cross(omega7,cross(omega7,vec_vp7_67) +    cross(alpha7,vec_vp7_67);
+acc_7 =                cross(omega7,cross(omega7,vec_vp7_cog7)) +     cross(alpha7,vec_vp7_cog7);
+acc_7_6 =              cross(omega7,cross(omega7,vec_vp7_67)) +       cross(alpha7,vec_vp7_67);
 
-acc_6 = acc_7_6 +   cross(omega6,cross(omega6,vec_67_cog6)) +  cross(alpha6,vec_67_cog6);
-acc_6_8 = acc_7_6 + cross(omega6,cross(omega6,vec_67_68)) +    cross(alpha6,vec_67_68);
+acc_6 = acc_7_6 +      cross(omega6,cross(omega6,vec_67_cog6)) +     cross(alpha6,vec_67_cog6);
+acc_6_8 = acc_7_6 +    cross(omega6,cross(omega6,vec_67_68)) +       cross(alpha6,vec_67_68);
 
-acc_8 = acc_6_8 +   cross(omega8,cross(omega8,vec_68_cog8)) +  cross(alpha8,vec_68_cog8);
-acc_8_9 = acc_6_8 + cross(omega8,cross(omega8,vec_68_89))   +  cross(alpha8,vec_68_89);
+acc_8 = acc_6_8 +      cross(omega8,cross(omega8,vec_68_cog8)) +     cross(alpha8,vec_68_cog8);
+acc_8_9 = acc_6_8 +    cross(omega8,cross(omega8,vec_68_89))   +     cross(alpha8,vec_68_89);
+acc_8_10 = acc_6_8+    cross(omega8,cross(omega8,vec_68_810))  +     cross(alpha8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+
+acc_9 = ddx9;           % controle: moet gelijk zijn aan acc_8_9
+
+acc_12 = acc_2_12 +    cross(omega12,cross(omega12,vec_212_cog12))+  cross(alpha12,vec_212_cog12);
+acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_211_1112);
+
+acc_11 = ddx11;         % controle: moet gelijk zijn aan acc_11_12
+acc_10_11 = acc_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
+
+acc_10 = acc_10_11 +   cross(omega10,cross(omega10,vec_1011_cog10))+ cross(alpha10,vec_1011_cog10);
+
+% Declaratie van de deelversnellingen voor matrix B:
+acc_2x = acc_2(:,1);
+acc_2y = acc_2(:,2);
+acc_3x = acc_3(:,1);
+acc_3y = acc_3(:,2);
+acc_4x = acc_4(:,1);
+acc_4y = acc_4(:,2);
+acc_5x = acc_5(:,1);
+acc_5y = acc_5(:,2);
+acc_6x = acc_6(:,1);
+acc_6y = acc_6(:,2);
+acc_7x = acc_7(:,1);
+acc_7y = acc_7(:,2);
+acc_8x = acc_8(:,1);
+acc_8y = acc_8(:,2);
+acc_9x = acc_9(:,1);
+acc_9y = acc_9(:,2);
+acc_10x = acc_10(:,1);
+acc_10y = acc_10(:,2);
+acc_11x = acc_11(:,1);
+acc_11y = acc_11(:,2);
+acc_12x = acc_12(:,1);
+acc_12y = acc_12(:,2);
 
 % Voorbeeldcode versnellingen
 % acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
@@ -180,6 +226,7 @@ acc_8_9 = acc_6_8 + cross(omega8,cross(omega8,vec_68_89))   +  cross(alpha8,vec_
 % acc_4y = acc_4(:,2);
 
 
+%% *** Dynamische analyse ***
 
 % **********************
 % *** force analysis ***
@@ -336,6 +383,7 @@ for k=1:t_size
     M45(k) = x(33);
 end
 
+%% *** Figuren plotten ***
 
 
 % **********************
