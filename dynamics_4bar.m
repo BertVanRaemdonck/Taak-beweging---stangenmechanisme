@@ -396,8 +396,50 @@ end
 % NOG AAN TE PASSEN !!!!
 
 
-% if fig_dyn_4bar
-%     
+if fig_dyn_4bar
+    
+    figure('Name', 'Krachten', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(6,2,1)
+    plot(t, F12x)
+    ylabel('\F12x (Ax) [N]')
+    subplot(6,2,3)
+    plot(t, F12y)
+    ylabel('\F12y (Ay) [N]')
+    subplot(6,2,5)
+    plot(t, F23x)
+    ylabel('\F23x (Bx) [N]')
+    subplot(6,2,7)
+    plot(t, F23y)
+    ylabel('F23y (By) [N]')
+    subplot(6,2,9)
+    plot(t, F34x)
+    ylabel('\F34x (Cx) [N]')
+    subplot(6,2,11)
+    plot(t, F34y)
+    ylabel('\F34y (Cy) [N]')
+    subplot(6,2,2)
+    plot(t, F45)
+    ylabel('\F45 (D) [N]')
+    subplot(6,2,4)
+    plot(t, F56x)
+    ylabel('F56x (Dx) [N]')
+    subplot(6,2,6)
+    plot(t, F56y)
+    ylabel('F56y (Dy) [N]')
+    subplot(6,2,8)
+    plot(t, F14x)
+    ylabel('F14x (Ex) [N]') 
+    subplot(6,2,10)
+    plot(t, F14y)
+    ylabel('F14y (Ey) [N]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Krachten(1) in functie van de tijd in s'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
 %     figure
 %     subplot(221)
 %     plot(F_P_x,F_P_y),grid
