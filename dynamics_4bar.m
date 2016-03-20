@@ -78,8 +78,8 @@ cog10_810_y = (r10-X10)*sin(phi10);    % X10 vanaf scharnier 10,11
 cog10_1011_x = -X10*cos(phi10);
 cog10_1011_y = -X10*sin(phi10);
 
-cog11_111_y = X11;                      % voor stang 11 gerekend vanaf massacentrum
-cog11_1011_y = -(r11-X11);              % X11 vanaf scharnier 1,11
+cog11_111_y = X11*ones(size(phi2));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_1011_y = -(r11-X11)*ones(size(phi2));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
 
 cog12_212_x = -X12*cos(phi12);          % voor stang 12 gerekend vanaf massacentrum
 cog12_212_y = -X12*sin(phi12);          % X12 vanaf scharnier 2,12
@@ -103,8 +103,11 @@ cog12_1112_y = (r12-X12)*sin(phi12);
 
 %% *** Declaratie 3D omega en alpha vectoren ***
 
+% Extra declaratie variabele:
+Alpha2 = ddphi2*ones(size(phi2));
+
 % 3D omega (dphi) and alpha (ddphi) vectors)    
-omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2*ones(size(phi2),1)];   % Als dphi2 verandert, dan moet dit aangepast worden (momenteel maar een cijfer ipv een vector
+omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2*ones(size(phi2))];   % Als dphi2 verandert, dan moet dit aangepast worden (momenteel maar een cijfer ipv een vector
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
 omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
 omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
@@ -113,7 +116,7 @@ omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
 omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
 omega12 = [zeros(size(phi2)) zeros(size(phi2)) dphi12];
 
-alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2*ones(size(phi2),1)];
+alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2*ones(size(phi2))];
 alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
 alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
 alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
@@ -132,18 +135,19 @@ vec_vp7_cog7 = [-cog7_17_x    -cog7_17_y   zeros(size(phi2))];
 vec_67_cog6 = [-cog6_67_x    -cog6_67_y   zeros(size(phi2))];
 vec_vp7_67 = [-r7*cos(phi7)   -r7*sin(phi7) zeros(size(phi2))];
 vec_68_cog8 = [-cog8_68_x    -cog8_68_y   zeros(size(phi2))];
-vec_67_68 = [r6*cos(phi6)   r6*sin(phi6)  zeros(size(phi2))];
-vec_68_810 = [-r8*cos(phi8)   -r8*sin(phi8)  zeros(size(phi2))];
+vec_67_68 = [(r6k+r6l)*cos(phi6)   (r6k+r6l)*sin(phi6)  zeros(size(phi2))];
+vec_68_810 = [-(r8k+r8l)*cos(phi8)   -(r8k+r8l)*sin(phi8)  zeros(size(phi2))];
 
 %Extra vectoren nodig:
-vec_vp2_cog2 = [X2 Y2 0];
+vec_vp2_cog2 = [(X2*cos(phi2-pi/2))-(Y2*cos(phi2)) (X2*sin(phi2-pi/2))-(Y2*sin(phi2)) zeros(size(phi2))];
 vec_212_cog2 = [-cog2_212_x    -cog2_212_y   zeros(size(phi2))];
 vec_23_cog2 = [-cog2_23_x    -cog2_23_y   zeros(size(phi2))];
 vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
 vec_vp4_cog4 = [(-X4*cos(pi/2-phi4))-(Y4*cos(phi4))  (X4*sin(pi/2-phi4))-(Y4*sin(phi4)) zeros(size(phi2))];                                 
-vec_vp4_cog5 = [-x5*cos(phi4)  -x5*sin(phi4)  zeros(size(phi2))];
+vec_vp4_cog5 = [-X5*cos(phi4)  -X5*sin(phi4)  zeros(size(phi2))];
 vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
 vec_1011_cog10 = [X10*cos(phi10)  Y10*sin(phi10)  zeros(size(phi2))];
+vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
 
 % Voorbeeldcode
 % P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
@@ -162,11 +166,11 @@ acc_2_12 = acc_2 +     cross(omega2,cross(omega2,vec_212_cog2)) +    cross(alpha
 acc_2_3 = acc_2 +      cross(omega2,cross(omega2,vec_23_cog2)) +     cross(alpha2,vec_23_cog2);
 
 acc_3 = acc_2_3 +      cross(omega3,cross(omega3,vec_23_cog3)) +     cross(alpha3,vec_23_cog3);
-acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpah3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpha3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
 acc_4 =                cross(omega4,cross(omega4,vec_vp4_cog4)) +    cross(alpha4,vec_vp4_cog4);
 
-acc_5_lin = [-ddx5*cos(phi4)  -ddx5*sin(phi4)  zeros(size(phi2))];
+acc_5_lin = [-1*times(ddx5,cos(phi4))  -1*times(ddx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
 acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
 
 acc_7 =                cross(omega7,cross(omega7,vec_vp7_cog7)) +     cross(alpha7,vec_vp7_cog7);
@@ -179,12 +183,12 @@ acc_8 = acc_6_8 +      cross(omega8,cross(omega8,vec_68_cog8)) +     cross(alpha
 acc_8_9 = acc_6_8 +    cross(omega8,cross(omega8,vec_68_89))   +     cross(alpha8,vec_68_89);
 acc_8_10 = acc_6_8+    cross(omega8,cross(omega8,vec_68_810))  +     cross(alpha8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
-acc_9 = ddx9;           % controle: moet gelijk zijn aan acc_8_9
+acc_9 = [ddx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan acc_8_9
 
 acc_12 = acc_2_12 +    cross(omega12,cross(omega12,vec_212_cog12))+  cross(alpha12,vec_212_cog12);
-acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_211_1112);
+acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_212_1112);
 
-acc_11 = ddx11;         % controle: moet gelijk zijn aan acc_11_12
+acc_11 = [ddx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
 acc_10_11 = acc_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
 
 acc_10 = acc_10_11 +   cross(omega10,cross(omega10,vec_1011_cog10))+ cross(alpha10,vec_1011_cog10);
@@ -276,7 +280,6 @@ for k=1:t_size
   A = [ 1           0            1             0             1               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           1            0             1             0               1               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            cog2_23_y(k) -cog2_23_x(k)  cog2_212_y(k)  -cog2_212_x(k)   0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           1           0            0           0;
-        0           0            0             0             0               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0           -1             0             0               0              -1             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0            -1             0               0               0            -1                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            cog3_23_y(k) -cog3_23_x(k)  0               0               cog3_34_y(k) -cog3_34_x(k)       0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
@@ -312,7 +315,7 @@ for k=1:t_size
     
   B = [ m2*acc_2x(k);
         m2*(acc_2y(k)+g);
-        J2*ddphi2(k);
+        J2*Alpha2(k);               % Alpha2 is een vector met de waardes van ddphi2 erin, versus alpha2 is de 3D versie ervan
         m3*acc_3x(k);
         m3*(acc_3y(k)+g);
         J3*ddphi3(k);

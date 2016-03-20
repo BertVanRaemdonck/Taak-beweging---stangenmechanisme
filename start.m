@@ -198,8 +198,6 @@ ddphi2 = alpha;
 
 % calculation of the dynamics (see dyn_4bar.m)
 
-% Uitgecommentarieerd zodat dit geen error geeft, aangezien we hier nog
-% niet mee bezig zijn.
 
 [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
    F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
