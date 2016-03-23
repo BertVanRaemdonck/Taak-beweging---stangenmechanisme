@@ -50,6 +50,7 @@ y9 = 3.5 * conv;            % valve CL to cyl CL
 phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 
 
+
 % dynamic parameters, defined in a local frame on each of the bars.
 % NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
 X3 = r3/2;                  % zwaartepunt
@@ -62,7 +63,7 @@ X7 = r7/2;
 X8k = r8k/2;
 X8l = r8l/2;
 X8 = (r8k + r8l)/2;
-% X9 = ???                  % Grote X9 is momenteel gekozen bij de momentenvergelijkingen als de afstand tussen het zwaartepunt van stang 8 en het scharnierpunt 8,9
+X9 = 0;                  
 X10 = r10/2;
 X11 = r11/2;                % NOG AAN TE PASSEN, IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
 X12 = r12/2;
@@ -77,7 +78,7 @@ Y2 = 0;
 
 Y3 = 0;                     % Y coordinates of cog
 Y4 = b/2;
-y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
+Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 Y6k = 0;
 Y6l = 0;
 Y6 = 0;
@@ -98,6 +99,8 @@ breedte9 = 0.2;             % breedte piston1, stang 9
 hoogte9 = 0.1;              % hoogte piston1, stang 9
 breedte11 = 0.3;            % breedte piston2, stang 11
 hoogte11 = 0.2;             % hoogte piston2, stang11
+
+L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepunt van stang 8
 
 % massa's (nog na te kijken)
 rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
@@ -124,6 +127,7 @@ m12 = r12 * rho_l2;
 m_piston_1 = 15;            % voorlopig gekozen, stang 9
 m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
+m9 = m_piston_1;            % extra nodig 
 
 %Vanaf hieronder nog aanpassen en controleren:
 
@@ -194,20 +198,18 @@ ddphi2 = alpha;
 
 % calculation of the dynamics (see dyn_4bar.m)
 
-% Uitgecommentarieerd zodat dit geen error geeft, aangezien we hier nog
-% niet mee bezig zijn.
 
-% [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
-%    F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
-%    M12, M19, M111, M45] ...
-%    = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
-%                    dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
-%                    ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
-%                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
-%                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
-%                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
-%                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
-%                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
+[F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
+   F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
+   M12, M19, M111, M45] ...
+   = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
+                   dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
+                   ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
+                   r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
+                   m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
+                   X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
+                   Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
+                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
