@@ -162,8 +162,8 @@ vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
 %     acc_2_12 = versnelling van scharnierpunt 2,12
 
 acc_2 =                cross(omega2,cross(omega2,vec_vp2_cog2)) +    cross(alpha2,vec_vp2_cog2);  % normaal gezien nul
-acc_2_12 = acc_2 +     cross(omega2,cross(omega2,vec_212_cog2)) +    cross(alpha2,vec_212_cog2);
-acc_2_3 = acc_2 +      cross(omega2,cross(omega2,vec_23_cog2)) +     cross(alpha2,vec_23_cog2);
+acc_2_12 = acc_2 +     cross(omega2,cross(omega2,-vec_212_cog2)) +    cross(alpha2,-vec_212_cog2);
+acc_2_3 = acc_2 +      cross(omega2,cross(omega2,-vec_23_cog2)) +     cross(alpha2,-vec_23_cog2);
 
 acc_3 = acc_2_3 +      cross(omega3,cross(omega3,vec_23_cog3)) +     cross(alpha3,vec_23_cog3);
 acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpha3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
@@ -570,5 +570,97 @@ if fig_dyn_4bar
 %     xlabel('t [s]')
     
 end
+
+%% *** Controle: variatie van (kinetische) energie ***
+
+P = zeros(size(phi2));
+
+% Gewichten stangen:
+
+G2 = [zeros(size(phi2)) -m2*g*ones(size(phi2)) zeros(size(phi2))];
+G3 = [zeros(size(phi2)) -m3*g*ones(size(phi2)) zeros(size(phi2))];
+G4 = [zeros(size(phi2)) -m4*g*ones(size(phi2)) zeros(size(phi2))];
+G5 = [zeros(size(phi2)) -m5*g*ones(size(phi2)) zeros(size(phi2))];
+G6 = [zeros(size(phi2)) -m6*g*ones(size(phi2)) zeros(size(phi2))];
+G7 = [zeros(size(phi2)) -m7*g*ones(size(phi2)) zeros(size(phi2))];
+G8 = [zeros(size(phi2)) -m8*g*ones(size(phi2)) zeros(size(phi2))];
+G9 = [zeros(size(phi2)) -m9*g*ones(size(phi2)) zeros(size(phi2))];
+G10= [zeros(size(phi2)) -m10*g*ones(size(phi2)) zeros(size(phi2))];
+G11= [zeros(size(phi2)) -m11*g*ones(size(phi2)) zeros(size(phi2))];
+G12= [zeros(size(phi2)) -m12*g*ones(size(phi2)) zeros(size(phi2))];
+
+
+% Snelheden massacentra en benodigde punten:
+
+vel_2 =                cross(omega2,vec_vp2_cog2);  % normaal gezien nul
+vel_2_12 = vel_2 +     cross(omega2,-vec_212_cog2);
+vel_2_3 = vel_2 +      cross(omega2,-vec_23_cog2);
+
+vel_3 = vel_2_3 +      cross(omega3,vec_23_cog3);
+vel_3_4 = vel_2_3 +    cross(omega3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+
+vel_4 =                cross(omega4,vec_vp4_cog4);
+
+vel_5_lin = [-1*times(dx5,cos(phi4))  -1*times(dx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
+vel_5 = vel_5_lin +    cross(omega4,vec_vp4_cog5);
+
+vel_7 =                cross(omega7,vec_vp7_cog7);
+vel_7_6 =              cross(omega7,vec_vp7_67);
+
+vel_6 = vel_7_6 +      cross(omega6,vec_67_cog6);
+vel_6_8 = acc_7_6 +    cross(omega6,vec_67_68);
+
+vel_8 = vel_6_8 +      cross(omega8,vec_68_cog8);
+vel_8_9 = vel_6_8 +    cross(omega8,vec_68_89);
+vel_8_10 = vel_6_8+    cross(omega8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+
+vel_9 = [dx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan acc_8_9
+
+vel_12 = vel_2_12 +    cross(omega12,vec_212_cog12);
+vel_11_12 = vel_2_12 + cross(omega12,vec_212_1112);
+
+vel_11 = [dx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
+vel_10_11 = vel_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
+
+vel_10 = vel_10_11 +   cross(omega10,vec_1011_cog10);
+
+% Declaratie van de deelsnelheden voor variatie van kinetische energie:
+vel_2x = vel_2(:,1);
+vel_2y = vel_2(:,2);
+vel_3x = vel_3(:,1);
+vel_3y = vel_3(:,2);
+vel_4x = vel_4(:,1);
+vel_4y = vel_4(:,2);
+vel_5x = vel_5(:,1);
+vel_5y = vel_5(:,2);
+vel_6x = vel_6(:,1);
+vel_6y = vel_6(:,2);
+vel_7x = vel_7(:,1);
+vel_7y = vel_7(:,2);
+vel_8x = vel_8(:,1);
+vel_8y = vel_8(:,2);
+vel_9x = vel_9(:,1);
+vel_9y = vel_9(:,2);
+vel_10x = vel_10(:,1);
+vel_10y = vel_10(:,2);
+vel_11x = vel_11(:,1);
+vel_11y = vel_11(:,2);
+vel_12x = vel_12(:,1);
+vel_12y = vel_12(:,2);
+
+
+% Berekening vermogen
+
+size(G2)
+size(vel_2)
+
+P = M12*dphi2 + dot(G2,vel_2) + dot(G3,vel_3) + dot(G4,vel_4) + dot(G5,vel_5) ...
+    + dot(G6,vel_6) + dot(G7,vel_7) + dot(G8,vel_8) + dot(G9,vel_9) + dot(G10,vel_10) ...
+    + dot(G11,vel_11) + dot(G12,vel_12);
+
+% Variatie van kinetische energie:
+
+dE_kin = m2*dot(vel_2,acc_2) + m3*dot(vel_3,acc_3);
+DE_KIN = m2*(vel_2x * acc_2x + vel_2y * acc_2y) + m3*(vel_3x*acc_3x + vel_3y*acc_3y); 
 
 
