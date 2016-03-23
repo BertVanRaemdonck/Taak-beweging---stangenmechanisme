@@ -393,50 +393,152 @@ end
 % *** plot figures ***
 % **********************
 
-% NOG AAN TE PASSEN !!!!
-
 
 if fig_dyn_4bar
     
+    screen_size = get(groot, 'ScreenSize');
+    
     figure('Name', 'Krachten', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+       
+%  'Position', [0 screen_size(2) screen_size(3) screen_size(4)])   is bijna
+%  volledig scherm
+
     subplot(6,2,1)
     plot(t, F12x)
-    ylabel('\F12x (Ax) [N]')
-    subplot(6,2,3)
+    ylabel('F12x (Ax) [N]')
+    subplot(6,2,2)
     plot(t, F12y)
-    ylabel('\F12y (Ay) [N]')
-    subplot(6,2,5)
+    ylabel('F12y (Ay) [N]')
+    subplot(6,2,3)
     plot(t, F23x)
-    ylabel('\F23x (Bx) [N]')
-    subplot(6,2,7)
+    ylabel('F23x (Bx) [N]')
+    subplot(6,2,4)
     plot(t, F23y)
     ylabel('F23y (By) [N]')
-    subplot(6,2,9)
+    subplot(6,2,5)
     plot(t, F34x)
-    ylabel('\F34x (Cx) [N]')
-    subplot(6,2,11)
+    ylabel('F34x (Cx) [N]')
+    subplot(6,2,6)
     plot(t, F34y)
-    ylabel('\F34y (Cy) [N]')
-    subplot(6,2,2)
+    ylabel('F34y (Cy) [N]')
+    subplot(6,2,7)
     plot(t, F45)
-    ylabel('\F45 (D) [N]')
-    subplot(6,2,4)
+    ylabel('F45 (D) [N]')
+    subplot(6,2,8)
+    plot(t, M45)
+    ylabel('M45 (D) [Nm]')
+    subplot(6,2,9)
     plot(t, F56x)
     ylabel('F56x (Dx) [N]')
-    subplot(6,2,6)
+    subplot(6,2,10)
     plot(t, F56y)
     ylabel('F56y (Dy) [N]')
-    subplot(6,2,8)
+    subplot(6,2,11)
     plot(t, F14x)
     ylabel('F14x (Ex) [N]') 
-    subplot(6,2,10)
+    subplot(6,2,12)
     plot(t, F14y)
     ylabel('F14y (Ey) [N]')
     
     set(gcf,'NextPlot','add');
     axes;
-    h = title({'Krachten(1) in functie van de tijd in s'; ''});
+    h = title({'Krachten en momenten in functie van de tijd in s (1)'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+        figure('Name', 'Krachten(2)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(5,2,1)
+    plot(t, F67x)
+    ylabel('F67x (Fx) [N]')
+    subplot(5,2,2)
+    plot(t, F67y)
+    ylabel('F67y (Fy) [N]')
+    subplot(5,2,3)
+    plot(t, F17x)
+    ylabel('F17x (Gx) [N]')
+    subplot(5,2,4)
+    plot(t, F17y)
+    ylabel('F17y (Gy) [N]')
+    subplot(5,2,5)
+    plot(t, F68x)
+    ylabel('F68x (Hx) [N]')
+    subplot(5,2,6)
+    plot(t, F68y)
+    ylabel('F68y (Hy) [N]')
+    subplot(5,2,7)
+    plot(t, F89x)
+    ylabel('F89x (Ix) [N]')
+    subplot(5,2,8)
+    plot(t, F89y)
+    ylabel('F89y (Iy) [N]')
+    subplot(5,2,9)
+    plot(t, F19)
+    ylabel('F19 (I) [N]')
+    subplot(5,2,10)
+    plot(t, M19)
+    ylabel('M19 (I) [Nm]')
+    
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Krachten en momenten in functie van de tijd in s (2)'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+ 
+        figure('Name', 'Krachten(3)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    
+    subplot(5,2,1)
+    plot(t, F810x)
+    ylabel('F810x (Jx) [N]') 
+    subplot(5,2,2)
+    plot(t, F810y)
+    ylabel('F810y (Jy) [N]')   
+    subplot(5,2,3)
+    plot(t, F1011x)
+    ylabel('F1011x (Kx) [N]')
+    subplot(5,2,4)
+    plot(t, F1011y)
+    ylabel('F1011y (Ky) [N]')
+    subplot(5,2,5)
+    plot(t, F1112x)
+    ylabel('F1112x (Lx) [N]')
+    subplot(5,2,6)
+    plot(t, F1112y)
+    ylabel('F1112y (Ly) [N]')
+    subplot(5,2,7)
+    plot(t, F111)
+    ylabel('F111 (L) [N]')
+    subplot(5,2,8)
+    plot(t, M111)
+    ylabel('M111 (L) [Nm]')
+    subplot(5,2,9)
+    plot(t, F212x)
+    ylabel('F212x (Mx) [N]')
+    subplot(5,2,10)
+    plot(t, F212y)
+    ylabel('F212y (My) [N]')
+        
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Krachten en momenten in functie van de tijd in s (3)'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    figure('Name', 'Aandrijfmoment', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(1,1,1)
+    plot(t, M12)
+    ylabel('M12 (A) [Nm]')   
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Aandrijfmoment in functie van de tijd in s'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
