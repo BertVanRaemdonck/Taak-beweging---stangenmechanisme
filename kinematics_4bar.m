@@ -68,6 +68,12 @@ dphi10_check = zeros(size(t));
 dx11_check =   zeros(size(t));
 dphi12_check = zeros(size(t));
 
+ddphi3_check =  zeros(size(t));
+ddphi4_check =  zeros(size(t));
+
+ddx11_check =   zeros(size(t));
+ddphi12_check = zeros(size(t));
+
 % hulpvariabelen voor controle
 v56_x_check =   zeros(size(t));
 v56_y_check =   zeros(size(t));
@@ -300,6 +306,31 @@ for k=1:t_size
     dphi8_check(k) =   x(16);
     dx9_check(k) =     x(17);
     dphi10_check(k) =  x(18);
+    
+    
+    %% *** control calculations acceleration ***
+    
+    % ddphi3 en ddphi4    
+    % A_check_34 blijft gelijk
+    B_check_34 = [ddphi2(k)*r2k*sin(phi2(k)-pi/2) + dphi2(k)^2*r2k*cos(phi2(k)-pi/2) + dphi3(k)^2*r3*cos(phi3(k)) - dphi4(k)^2*(a*cos(phi4(k)-pi)+b*cos(phi4(k)+pi/2));
+                  -ddphi2(k)*r2k*cos(phi2(k)-pi/2) + dphi2(k)^2*r2k*sin(phi2(k)-pi/2) + dphi3(k)^2*r3*sin(phi3(k)) - dphi4(k)^2*(a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2))];
+    
+    x = A_check_34\B_check_34;
+    
+    % save results
+    ddphi3_check(k) = x(1);
+    ddphi4_check(k) = x(2);
+    
+    % ddx11 en ddphi12
+    % A_check_1112 blijft gelijk
+    B_check_1112 = [ddphi2(k)*r2l*sin(phi2(k)-pi) + dphi2(k)^2*r2l*cos(phi2(k)-pi) + dphi12(k)^2*r12*cos(phi12(k));
+                     -ddphi2(k)*r2l*cos(phi2(k)-pi) + dphi2(k)^2*r2l*sin(phi2(k)-pi) + dphi12(k)^2*r12*sin(phi12(k))];
+                 
+    x = A_check_1112\B_check_1112;
+    
+    % save results
+    ddx11_check(k) =   x(1);
+    ddphi12_check(k) = x(2);
     
                     
 end % loop over positions
@@ -573,8 +604,8 @@ if fig_kin_4bar
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
-    %% alle controles
-    figure('Name', 'Controles', 'NumberTitle', 'off', ...
+    %% alle snelheidscontroles
+    figure('Name', 'Snelheidscontroles', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
     subplot(5,2,1)
     plot(t, dphi3-dphi3_check)
@@ -610,6 +641,29 @@ if fig_kin_4bar
     set(gcf,'NextPlot','add');
     axes;
     h = title({'Controles van de snelheden'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    %% alle versnellingscontroles
+    figure('Name', 'Versnellingscontroles', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(5,2,1)
+    plot(t, ddphi3-ddphi3_check)
+    ylabel('\Deltadd\phi_3 [rad/s^2]')
+    subplot(5,2,3)
+    plot(t, ddphi4-ddphi4_check)
+    ylabel('\Deltadd\phi_4 [rad/s^2]')
+    
+    subplot(5,2,8)
+    plot(t, ddx11-ddx11_check)
+    ylabel('\Deltaddx_{11} [m/s^2]')
+    subplot(5,2,10)
+    plot(t, ddphi12-ddphi12_check)
+    ylabel('\Deltadd\phi_{12} [rad/s^2]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controles van de versnellingen'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
