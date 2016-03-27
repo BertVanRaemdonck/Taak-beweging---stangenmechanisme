@@ -651,16 +651,66 @@ vel_12y = vel_12(:,2);
 
 % Berekening vermogen
 
-size(G2)
-size(vel_2)
+M12_controle = zeros(size(phi2));
 
-P = M12*dphi2 + dot(G2,vel_2) + dot(G3,vel_3) + dot(G4,vel_4) + dot(G5,vel_5) ...
-    + dot(G6,vel_6) + dot(G7,vel_7) + dot(G8,vel_8) + dot(G9,vel_9) + dot(G10,vel_10) ...
-    + dot(G11,vel_11) + dot(G12,vel_12);
+vec_M12 = [zeros(size(phi2))  zeros(size(phi2))  M12_controle];
+
+P = dot(G2,vel_2,2) + dot(G3,vel_3,2) + dot(G4,vel_4,2) + dot(G5,vel_5,2) ...
+    + dot(G6,vel_6,2) + dot(G7,vel_7,2) + dot(G8,vel_8,2) + dot(G9,vel_9,2) + dot(G10,vel_10,2) ...
+    + dot(G11,vel_11,2) + dot(G12,vel_12,2);
+% dot(A,B,2) werkt het inwendig product uit, maar behandeld de rijen als
+% vectoren ipv de kolommen
+
+% Uitprobeersel, werkt waarschijnlijk niet
+%P2 = times(G2,vel_2) + times(G3,vel_3) + times(G4,vel_4) + times(G5,vel_5) ...
+%    + times(G6,vel_6) + times(G7,vel_7) + times(G8,vel_8) + times(G9,vel_9) + times(G10,vel_10) ...
+%    + times(G11,vel_11) + times(G12,vel_12);
 
 % Variatie van kinetische energie:
 
-dE_kin = m2*dot(vel_2,acc_2) + m3*dot(vel_3,acc_3);
-DE_KIN = m2*(vel_2x * acc_2x + vel_2y * acc_2y) + m3*(vel_3x*acc_3x + vel_3y*acc_3y); 
+dE_kin = m2*dot(vel_2,acc_2,2) + m3*dot(vel_3,acc_3,2) + m4*dot(vel_4,acc_4,2) + m5*dot(vel_5,acc_5,2) ...
+       + m6*dot(vel_6,acc_6,2) + m7*dot(vel_7,acc_7,2) + m8*dot(vel_8,acc_8,2) + m9*dot(vel_9,acc_9,2) ...
+       + m10*dot(vel_10,acc_10,2) + m11*dot(vel_11,acc_11,2) + m12*dot(vel_12,acc_12,2) ...
+       + J2*dot(omega2,alpha2,2) + J3*dot(omega3,alpha3,2) + J4*dot(omega4,alpha4,2) ...
+       + J6*dot(omega6,alpha6,2) + J7*dot(omega7,alpha7,2) + J8*dot(omega8,alpha8,2) ...
+       + J10*dot(omega10,alpha10,2) + J12*dot(omega12,alpha12,2) + J5*dot(omega4,alpha4,2);
+   % stangen 9 en 11 roteren niet, daarom geen rotatieterm in dE_kin??
 
+% Uitprobeersel, werkt waarschijnlijk niet
+% dE_kin2 = m2*times(vel_2,acc_2) + m3*times(vel_3,acc_3) + m4*times(vel_4,acc_4) + m5*times(vel_5,acc_5) ...
+%        + m6*times(vel_6,acc_6) + m7*times(vel_7,acc_7) + m8*times(vel_8,acc_8) + m9*times(vel_9,acc_9) ...
+%        + m10*times(vel_10,acc_10) + m11*times(vel_11,acc_11) + m12*times(vel_12,acc_12);
 
+size(P)
+size(dE_kin)
+% size(P2)
+% size(dE_kin2)
+% M12_check2 = (dE_kin2 - P2)/(dphi2*ones(size(phi2)));
+M12_check = (dE_kin - P)/dphi2;                     % PROBLEEM: werkt niet als dphi2 niet meer een getal is, maar ik krijg het anders niet opgelost
+
+size(M12)
+size(M12_check)
+
+if fig_dyn_4bar
+    
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle aandrijfmoment', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, M12-M12_check)
+    ylabel('\DeltaM12 [Nm]')   
+    
+    subplot(3,1,2)
+    plot(t, M12)
+    ylabel('M12 [Nm]')
+    
+    subplot(3,1,3)
+    plot(t, M12_check)
+    ylabel('M12_check [Nm]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle aandrijfmoment M12'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end
