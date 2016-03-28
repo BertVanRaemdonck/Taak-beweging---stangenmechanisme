@@ -36,9 +36,9 @@ g = 9.81;           % valversnelling
 %% *** Declaratie afstandsvectoren matrix A ***
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
-cog2_23_x = -r2k*cos(phi2-pi/2);        % voor stang 2 gerekend vanaf vaste punt
+cog2_23_x = r2k*cos(phi2-pi/2);        % voor stang 2 gerekend vanaf vaste punt
 cog2_23_y = r2k*sin(phi2-pi/2);
-cog2_212_x = r2l*cos(phi2);
+cog2_212_x = -r2l*cos(phi2);
 cog2_212_y = -r2l*sin(phi2);
 
 cog3_23_x = -X3*cos(phi3);               % voor stang 3 gerekend vanaf massacentrum
@@ -50,8 +50,8 @@ proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
 proj_45_y = sin(phi4-pi/2);
 
 vp4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
-vp4_34_x = (b*cos(phi4)) + (a*cos(phi4+pi/2));
-vp4_34_y = (b*sin(phi4)) - (a*cos(phi4+pi/2));
+vp4_34_x = (a*cos(phi4)) + (b*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
+vp4_34_y = (a*sin(phi4)) - (b*cos(phi4+pi/2));
 
 cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
 cog6_56_y = -(X6-r6k)*sin(phi6);        % X6 vanaf scharnier 6,7
@@ -146,8 +146,9 @@ vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
 vec_vp4_cog4 = [(-X4*cos(pi/2-phi4))-(Y4*cos(phi4))  (X4*sin(pi/2-phi4))-(Y4*sin(phi4)) zeros(size(phi2))];                                 
 vec_vp4_cog5 = [-X5*cos(phi4)  -X5*sin(phi4)  zeros(size(phi2))];
 vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
-vec_1011_cog10 = [X10*cos(phi10)  Y10*sin(phi10)  zeros(size(phi2))];
+vec_1011_cog10 = [X10*cos(phi10)  X10*sin(phi10)  zeros(size(phi2))];   % Foutje in gevonden
 vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
+vec_1011_810 = [r10*cos(phi10)  r10*sin(phi10)  zeros(size(phi2))];
 
 % Voorbeeldcode
 % P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
@@ -184,14 +185,85 @@ acc_8_9 = acc_6_8 +    cross(omega8,cross(omega8,vec_68_89))   +     cross(alpha
 acc_8_10 = acc_6_8+    cross(omega8,cross(omega8,vec_68_810))  +     cross(alpha8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
 acc_9 = [ddx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan acc_8_9
+% Deze controle klopt!
 
 acc_12 = acc_2_12 +    cross(omega12,cross(omega12,vec_212_cog12))+  cross(alpha12,vec_212_cog12);
 acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_212_1112);
 
 acc_11 = [ddx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
 acc_10_11 = acc_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
+%Deze controle klopt niet
 
 acc_10 = acc_10_11 +   cross(omega10,cross(omega10,vec_1011_cog10))+ cross(alpha10,vec_1011_cog10);
+acc_10_8 = acc_10_11 + cross(omega10,cross(omega10,vec_1011_810))  + cross(alpha10,vec_1011_810);
+% Zou gelijk moeten zijn aan acc_8_10, wat ook zo is!
+
+% controle versnellingen:
+
+if fig_dyn_4bar
+    
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle versnellingen dynamica (1)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, acc_8_9 - acc_9)
+    ylabel('\Delta versnelling cog9 [m/s²]')   
+    
+    subplot(3,1,2)
+    plot(t, acc_8_9)
+    ylabel('acc_8_9 [m/s²]')
+    
+    subplot(3,1,3)
+    plot(t, acc_9)
+    ylabel('acc_9 [m/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle versnelling cog9 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    figure('Name', 'Controle versnellingen dynamica (2)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, acc_11_12 - acc_11)
+    ylabel('\Delta versnelling cog11 [m/s²]')   
+    
+    subplot(3,1,2)
+    plot(t, acc_11_12)
+    ylabel('acc_11_12 [m/s²]')
+    
+    subplot(3,1,3)
+    plot(t, acc_11)
+    ylabel('acc_11 [m/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle versnelling cog11 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    figure('Name', 'Controle versnellingen dynamica (3)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, acc_8_10 - acc_10_8)
+    ylabel('\Delta versnelling 8,10 [m/s²]')   
+    
+    subplot(3,1,2)
+    plot(t, acc_8_10)
+    ylabel('acc_8_10 [m/s²]')
+    
+    subplot(3,1,3)
+    plot(t, acc_10_8)
+    ylabel('acc_10_8 [m/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle versnelling 8,10 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end 
 
 % Declaratie van de deelversnellingen voor matrix B:
 acc_2x = acc_2(:,1);
@@ -279,7 +351,7 @@ for k=1:t_size
 %       F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F10111x          F1011y          F1112x           F1112y          F111        M12         M19          M111        M45
   A = [ 1           0            1             0             1               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           1            0             1             0               1               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
-        0           0            cog2_23_y(k) -cog2_23_x(k)  cog2_212_y(k)  -cog2_212_x(k)   0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           1           0            0           0;
+        0           0            cog2_23_y(k)  cog2_23_x(k) -cog2_212_y(k)   cog2_212_x(k)   0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           1           0            0           0;
         0           0           -1             0             0               0              -1             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0            -1             0               0               0            -1                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            cog3_23_y(k) -cog3_23_x(k)  0               0               cog3_34_y(k) -cog3_34_x(k)       0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
@@ -620,7 +692,7 @@ vel_12 = vel_2_12 +    cross(omega12,vec_212_cog12);
 vel_11_12 = vel_2_12 + cross(omega12,vec_212_1112);
 
 vel_11 = [dx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
-vel_10_11 = vel_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
+vel_10_11 = vel_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan vel_11
 
 vel_10 = vel_10_11 +   cross(omega10,vec_1011_cog10);
 

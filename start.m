@@ -102,12 +102,15 @@ hoogte11 = 0.2;             % hoogte piston2, stang11
 
 L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepunt van stang 8
 
-% massa's (nog na te kijken)
+% massa's (nog na te kijken)!!
+% Nieuwe variabele nodig:
+R_wiel = 7.875 * conv;
+
 rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
 rho_l2 = 71.76;             % massa per lengte drijfstang
-rho_A = 10;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
+rho_A = 100;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
 
-m2 = ((r2k*r2l)/2) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
+m2 = (pi*(R_wiel^2)) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
 m3 = r3 * rho_l1;
 m4 = (a+b) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = a * rho_l1;
@@ -129,9 +132,9 @@ m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 m9 = m_piston_1;            % extra nodig 
 
-%Vanaf hieronder nog aanpassen en controleren:
+%Vanaf hieronder nog aanpassen en controleren!!!!
 
-J2 = (r2l*(r2k^3))/12;   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
+J2 = (pi/2)*(R_wiel^4);   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
 J3 = m3*r3^2/12;
 J4 = m4*a^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
 J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
