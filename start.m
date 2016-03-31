@@ -54,7 +54,7 @@ phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 % dynamic parameters, defined in a local frame on each of the bars.
 % NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
 X3 = r3/2;                  % zwaartepunt
-X4 = a/2;
+X4 = a/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
 X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 X6k = r6k/2;
 X6l = r6l/2;
@@ -77,7 +77,7 @@ Y2 = 0;
 %       nodig want r11 is al in gebruik)
 
 Y3 = 0;                     % Y coordinates of cog
-Y4 = b/2;
+Y4 = b/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
 Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 Y6k = 0;
 Y6l = 0;
@@ -182,8 +182,8 @@ t = [t_begin:Ts:t_end]';       % time vector
 omega = -0.1;
 alpha = 0;
 phi2 = omega*t + pi/2;
-dphi2 = omega;
-ddphi2 = alpha;
+dphi2 = omega*ones(size(phi2));             % ones(size(phi2)) creëert een vector met allemaal 1tjes in met de grootte van de vector phi2
+ddphi2 = alpha*ones(size(phi2));
 
 % calculation of the kinematics (see kin_4bar.m)
 [   phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 

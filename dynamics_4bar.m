@@ -50,8 +50,8 @@ proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
 proj_45_y = sin(phi4-pi/2);
 
 vp4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
-vp4_34_x = (a*cos(phi4)) + (b*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
-vp4_34_y = (a*sin(phi4)) - (b*cos(phi4+pi/2));
+vp4_34_x = (-a*cos(phi4)) + (b*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
+vp4_34_y = (-a*sin(phi4)) + (b*sin(phi4+pi/2));     % Inderdaad fouten in de mintekens, zou zou het volgens mij moeten kloppen
 
 cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
 cog6_56_y = -(X6-r6k)*sin(phi6);        % X6 vanaf scharnier 6,7
@@ -103,11 +103,8 @@ cog12_1112_y = (r12-X12)*sin(phi12);
 
 %% *** Declaratie 3D omega en alpha vectoren ***
 
-% Extra declaratie variabele:
-Alpha2 = ddphi2*ones(size(phi2));
-
 % 3D omega (dphi) and alpha (ddphi) vectors)    
-omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2*ones(size(phi2))];   % Als dphi2 verandert, dan moet dit aangepast worden (momenteel maar een cijfer ipv een vector
+omega2 = [zeros(size(phi2)) zeros(size(phi2)) dphi2];   
 omega3 = [zeros(size(phi2)) zeros(size(phi2)) dphi3];
 omega4 = [zeros(size(phi2)) zeros(size(phi2)) dphi4];
 omega6 = [zeros(size(phi2)) zeros(size(phi2)) dphi6];
@@ -116,7 +113,7 @@ omega8 = [zeros(size(phi2)) zeros(size(phi2)) dphi8];
 omega10 = [zeros(size(phi2)) zeros(size(phi2)) dphi10];
 omega12 = [zeros(size(phi2)) zeros(size(phi2)) dphi12];
 
-alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2*ones(size(phi2))];
+alpha2 = [zeros(size(phi2)) zeros(size(phi2)) ddphi2];
 alpha3 = [zeros(size(phi2)) zeros(size(phi2)) ddphi3];
 alpha4 = [zeros(size(phi2)) zeros(size(phi2)) ddphi4];
 alpha6 = [zeros(size(phi2)) zeros(size(phi2)) ddphi6];
@@ -143,13 +140,14 @@ vec_vp2_cog2 = [(X2*cos(phi2-pi/2))-(Y2*cos(phi2)) (X2*sin(phi2-pi/2))-(Y2*sin(p
 vec_212_cog2 = [-cog2_212_x    -cog2_212_y   zeros(size(phi2))];
 vec_23_cog2 = [-cog2_23_x    -cog2_23_y   zeros(size(phi2))];
 vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
-vec_vp4_cog4 = [(-X4*cos(pi/2-phi4))-(Y4*cos(phi4))  (X4*sin(pi/2-phi4))-(Y4*sin(phi4)) zeros(size(phi2))];                                 
-vec_vp4_cog5 = [-X5*cos(phi4)  -X5*sin(phi4)  zeros(size(phi2))];
+vec_vp4_cog4 = [(-Y4*cos(phi4))+(X4*cos(phi4+pi/2))  (-Y4*sin(phi4))+(X4*sin(phi4+pi/2)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar Y4 ipv a en X4 ipv b                          
+vec_vp4_cog5 = [-1*times(x5,cos(phi4))  -1*times(x5,sin(phi4))  zeros(size(phi2))];       % Moet kleine x5 zijn, want deze positie varieert continu + elk element apart vermenigvuldigen
 vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
 vec_1011_cog10 = [X10*cos(phi10)  X10*sin(phi10)  zeros(size(phi2))];   % Foutje in gevonden
 vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
 vec_1011_810 = [r10*cos(phi10)  r10*sin(phi10)  zeros(size(phi2))];
 
+vec_34_cog4 = [(-(b-X4)*cos(phi4+pi/2))+((a-Y4)*cos(phi4))  (-(b-X4)*sin(phi4+pi/2))+((a-Y4)*sin(phi4)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
 % Voorbeeldcode
 % P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
 % Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
@@ -170,6 +168,8 @@ acc_3 = acc_2_3 +      cross(omega3,cross(omega3,vec_23_cog3)) +     cross(alpha
 acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpha3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
 acc_4 =                cross(omega4,cross(omega4,vec_vp4_cog4)) +    cross(alpha4,vec_vp4_cog4);
+acc_4_check = acc_3_4 +cross(omega4,cross(omega4,vec_34_cog4))  +    cross(alpha4,vec_34_cog4);
+%Deze controle klopt!
 
 acc_5_lin = [-1*times(ddx5,cos(phi4))  -1*times(ddx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
 acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
@@ -190,9 +190,9 @@ acc_9 = [ddx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet
 acc_12 = acc_2_12 +    cross(omega12,cross(omega12,vec_212_cog12))+  cross(alpha12,vec_212_cog12);
 acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_212_1112);
 
-acc_11 = [ddx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
+acc_11 = [-ddx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
 acc_10_11 = acc_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
-%Deze controle klopt niet
+%Deze controle klopt!
 
 acc_10 = acc_10_11 +   cross(omega10,cross(omega10,vec_1011_cog10))+ cross(alpha10,vec_1011_cog10);
 acc_10_8 = acc_10_11 + cross(omega10,cross(omega10,vec_1011_810))  + cross(alpha10,vec_1011_810);
@@ -261,6 +261,27 @@ if fig_dyn_4bar
     set(gcf,'NextPlot','add');
     axes;
     h = title({'Controle versnelling 8,10 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    figure('Name', 'Controle versnellingen dynamica (4)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, acc_4 - acc_4_check)
+    ylabel('\Delta versnelling cog4 [m/s²]')   
+    
+    subplot(3,1,2)
+    plot(t, acc_4)
+    ylabel('acc_4 [m/s²]')
+    
+    subplot(3,1,3)
+    plot(t, acc_4_check)
+    ylabel('acc_4_check [m/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle versnelling cog4 dynamisch'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
 end 
@@ -387,7 +408,7 @@ for k=1:t_size
     
   B = [ m2*acc_2x(k);
         m2*(acc_2y(k)+g);
-        J2*Alpha2(k);               % Alpha2 is een vector met de waardes van ddphi2 erin, versus alpha2 is de 3D versie ervan
+        J2*ddphi2(k);               % Alpha2 is een vector met de waardes van ddphi2 erin, versus alpha2 is de 3D versie ervan
         m3*acc_3x(k);
         m3*(acc_3y(k)+g);
         J3*ddphi3(k);
@@ -758,7 +779,7 @@ size(dE_kin)
 % size(P2)
 % size(dE_kin2)
 % M12_check2 = (dE_kin2 - P2)/(dphi2*ones(size(phi2)));
-M12_check = (dE_kin - P)/dphi2;                     % PROBLEEM: werkt niet als dphi2 niet meer een getal is, maar ik krijg het anders niet opgelost
+M12_check = times((dphi2.^-1),(dE_kin - P));                     % .^ verheft elk element van de matrix/vector tot de macht die er bijstaat
 
 size(M12)
 size(M12_check)
