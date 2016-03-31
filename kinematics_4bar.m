@@ -70,7 +70,12 @@ dphi12_check = zeros(size(t));
 
 ddphi3_check =  zeros(size(t));
 ddphi4_check =  zeros(size(t));
-
+ddx5_check =    zeros(size(t));
+ddphi6_check =  zeros(size(t));
+ddphi7_check =  zeros(size(t));
+ddphi8_check =  zeros(size(t));
+ddx9_check =  zeros(size(t));
+ddphi10_check = zeros(size(t));
 ddx11_check =   zeros(size(t));
 ddphi12_check = zeros(size(t));
 
@@ -87,6 +92,19 @@ v810_x_check =  zeros(size(t));
 v810_y_check =  zeros(size(t));
 v1011_x_check = zeros(size(t));
 v1011_y_check = zeros(size(t));
+
+a56_x_check =   zeros(size(t));
+a56_y_check =   zeros(size(t));
+a67_x_check =   zeros(size(t));
+a67_y_check =   zeros(size(t));
+a68_x_check =   zeros(size(t));
+a68_y_check =   zeros(size(t));
+a89_x_check =   zeros(size(t));
+a89_y_check =   zeros(size(t));
+a810_x_check =  zeros(size(t));
+a810_y_check =  zeros(size(t));
+a1011_x_check = zeros(size(t));
+a1011_y_check = zeros(size(t));
 
 
 % fsolve options (help fsolve, help optimset)
@@ -321,6 +339,7 @@ for k=1:t_size
     ddphi3_check(k) = x(1);
     ddphi4_check(k) = x(2);
     
+    
     % ddx11 en ddphi12
     % A_check_1112 blijft gelijk
     B_check_1112 = [ddphi2(k)*r2l*sin(phi2(k)-pi) + dphi2(k)^2*r2l*cos(phi2(k)-pi) + dphi12(k)^2*r12*cos(phi12(k));
@@ -331,6 +350,50 @@ for k=1:t_size
     % save results
     ddx11_check(k) =   x(1);
     ddphi12_check(k) = x(2);
+    
+    
+    % de rest
+    % A_check_rest blijft gelijk
+    B_check_rest = [-ddx11_check(k);
+                    0;
+                    -dphi10(k)^2*r10*cos(phi10(k));
+                    -dphi10(k)^2*r10*sin(phi10(k));
+                    -dphi8(k)^2*r8l*cos(phi8(k));
+                    -dphi8(k)^2*r8l*sin(phi8(k));
+                    -dphi8(k)^2*(r8l+r8k)*cos(phi8(k));
+                    -dphi8(k)^2*(r8l+r8k)*sin(phi8(k));
+                    -dphi7(k)^2*r7*cos(phi7(k)-pi);
+                    -dphi7(k)^2*r7*sin(phi7(k)-pi);
+                    -dphi6(k)^2*r6k*cos(phi6(k));
+                    -dphi6(k)^2*r6k*sin(phi6(k));
+                    -dphi6(k)^2*(r6k+r6l)*cos(phi6(k));
+                    -dphi6(k)^2*(r6k+r6l)*sin(phi6(k));
+                    -ddphi4_check(k)*x5(k)*sin(phi4(k)-pi) - dphi4(k)^2*x5(k)*cos(phi4(k)) - 2*dphi4(k)*dx5(k)*sin(phi4(k)-pi);
+                    ddphi4_check(k)*x5(k)*cos(phi4(k)-pi) - dphi4(k)^2*x5(k)*sin(phi4(k)) + 2*dphi4(k)*dx5(k)*cos(phi4(k)-pi);
+                    0;
+                    0];
+                
+    x = A_check_rest\B_check_rest;
+    
+    % save results
+    a56_x_check(k) =   x(1);
+    a56_y_check(k) =   x(2);
+    a67_x_check(k) =   x(3);
+    a67_y_check(k) =   x(4);
+    a68_x_check(k) =   x(5);
+    a68_y_check(k) =   x(6);
+    a89_x_check(k) =   x(7);
+    a89_y_check(k) =   x(8);
+    a810_x_check(k) =  x(9);
+    a810_y_check(k) =  x(10);
+    a1011_x_check(k) = x(11);
+    a1011_y_check(k) = x(12);
+    ddx5_check(k) =    x(13);
+    ddphi6_check(k) =  x(14);
+    ddphi7_check(k) =  x(15);
+    ddphi8_check(k) =  x(16);
+    ddx9_check(k) =    x(17);
+    ddphi10_check(k) = x(18);    
     
                     
 end % loop over positions
@@ -653,7 +716,24 @@ if fig_kin_4bar
     subplot(5,2,3)
     plot(t, ddphi4-ddphi4_check)
     ylabel('\Deltadd\phi_4 [rad/s^2]')
-    
+    subplot(5,2,5)
+    plot(t, ddx5-ddx5_check)
+    ylabel('\Deltaddx_5 [m/s^2]')
+    subplot(5,2,7)
+    plot(t, ddphi6-ddphi6_check)
+    ylabel('\Deltadd\phi_6 [rad/s^2]')
+    subplot(5,2,9)
+    plot(t, ddphi7-ddphi7_check)
+    ylabel('\Deltadd\phi_7 [rad/s^2]')
+    subplot(5,2,2)
+    plot(t, ddphi8-ddphi8_check)
+    ylabel('\Deltadd\phi_8 [rad/s^2]')
+    subplot(5,2,4)
+    plot(t, ddx9-ddx9_check)
+    ylabel('\Deltaddx_9 [m/s^2]')
+    subplot(5,2,6)
+    plot(t, ddphi10-ddphi10_check)
+    ylabel('\Deltadd\phi_{10} [rad/s^2]')
     subplot(5,2,8)
     plot(t, ddx11-ddx11_check)
     ylabel('\Deltaddx_{11} [m/s^2]')
