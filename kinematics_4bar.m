@@ -14,7 +14,7 @@
 function [  phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 
             dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11,   dphi12, ...
             ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12   ] = ...
-            kinematics_4bar(r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+            kinematics_4bar(r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
                     phi1, phi2, dphi2, ddphi2, omega, alpha, ...
                     phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
                     t, fig_kin_4bar)
@@ -113,7 +113,7 @@ for k=1:t_size
                                  [phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init]', ...
                                  optim_options, ...
                                  phi2(k), ...
-                                 r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9);
+                                 r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9);
     if (exitflag ~= 1)
         display 'The fsolve exit flag was not 1, probably no convergence!'
         exitflag
@@ -145,8 +145,8 @@ for k=1:t_size
          0,                 x5(k)*cos(phi4(k)), sin(phi4(k)),       r6k*cos(phi6(k)),   -r7*cos(phi7(k)),   0,                  0,                  0,                  0,                  0;
          0,                 0,                  0,                  -r6*sin(phi6(k)),   r7*sin(phi7(k)),    r8k*sin(phi8(k)),  -1,                 0,                  0,                  0;
          0,                 0,                  0,                  r6*cos(phi6(k)),    -r7*cos(phi7(k)),   -r8k*cos(phi8(k)),  0,                  0,                  0,                  0;
-         -r3*sin(phi3(k)),  -a*sin(phi4(k))+b*cos(phi4(k)),  0,     0,                  0,                  0,                  0,                  0,                  0,                  0;
-         r3*cos(phi3(k)),   a*cos(phi4(k))+b*sin(phi4(k)), 0,       0,                  0,                  0,                  0,                  0,                  0,                  0];
+         -r3*sin(phi3(k)),  -r4l*sin(phi4(k))+r4k*cos(phi4(k)),  0,     0,                  0,                  0,                  0,                  0,                  0,                  0;
+         r3*cos(phi3(k)),   r4l*cos(phi4(k))+r4k*sin(phi4(k)), 0,       0,                  0,                  0,                  0,                  0,                  0,                  0];
      
     B = [-r2l*sin(phi2(k))*dphi2(k);
          r2l*cos(phi2(k))*dphi2(k);
@@ -185,8 +185,8 @@ for k=1:t_size
          -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
          -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 - r8k*cos(phi8(k))*dphi8(k)^2;
          -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
-         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 + r3*cos(phi3(k))*dphi3(k)^2 + (a*cos(phi4(k)) + b*sin(phi4(k)))*dphi4(k)^2;
-         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 + r3*sin(phi3(k))*dphi3(k)^2 + (a*sin(phi4(k)) - b*cos(phi4(k)))*dphi4(k)^2];
+         -r2k*cos(phi2(k))*ddphi2(k) + r2k*sin(phi2(k))*dphi2(k)^2 + r3*cos(phi3(k))*dphi3(k)^2 + (r4l*cos(phi4(k)) + r4k*sin(phi4(k)))*dphi4(k)^2;
+         -r2k*sin(phi2(k))*ddphi2(k) - r2k*cos(phi2(k))*dphi2(k)^2 + r3*sin(phi3(k))*dphi3(k)^2 + (r4l*sin(phi4(k)) - r4k*cos(phi4(k)))*dphi4(k)^2];
     
     x = A\B;
     
@@ -219,8 +219,8 @@ for k=1:t_size
     %% *** control calculations velocity ***
     
     % dphi3 en dphi4
-    A_check_34 = [-r3*sin(phi3(k)),  a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2);
-                  r3*cos(phi3(k)),   -a*cos(phi4(k)-pi)-b*cos(phi4(k)+pi/2)];
+    A_check_34 = [-r3*sin(phi3(k)),  r4l*sin(phi4(k)-pi)+r4k*sin(phi4(k)+pi/2);
+                  r3*cos(phi3(k)),   -r4l*cos(phi4(k)-pi)-r4k*cos(phi4(k)+pi/2)];
               
     B_check_34 = [dphi2(k)*r2k*sin(phi2(k)-pi/2);
                   -dphi2(k)*r2k*cos(phi2(k)-pi/2)];
@@ -312,8 +312,8 @@ for k=1:t_size
     
     % ddphi3 en ddphi4    
     % A_check_34 blijft gelijk
-    B_check_34 = [ddphi2(k)*r2k*sin(phi2(k)-pi/2) + dphi2(k)^2*r2k*cos(phi2(k)-pi/2) + dphi3(k)^2*r3*cos(phi3(k)) - dphi4(k)^2*(a*cos(phi4(k)-pi)+b*cos(phi4(k)+pi/2));
-                  -ddphi2(k)*r2k*cos(phi2(k)-pi/2) + dphi2(k)^2*r2k*sin(phi2(k)-pi/2) + dphi3(k)^2*r3*sin(phi3(k)) - dphi4(k)^2*(a*sin(phi4(k)-pi)+b*sin(phi4(k)+pi/2))];
+    B_check_34 = [ddphi2(k)*r2k*sin(phi2(k)-pi/2) + dphi2(k)^2*r2k*cos(phi2(k)-pi/2) + dphi3(k)^2*r3*cos(phi3(k)) - dphi4(k)^2*(r4l*cos(phi4(k)-pi)+r4k*cos(phi4(k)+pi/2));
+                  -ddphi2(k)*r2k*cos(phi2(k)-pi/2) + dphi2(k)^2*r2k*sin(phi2(k)-pi/2) + dphi3(k)^2*r3*sin(phi3(k)) - dphi4(k)^2*(r4l*sin(phi4(k)-pi)+r4k*sin(phi4(k)+pi/2))];
     
     x = A_check_34\B_check_34;
     
@@ -387,8 +387,8 @@ for m=1:length(index_vec)
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
     sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
-    hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
     
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
@@ -448,8 +448,8 @@ if fig_kin_4bar
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
     sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
-    hoekpunt_4 = sch_1_4 + a*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    sch_3_4b   = hoekpunt_4 + b*exp(j*(phi4(index) + pi/2));
+    hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
        
     figure
     

@@ -29,8 +29,8 @@ conv = 0.19;                % conversie factor reële waardes en lengtes simulat
 r2k = 1.203 * conv;         % eccentric crank circle diameter
 r2l = 2.0 * conv;           % 'langere' zijde van de eccentric crank
 r3 = 9.750 * conv;          % eccentric rod
-a = 3.021 * conv;           % vervang lengte van link crank (dg) (verticaal) = link crank vert
-b = 0.801 * conv;           % vervang lengte van link crank (dg) (horizontaal) = link crank back set
+r4l = 3.021 * conv;           % vervang lengte van link crank (dg) (verticaal) = link crank vert
+r4k = 0.801 * conv;           % vervang lengte van link crank (dg) (horizontaal) = link crank back set
 r6k = 1.625 * conv;         % radius rod extension
 r6l = 9.125 * conv;         % radius rod
 r7 = 1.625 * conv;          % lifting link
@@ -54,7 +54,7 @@ phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 % dynamic parameters, defined in a local frame on each of the bars.
 % NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
 X3 = r3/2;                  % zwaartepunt
-X4 = a/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
+X4 = r4l/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
 X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 X6k = r6k/2;
 X6l = r6l/2;
@@ -77,7 +77,7 @@ Y2 = 0;
 %       nodig want r11 is al in gebruik)
 
 Y3 = 0;                     % Y coordinates of cog
-Y4 = b/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
+Y4 = r4k/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
 Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 Y6k = 0;
 Y6l = 0;
@@ -112,9 +112,9 @@ rho_A = 100;                 % massa per oppervlakte van het element (bij stang 
 
 m2 = (pi*(R_wiel^2)) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
 m3 = r3 * rho_l1;
-m4 = (a+b) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
-ma = a * rho_l1;
-mb = b * rho_l1;
+m4 = (r4l+r4k) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
+ma = r4l * rho_l1;
+mb = r4k * rho_l1;
 m5 = 1;                      % massa van schuifscharnier
 m6 = (r6k+r6l) * rho_l1;     % totale massa van stang 6, m6k en m6l zijn de massa's van de aparte delen
 m6k = r6k * rho_l1;
@@ -136,7 +136,7 @@ m9 = m_piston_1;            % extra nodig
 
 J2 = (pi/2)*(R_wiel^4);   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
 J3 = m3*r3^2/12;
-J4 = m4*a^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
+J4 = m4*r4l^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
 J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
 J6k = m6k*r6k^2/12;
 J6l = m6l*r6l^2/12;
@@ -189,7 +189,7 @@ ddphi2 = alpha*ones(size(phi2));
 [   phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 
     dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11,   dphi12, ...
     ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12   ] = ...
-    kinematics_4bar(r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+    kinematics_4bar(r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
                     phi1, phi2, dphi2, ddphi2, omega, alpha, ...
                     phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
                     t, fig_kin_4bar);
@@ -208,7 +208,7 @@ ddphi2 = alpha*ones(size(phi2));
    = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
                    dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
                    ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
-                   r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
+                   r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...

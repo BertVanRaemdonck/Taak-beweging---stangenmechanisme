@@ -18,7 +18,7 @@ function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56
     = dynamics_4bar(phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
                     dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
                     ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
-                    r2l, r2k, r3, a, b, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
+                    r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, L9, ...
                     m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, mpiston1, mpiston2,...
                     X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                     Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
@@ -50,8 +50,8 @@ proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
 proj_45_y = sin(phi4-pi/2);
 
 vp4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
-vp4_34_x = (-a*cos(phi4)) + (b*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
-vp4_34_y = (-a*sin(phi4)) + (b*sin(phi4+pi/2));     % Inderdaad fouten in de mintekens, zou zou het volgens mij moeten kloppen
+vp4_34_x = (-r4l*cos(phi4)) + (r4k*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
+vp4_34_y = (-r4l*sin(phi4)) + (r4k*sin(phi4+pi/2));     % Inderdaad fouten in de mintekens, zou zou het volgens mij moeten kloppen
 
 cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
 cog6_56_y = -(X6-r6k)*sin(phi6);        % X6 vanaf scharnier 6,7
@@ -147,7 +147,7 @@ vec_1011_cog10 = [X10*cos(phi10)  X10*sin(phi10)  zeros(size(phi2))];   % Foutje
 vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
 vec_1011_810 = [r10*cos(phi10)  r10*sin(phi10)  zeros(size(phi2))];
 
-vec_34_cog4 = [(-(b-X4)*cos(phi4+pi/2))+((a-Y4)*cos(phi4))  (-(b-X4)*sin(phi4+pi/2))+((a-Y4)*sin(phi4)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
+vec_34_cog4 = [(-(r4k-X4)*cos(phi4+pi/2))+((r4l-Y4)*cos(phi4))  (-(r4k-X4)*sin(phi4+pi/2))+((r4l-Y4)*sin(phi4)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
 % Voorbeeldcode
 % P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
 % Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
