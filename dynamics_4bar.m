@@ -666,7 +666,6 @@ end
 
 %% *** Controle: variatie van (kinetische) energie ***
 
-P = zeros(size(phi2));
 
 % Gewichten stangen:
 
@@ -693,6 +692,7 @@ vel_3 = vel_2_3 +      cross(omega3,vec_23_cog3);
 vel_3_4 = vel_2_3 +    cross(omega3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
 vel_4 =                cross(omega4,vec_vp4_cog4);
+vel_4_check = vel_3_4 +cross(omega4,vec_34_cog4);
 
 vel_5_lin = [-1*times(dx5,cos(phi4))  -1*times(dx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
 vel_5 = vel_5_lin +    cross(omega4,vec_vp4_cog5);
@@ -701,21 +701,113 @@ vel_7 =                cross(omega7,vec_vp7_cog7);
 vel_7_6 =              cross(omega7,vec_vp7_67);
 
 vel_6 = vel_7_6 +      cross(omega6,vec_67_cog6);
-vel_6_8 = acc_7_6 +    cross(omega6,vec_67_68);
+vel_6_8 = vel_7_6 +    cross(omega6,vec_67_68);
 
 vel_8 = vel_6_8 +      cross(omega8,vec_68_cog8);
 vel_8_9 = vel_6_8 +    cross(omega8,vec_68_89);
 vel_8_10 = vel_6_8+    cross(omega8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
-vel_9 = [dx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan acc_8_9
+vel_9 = [dx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan vel_8_9
 
 vel_12 = vel_2_12 +    cross(omega12,vec_212_cog12);
 vel_11_12 = vel_2_12 + cross(omega12,vec_212_1112);
 
-vel_11 = [dx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
+vel_11 = [-dx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan vel_11_12
 vel_10_11 = vel_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan vel_11
 
+vel_10_8 = vel_10_11 + cross(omega10,vec_1011_810);
+
 vel_10 = vel_10_11 +   cross(omega10,vec_1011_cog10);
+
+% Controles van de snelheden:
+
+if fig_dyn_4bar
+    
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle snelheden dynamica (1)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, vel_8_9 - vel_9)
+    ylabel('\Delta snelheid cog9 [m/s]')   
+    
+    subplot(3,1,2)
+    plot(t, vel_8_9)
+    ylabel('vel_8_9 [m/s]')
+    
+    subplot(3,1,3)
+    plot(t, vel_9)
+    ylabel('vel_9 [m/s]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle snelheid cog9 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    figure('Name', 'Controle snelheden dynamica (2)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, vel_11_12 - vel_11)
+    ylabel('\Delta snelheid cog11 [m/s]')   
+    
+    subplot(3,1,2)
+    plot(t, vel_11_12)
+    ylabel('vel_11_12 [m/s²]')
+    
+    subplot(3,1,3)
+    plot(t, vel_11)
+    ylabel('vel_11 [m/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle snelheid cog11 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    figure('Name', 'Controle snelheden dynamica (3)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, vel_8_10 - vel_10_8)
+    ylabel('\Delta snelheid 8,10 [m/s]')   
+    
+    subplot(3,1,2)
+    plot(t, vel_8_10)
+    ylabel('vel_8_10 [m/s]')
+    
+    subplot(3,1,3)
+    plot(t, vel_10_8)
+    ylabel('vel_10_8 [m/s]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle snelheid 8,10 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    figure('Name', 'Controle snelheden dynamica (4)', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, vel_4 - vel_4_check)
+    ylabel('\Delta snelheid cog4 [m/s]')   
+    
+    subplot(3,1,2)
+    plot(t, vel_4)
+    ylabel('vel_4 [m/s]')
+    
+    subplot(3,1,3)
+    plot(t, vel_4_check)
+    ylabel('vel_4_check [m/s]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle snelheid cog4 dynamisch'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end 
+
+
 
 % Declaratie van de deelsnelheden voor variatie van kinetische energie:
 vel_2x = vel_2(:,1);
