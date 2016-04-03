@@ -371,8 +371,8 @@ for k=1:t_size
                     -dphi6(k)^2*r6k*sin(phi6(k));
                     -dphi6(k)^2*(r6k+r6l)*cos(phi6(k));
                     -dphi6(k)^2*(r6k+r6l)*sin(phi6(k));
-                    -ddphi4_check(k)*x5(k)*sin(phi4(k)-pi) - dphi4(k)^2*x5(k)*cos(phi4(k)) - 2*dphi4(k)*dx5(k)*sin(phi4(k)-pi);
-                    ddphi4_check(k)*x5(k)*cos(phi4(k)-pi) - dphi4(k)^2*x5(k)*sin(phi4(k)) + 2*dphi4(k)*dx5(k)*cos(phi4(k)-pi);
+                    -ddphi4_check(k)*x5(k)*sin(phi4(k)-pi) - dphi4(k)^2*x5(k)*cos(phi4(k)-pi) - 2*dphi4(k)*dx5(k)*sin(phi4(k)-pi);
+                    ddphi4_check(k)*x5(k)*cos(phi4(k)-pi) - dphi4(k)^2*x5(k)*sin(phi4(k)-pi) + 2*dphi4(k)*dx5(k)*cos(phi4(k)-pi);
                     0;
                     0];
                 
