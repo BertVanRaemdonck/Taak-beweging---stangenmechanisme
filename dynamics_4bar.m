@@ -798,7 +798,7 @@ if fig_dyn_4bar
     
     subplot(3,1,3)
     plot(t, vel_4_check)
-    ylabel('vel_4_check [m/s]')
+    ylabel('vel_4 check [m/s]')
     
     set(gcf,'NextPlot','add');
     axes;
@@ -891,7 +891,7 @@ if fig_dyn_4bar
     
     subplot(3,1,3)
     plot(t, M12_check)
-    ylabel('M12_check [Nm]')
+    ylabel('M12 check [Nm]')
     
     set(gcf,'NextPlot','add');
     axes;
@@ -899,3 +899,117 @@ if fig_dyn_4bar
     set(gca,'Visible','off');
     set(h,'Visible','on')
 end
+
+%% *** Controle: conservatie van momentum ***
+
+% We definiëren alle hulpvectoren voor de vectoren van het rotatie punt O tot de massa centra
+% We nemen als punt O (waarrond alles roteert) het vaste punt 1,2
+vec_cog2_23 = -1*vec_23_cog2;
+vec_34_vp4 = vec_34_cog4 - vec_vp4_cog4;
+vec_34_cog5 = vec_34_vp4 + vec_vp4_cog5;    % cog5 is ook het punt 5,6 normaal gezien
+vec_cog5_67 = [-(r6k*cos(phi6))  -(r6k*sin(phi6))  zeros(size(phi2))];
+vec_67_vp7 = -1*vec_vp7_67;
+vec_cog5_68 = [(r6l*cos(phi6))  (r6l*sin(phi6))  zeros(size(phi2))];
+vec_68_cog9 = vec_68_89;                    % cog9 is ook het punt 8,9 normaal gezien
+vec_cog2_212 = -1*vec_212_cog2;
+vec_1112_cog11 = [X11*ones(size(phi2))  -Y11*ones(size(phi2))   zeros(size(phi2))];
+vec_1112_1011 = [zeros(size(phi2))   -r11*ones(size(phi2))  zeros(size(phi2))];
+
+% We definiëren alle vectoren van het rotatie punt O tot de massa centra
+vec_vp2_cog3 = vec_vp2_cog2 + vec_cog2_23 + vec_23_cog3;
+vec_vp2_cog4 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog4;
+vec_vp2_cog5 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5;
+vec_vp2_cog6 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_67 + vec_67_cog6;
+vec_vp2_cog7 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_67 + vec_67_vp7 ...
+                + vec_vp7_cog7;
+vec_vp2_cog8 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_68 + vec_68_cog8;
+vec_vp2_cog9 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_68 + vec_68_cog9;
+
+vec_vp2_cog12 = vec_vp2_cog2 + vec_cog2_212 + vec_212_cog12;
+vec_vp2_cog11 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_cog11;
+vec_vp2_cog10 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_1011 + vec_1011_cog10;
+
+% Dit geeft bij de controle shaking forces en moment:
+
+F_shak_x_check = -1*(m2*acc_2x + m3*acc_3x + m4*acc_4x + m5*acc_5x + m6*acc_6x ...
+                + m7*acc_7x + m8*acc_8x + m9*acc_9x + m10*acc_10x ...
+                + m11*acc_11x + m12*acc_12x);
+            
+F_shak_y_check = -1*(m2*acc_2y + m3*acc_3y + m4*acc_4y + m5*acc_5y + m6*acc_6y ...
+                + m7*acc_7y + m8*acc_8y + m9*acc_9y + m10*acc_10y ...
+                + m11*acc_11y + m12*acc_12y);
+            
+M_shak_check = -1*(J2*dphi2 + J3*dphi3 + J4*dphi4 + J5*dphi4 + J6*dphi6 + J7*dphi7 ...
+                + J8*dphi8 + J10*dphi10 + J12*dphi12) ...
+                -(  (m2*(times(vec_vp2_cog2(:,1),acc_2y) - times(vec_vp2_cog2(:,2),acc_2x))) ...
+                  + (m3*(times(vec_vp2_cog3(:,1),acc_3y) - times(vec_vp2_cog3(:,2),acc_3x))) ...
+                  + (m4*(times(vec_vp2_cog4(:,1),acc_4y) - times(vec_vp2_cog4(:,2),acc_4x))) ...
+                  + (m5*(times(vec_vp2_cog5(:,1),acc_5y) - times(vec_vp2_cog5(:,2),acc_5x))) ...
+                  + (m6*(times(vec_vp2_cog6(:,1),acc_6y) - times(vec_vp2_cog6(:,2),acc_6x))) ...
+                  + (m7*(times(vec_vp2_cog7(:,1),acc_7y) - times(vec_vp2_cog7(:,2),acc_7x))) ...
+                  + (m8*(times(vec_vp2_cog8(:,1),acc_8y) - times(vec_vp2_cog8(:,2),acc_8x))) ...
+                  + (m9*(times(vec_vp2_cog9(:,1),acc_9y) - times(vec_vp2_cog9(:,2),acc_9x))) ...
+                  + (m10*(times(vec_vp2_cog10(:,1),acc_10y) - times(vec_vp2_cog10(:,2),acc_10x))) ...
+                  + (m11*(times(vec_vp2_cog11(:,1),acc_11y) - times(vec_vp2_cog11(:,2),acc_11x))) ...
+                  + (m12*(times(vec_vp2_cog12(:,1),acc_12y) - times(vec_vp2_cog12(:,2),acc_12x))) );
+% Het bovenste (M_shak_check) kan ook met cross(vec_vp2_cogi,acc_i), maar geen zin om deze nu te veranderen
+              
+              
+% De werkelijke shaking forces en moment zijn:
+% DIT MOET IEMAND OOK NOG EENS GOED BEKIJKEN, WANT IN MIJN OGEN IS DIT
+% TOTAAL RANDOM WAT JE ER ALLEMAAL AAN TOEWIJST...
+    % + WAT MET DE KRACHTEN (BV F19) DIE JE POSITIEF HEBT GEDEFINIEERD IN DE -Y
+    % RICHTING OF -X RICHTING?
+F_shak_x = -(F12x + F17x + F14x);                            
+F_shak_y = -(F12y + F17y + F14y + F19 + F111 );
+             % Gewicht er precies niet bij   + m2*g + m3*g + m4*g + m5*g + m6*g + m7*g + m8*g + m9*g + m10*g + m11*g + m12*g);                               
+
+
+
+% Plotten van controle:
+if fig_dyn_4bar
+    
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle shaking force_x', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, F_shak_x-F_shak_x_check)
+    ylabel('\DeltaF shak_x [N]')   
+    
+    subplot(3,1,2)
+    plot(t, F_shak_x)
+    ylabel('F shak_x [N]')
+    
+    subplot(3,1,3)
+    plot(t, F_shak_x_check)
+    ylabel('F shak_x check [N]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle shaking forces (1) '; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    
+    
+    figure('Name', 'Controle shaking force_y', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, F_shak_y-F_shak_y_check)
+    ylabel('\DeltaF shak_y [N]')   
+    
+    subplot(3,1,2)
+    plot(t, F_shak_y)
+    ylabel('F shak_y [N]')
+    
+    subplot(3,1,3)
+    plot(t, F_shak_y_check)
+    ylabel('F shak_y check [N]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle shaking forces (2) '; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end
+

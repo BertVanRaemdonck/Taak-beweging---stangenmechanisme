@@ -50,48 +50,6 @@ y9 = 3.5 * conv;            % valve CL to cyl CL
 phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
 
 
-
-% dynamic parameters, defined in a local frame on each of the bars.
-% NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
-X3 = r3/2;                  % zwaartepunt
-X4 = r4l/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
-X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
-X6k = r6k/2;
-X6l = r6l/2;
-X6 = (r6k + r6l)/2;
-X7 = r7/2;
-X8k = r8k/2;
-X8l = r8l/2;
-X8 = (r8k + r8l)/2;
-X9 = 0;                  
-X10 = r10/2;
-X11 = r11/2;                % NOG AAN TE PASSEN, IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
-X12 = r12/2;
-
-% driehoek is geen driehoek maar cirkel dus cog in scharnier (kan eventueel
-% verwijderd worden)
-X2 = 0;
-Y2 = 0;
-
-% zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
-%       nodig want r11 is al in gebruik)
-
-Y3 = 0;                     % Y coordinates of cog
-Y4 = r4k/2;                   % Moet nog aangepast worden, maar reken het aub uit vanaf het vaste punt
-Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
-Y6k = 0;
-Y6l = 0;
-Y6 = 0;
-Y7 = 0;
-Y8k = 0;
-Y8l = 0;
-Y8 = 0;
-Y9 = 0;
-Y10 = 0;
-Y11 = 0;
-Y12 = 0;
-
-
 % Definitie extra parameters:   (voorlopig gekozen)
 breedte5 = 0.05;            % breedte schuifscharnier
 hoogte5 = 0.05;             % hoogte schuifscharnier
@@ -100,7 +58,6 @@ hoogte9 = 0.1;              % hoogte piston1, stang 9
 breedte11 = 0.3;            % breedte piston2, stang 11
 hoogte11 = 0.2;             % hoogte piston2, stang11
 
-L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepunt van stang 8
 
 % massa's (nog na te kijken)!!
 % Nieuwe variabele nodig:
@@ -132,7 +89,52 @@ m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 m9 = m_piston_1;            % extra nodig 
 
+
+% dynamic parameters, defined in a local frame on each of the bars.
+% NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
+X3 = r3/2;                  % zwaartepunt
+X4 = (mb*r4k/2)/(m4);       % Uitgerekend vanaf vaste punt, zou zo moeten kloppen volgens mij
+X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
+X6k = r6k/2;
+X6l = r6l/2;
+X6 = (r6k + r6l)/2;
+X7 = r7/2;
+X8k = r8k/2;
+X8l = r8l/2;
+X8 = (r8k + r8l)/2;
+X9 = 0;                  
+X10 = r10/2;
+X11 = 0;                % GEEN MASSA VERDELING IN X-RICHTING !!!!!
+X12 = r12/2;
+
+% driehoek is geen driehoek maar cirkel dus cog in scharnier (kan eventueel
+% verwijderd worden)
+X2 = 0;
+Y2 = 0;
+
+% zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
+%       nodig want r11 is al in gebruik)
+
+Y3 = 0;                     % Y coordinates of cog
+Y4 = ((ma*r4l/2)+(mb*r4l))/m4;      % Uitgerekend vanaf vaste punt, zou zo moeten kloppen volgens mij
+Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
+Y6k = 0;
+Y6l = 0;
+Y6 = 0;
+Y7 = 0;
+Y8k = 0;
+Y8l = 0;
+Y8 = 0;
+Y9 = 0;
+Y10 = 0;
+Y11 = (m11*r11)/(m11+m_piston_2);   % IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
+Y12 = 0;
+
+
+
 %Vanaf hieronder nog aanpassen en controleren!!!!
+
+% Traagheidsmomenten:
 
 J2 = (pi/2)*(R_wiel^4);   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
 J3 = m3*r3^2/12;
@@ -149,6 +151,11 @@ J9 = m_piston_1*((hoogte9^2)+(breedte9^2)) / 12 ;    % benaderd als volle balk
 J10 = m10*r10^2/12;
 J11 = m_piston_2*((hoogte11^2)+(breedte11^2)) / 12;  % benaderd als volle balk
 J12 = m12*r12^2/12;
+
+
+% Extra parameter nodig
+
+L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepunt van stang 8
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
