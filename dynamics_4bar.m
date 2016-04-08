@@ -30,7 +30,7 @@ function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56
 % and check them when you need them.
 
 % Declaratie nieuwe variabelen:
-g = 9.81;           % valversnelling
+g = 0;%9.81;           % valversnelling
 
 
 %% *** Declaratie afstandsvectoren matrix A ***
@@ -371,6 +371,11 @@ M45 = zeros(size(phi2));
 
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
+
+% for row = 3:3:33
+%   for col = 1:33
+
+
 for k=1:t_size
     
 %       F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F1011x           F1011y          F1112x           F1112y          F111        M12         M19          M111        M45
@@ -382,7 +387,7 @@ for k=1:t_size
         0           0            cog3_23_y(k) -cog3_23_x(k)  0               0               cog3_34_y(k) -cog3_34_x(k)       0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               1             0                  1          0           proj_45_x(k) 0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             1                  0          1           proj_45_y(k) 0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
-        0           0            0             0             0               0              -vp4_34_y(k)  -vp4_34_x(k)        0          0           vp4_45(k)    0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           1;
+        0           0            0             0             0               0              -vp4_34_y(k)   vp4_34_x(k)        0          0           vp4_45(k)    0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           1;
         0           0            0             0             0               0               0             0                  0          0          -proj_45_x(k) 1             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             0                  0          0          -proj_45_y(k) 0             1            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0           0;
         0           0            0             0             0               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0           0           0            0          -1;
@@ -410,24 +415,28 @@ for k=1:t_size
 %       F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F1011x           F1011y          F1112x           F1112y          F111        M12         M19          M111        M45
 
     
+
+  %A(row,col) = -A(row,col);
+
+
   B = [ m2*acc_2x(k);
         m2*(acc_2y(k)+g);
         J2*ddphi2(k);               
         m3*acc_3x(k);
         m3*(acc_3y(k)+g);
-        J3*ddphi3(k);
+        J3*ddphi3(k);           % verbetering?
         m4*acc_4x(k);
         m4*(acc_4y(k)+g);
         (J4+(X4^2+Y4^2)*m4)*ddphi4(k) + m4*g*vec_vp4_cog4(k,1);
         m5*acc_5x(k);
         m5*(acc_5y(k)+g);
-        J5*ddphi4(k);
+        J5*ddphi4(k); % geen effectt
         m6*acc_6x(k);
         m6*(acc_6y(k)+g);
         J6*ddphi6(k);
         m7*acc_7x(k);
         m7*(acc_7y(k)+g);
-        J7*ddphi7(k);
+        J7*ddphi7(k);   % geen effect
         m8*acc_8x(k);
         m8*(acc_8y(k)+g);
         J8*ddphi8(k);
@@ -442,7 +451,7 @@ for k=1:t_size
         0;
         m12*acc_12x(k);
         m12*(acc_12y(k)+g);
-        J12*ddphi12(k)];
+        J12*ddphi12(k)];  % groot effect
         
     
     x = A\B;
@@ -872,19 +881,15 @@ dE_kin = m2*dot(vel_2,acc_2,2) + m3*dot(vel_3,acc_3,2) + m4*dot(vel_4,acc_4,2) +
 %        + m6*times(vel_6,acc_6) + m7*times(vel_7,acc_7) + m8*times(vel_8,acc_8) + m9*times(vel_9,acc_9) ...
 %        + m10*times(vel_10,acc_10) + m11*times(vel_11,acc_11) + m12*times(vel_12,acc_12);
 
-size(P)
-size(dE_kin)
+%size(P)
+%size(dE_kin)
 % size(P2)
 % size(dE_kin2)
 % M12_check2 = (dE_kin2 - P2)/(dphi2*ones(size(phi2)));
 M12_check = times((dphi2.^-1),(dE_kin - P));                     % .^ verheft elk element van de matrix/vector tot de macht die er bijstaat
 
-figure()
-plot(dE_kin)
-ylabel('Wat is dees?')
-
-size(M12)
-size(M12_check)
+%size(M12)
+%size(M12_check)
 
 if fig_dyn_4bar
     
@@ -945,9 +950,9 @@ F_shak_x_check = -1*(m2*acc_2x + m3*acc_3x + m4*acc_4x + m5*acc_5x + m6*acc_6x .
                 + m7*acc_7x + m8*acc_8x + m9*acc_9x + m10*acc_10x ...
                 + m11*acc_11x + m12*acc_12x);
             
-F_shak_y_check = -1*(m2*(acc_2y+g) + m3*(acc_3y+g) + m4*(acc_4y+g) + m5*(acc_5y+g) + m6*(acc_6y+g) ...
-                + m7*(acc_7y+g) + m8*(acc_8y+g) + m9*(acc_9y+g) + m10*(acc_10y+g) ...
-                + m11*(acc_11y+g) + m12*(acc_12y+g));
+F_shak_y_check = -1*(m2*(acc_2y) + m3*(acc_3y) + m4*(acc_4y) + m5*(acc_5y) + m6*(acc_6y) ...
+                + m7*(acc_7y) + m8*(acc_8y) + m9*(acc_9y) + m10*(acc_10y) ...
+                + m11*(acc_11y) + m12*(acc_12y));
             
 M_shak_check = -1*(J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 + J7*ddphi7 ...
                 + J8*ddphi8 + J10*ddphi10 + J12*ddphi12) ...
@@ -971,11 +976,8 @@ M_shak_check = -1*(J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 + J
     % + WAT MET DE KRACHTEN (BV F19) DIE JE POSITIEF HEBT GEDEFINIEERD IN DE -Y
     % RICHTING OF -X RICHTING?
 F_shak_x = -(F12x + F17x + F14x);                            
-F_shak_y = -(F12y + F17y + F14y - F19 + F111);
-             % Gewicht er precies niet bij   + m2*g + m3*g + m4*g + m5*g + m6*g + m7*g + m8*g + m9*g + m10*g + m11*g + m12*g);
-M_shak = -(M12 -M19);
-
-
+F_shak_y = -(F12y + F17y + F14y - F19 + F111 - m2*g - m3*g - m4*g - m5*g - m6*g - m7*g - m8*g - m9*g - m10*g - m11*g - m12*g);
+M_shak = -(M12 - M19 + M111 + F14y*x4 - F14x*y4 + F17y*x7 - F17x*y7 - F19.*(r2l+r12+x9) + F111.*(r2l+r12-x11));
 
 % Plotten van controle:
 if fig_dyn_4bar
@@ -1045,4 +1047,14 @@ if fig_dyn_4bar
     set(h,'Visible','on')
     
 end
+
+% disp([row col])
+% if min(max(M_shak-M_shak_check), max(M12-M12_check)) < 0.00000001
+%     disp('                         gevonden!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+% end
+
+% end
+% end
+
+
 

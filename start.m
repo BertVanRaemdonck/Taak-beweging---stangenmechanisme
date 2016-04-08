@@ -221,14 +221,16 @@ ddphi2 = alpha*ones(size(phi2));
                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
-                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
+                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_dyn_4bar);
                
 % extra controle van krachten
 figure()
-plot(J12*ddphi12 + F212x.*X12.*sin(phi12) - F212y.*X12.*cos(phi12) - F1112x.*(r12-X12).*sin(phi12) + F1112y.*(r12-X12).*cos(phi12))
+plot()
 ylabel('Extra controle')
 % => Alle versnellingen dynamica nagekeken
 % => Alle krachtvergelijkingen van de matrix nagekeken
+
+% Wat al zeker klopt: M19, F89x, M45, M12
 
 
 
