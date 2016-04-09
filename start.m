@@ -61,13 +61,13 @@ hoogte11 = 0.2;             % hoogte piston2, stang11
 
 % massa's (nog na te kijken)!!
 % Nieuwe variabele nodig:
-R_wiel = 7.875 * conv;
+R_wiel = 7.875/2 * conv;
 
 rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
 rho_l2 = 71.76;             % massa per lengte drijfstang
 rho_A = 100;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
 
-m2 = (pi*(R_wiel^2)) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
+m2 = 1.2 * 2*pi*R_wiel*rho_l2;   % stang 2 = wiel met velg met sectie ~ stang 12 + correctiefactor voor spaken
 m3 = r3 * rho_l1;
 m4 = (r4l+r4k) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = r4l * rho_l1;
@@ -88,6 +88,7 @@ m_piston_1 = 15;            % voorlopig gekozen, stang 9
 m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 m9 = m_piston_1;            % extra nodig 
+m11 = m11 + m_piston_2;
 
 
 % dynamic parameters, defined in a local frame on each of the bars.
@@ -195,7 +196,9 @@ ddphi2 = alpha*ones(size(phi2));
 % calculation of the kinematics (see kin_4bar.m)
 [   phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 
     dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11,   dphi12, ...
-    ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12   ] = ...
+    ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12, ...
+    a56_x_check, a56_y_check, a67_x_check, a67_y_check, a68_x_check, a68_y_check, a89_x_check, ...
+    a89_y_check, a810_x_check, a810_y_check, a1011_x_check, a1011_y_check] = ...
     kinematics_4bar(r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
                     phi1, phi2, dphi2, ddphi2, omega, alpha, ...
                     phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
@@ -219,7 +222,17 @@ ddphi2 = alpha*ones(size(phi2));
                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
-                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t,fig_dyn_4bar);
+                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_dyn_4bar);
+               
+% extra controle van krachten
+figure()
+plot()
+ylabel('Extra controle')
+% => Alle versnellingen dynamica nagekeken
+% => Alle krachtvergelijkingen van de matrix nagekeken
+
+% Wat al zeker klopt: M19, F89x, M45, M12
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
