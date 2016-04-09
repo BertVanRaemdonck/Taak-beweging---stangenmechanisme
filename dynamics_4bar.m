@@ -424,19 +424,19 @@ for k=1:t_size
         J2*ddphi2(k);               
         m3*acc_3x(k);
         m3*(acc_3y(k)+g);
-        J3*ddphi3(k);           % verbetering?
+        J3*ddphi3(k);
         m4*acc_4x(k);
         m4*(acc_4y(k)+g);
         (J4+(X4^2+Y4^2)*m4)*ddphi4(k) + m4*g*vec_vp4_cog4(k,1);
         m5*acc_5x(k);
         m5*(acc_5y(k)+g);
-        J5*ddphi4(k); % geen effectt
+        J5*ddphi4(k);
         m6*acc_6x(k);
         m6*(acc_6y(k)+g);
         J6*ddphi6(k);
         m7*acc_7x(k);
         m7*(acc_7y(k)+g);
-        J7*ddphi7(k);   % geen effect
+        J7*ddphi7(k);
         m8*acc_8x(k);
         m8*(acc_8y(k)+g);
         J8*ddphi8(k);
@@ -451,7 +451,7 @@ for k=1:t_size
         0;
         m12*acc_12x(k);
         m12*(acc_12y(k)+g);
-        J12*ddphi12(k)];  % groot effect
+        J12*ddphi12(k)];
         
     
     x = A\B;
@@ -942,6 +942,7 @@ vec_vp2_cog9 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_6
 
 vec_vp2_cog12 = vec_vp2_cog2 + vec_cog2_212 + vec_212_cog12;
 vec_vp2_cog11 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_cog11;
+vec_vp2_cog11 = [r2l+r12-x11 -Y11*ones(size(phi2)) zeros(size(phi2))];
 vec_vp2_cog10 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_1011 + vec_1011_cog10;
 
 % Dit geeft bij de controle shaking forces en moment:
@@ -965,8 +966,24 @@ M_shak_check = -1*(J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 + J
                   + (m8*(times(vec_vp2_cog8(:,1),acc_8y) - times(vec_vp2_cog8(:,2),acc_8x))) ...
                   + (m9*(times(vec_vp2_cog9(:,1),acc_9y) - times(vec_vp2_cog9(:,2),acc_9x))) ...
                   + (m10*(times(vec_vp2_cog10(:,1),acc_10y) - times(vec_vp2_cog10(:,2),acc_10x))) ...
+                  - 0*m11*Y11*ddx11 ...
                   + (m11*(times(vec_vp2_cog11(:,1),acc_11y) - times(vec_vp2_cog11(:,2),acc_11x))) ...
                   + (m12*(times(vec_vp2_cog12(:,1),acc_12y) - times(vec_vp2_cog12(:,2),acc_12x))) );
+
+tussenuitkomst = m2*cross(vec_vp2_cog2, acc_2) + m3*cross(vec_vp2_cog3, acc_3) ...
+                + m4*cross(vec_vp2_cog4, acc_4) + m5*cross(vec_vp2_cog5, acc_5) ...
+                + m6*cross(vec_vp2_cog6, acc_6) + m7*cross(vec_vp2_cog7, acc_7) ...
+                + m8*cross(vec_vp2_cog8, acc_8) + m9*cross(vec_vp2_cog9, acc_9) ...
+                + m10*cross(vec_vp2_cog10, acc_10) + m11*cross(vec_vp2_cog11, acc_11) ...
+                + m12*cross(vec_vp2_cog12, acc_12);
+
+M_shak_check = - (J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 ...
+                + J7*ddphi7 + J8*ddphi8 + J10*ddphi10 + J12*ddphi12 ...
+                + tussenuitkomst(:,3))
+% ==> zelfde resultaat
+            
+size(J2*ddphi2)
+size(m2*cross(vec_vp2_cog2, acc_2))
 % Het bovenste (M_shak_check) kan ook met cross(vec_vp2_cogi,acc_i), maar geen zin om deze nu te veranderen
               
               

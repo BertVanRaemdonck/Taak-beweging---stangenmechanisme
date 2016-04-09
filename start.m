@@ -68,6 +68,7 @@ rho_l2 = 71.76;             % massa per lengte drijfstang
 rho_A = 100;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
 
 m2 = (pi*(R_wiel^2)) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
+m2 = 1.2 * 2*pi*R_wiel*rho_l2;
 m3 = r3 * rho_l1;
 m4 = (r4l+r4k) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = r4l * rho_l1;
