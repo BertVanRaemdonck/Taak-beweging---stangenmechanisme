@@ -67,8 +67,7 @@ rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
 rho_l2 = 71.76;             % massa per lengte drijfstang
 rho_A = 100;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
 
-m2 = (pi*(R_wiel^2)) * rho_A;     % totale massa van stang 2 aangezien driehoekige stang
-m2 = 1.2 * 2*pi*R_wiel*rho_l2;
+m2 = 1.2 * 2*pi*R_wiel*rho_l2;   % stang 2 = wiel met velg met sectie ~ stang 12 + correctiefactor voor spaken
 m3 = r3 * rho_l1;
 m4 = (r4l+r4k) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = r4l * rho_l1;
@@ -89,6 +88,7 @@ m_piston_1 = 15;            % voorlopig gekozen, stang 9
 m_piston_2 = 20;            % voorlopig gekozen, stang 11
 
 m9 = m_piston_1;            % extra nodig 
+m11 = m11 + m_piston_2;
 
 
 % dynamic parameters, defined in a local frame on each of the bars.
