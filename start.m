@@ -61,7 +61,7 @@ hoogte11 = 0.2;             % hoogte piston2, stang11
 
 % massa's (nog na te kijken)!!
 % Nieuwe variabele nodig:
-R_wiel = 7.875 * conv;
+R_wiel = 7.875/2 * conv;
 
 rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
 rho_l2 = 71.76;             % massa per lengte drijfstang
