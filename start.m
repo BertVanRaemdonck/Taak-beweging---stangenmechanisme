@@ -137,9 +137,15 @@ Y12 = 0;
 
 % Traagheidsmomenten:
 
-J2 = (pi/2)*(R_wiel^4);   % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_area_moments_of_inertia"
+J2 = m2*R_wiel^2;         % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
 J3 = m3*r3^2/12;
-J4 = m4*r4l^2/12;         % NU FOUTIEF; Moeten we eens over nadenken hoe we deze opstellen, moet door vaste punt, zie eventueel site hierboven
+
+J4l = ma*r4l^2/12;
+J4k = mb*r4k^2/12;
+J4l_cog4 = J4l + (X4^2 + (Y4-r4l/2)^2) * ma;
+J4k_cog4 = J4k + ((r4k/2-X4)^2 + (r4l-Y4)^2) * mb;
+J4 = J4l_cog4 + J4k_cog4;
+
 J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
 J6k = m6k*r6k^2/12;
 J6l = m6l*r6l^2/12;
@@ -151,6 +157,13 @@ J8 = m8*(r8k+r8l)^2/12;
 J9 = m_piston_1*((hoogte9^2)+(breedte9^2)) / 12 ;    % benaderd als volle balk
 J10 = m10*r10^2/12;
 J11 = m_piston_2*((hoogte11^2)+(breedte11^2)) / 12;  % benaderd als volle balk
+
+J11_piston = m_piston_2*(hoogte11^2+breedte11^2) / 12;
+J11_stang = (r11*rho_l1)*r11^2/12;
+J11_piston_cog11 = J11_piston + Y11^2 * m_piston_2;
+J11_stang_cog11 = J11_stang + (r11-Y11)^2 * (r11*rho_l1);
+J11 = J11_piston_cog11 + J11_stang_cog11;
+
 J12 = m12*r12^2/12;
 
 
