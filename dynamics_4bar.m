@@ -78,8 +78,8 @@ cog10_810_y = (r10-X10)*sin(phi10);    % X10 vanaf scharnier 10,11
 cog10_1011_x = -X10*cos(phi10);
 cog10_1011_y = -X10*sin(phi10);
 
-cog11_111_y = X11*ones(size(phi2));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
-cog11_1011_y = -(r11-X11)*ones(size(phi2));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_111_y = Y11*ones(size(phi2));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_1011_y = -(r11-Y11)*ones(size(phi2));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
 
 cog12_212_x = -X12*cos(phi12);          % voor stang 12 gerekend vanaf massacentrum
 cog12_212_y = -X12*sin(phi12);          % X12 vanaf scharnier 2,12
@@ -942,7 +942,6 @@ vec_vp2_cog9 = vec_vp2_cog2 + vec_cog2_23 + vec_23_34 + vec_34_cog5 + vec_cog5_6
 
 vec_vp2_cog12 = vec_vp2_cog2 + vec_cog2_212 + vec_212_cog12;
 vec_vp2_cog11 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_cog11;
-vec_vp2_cog11 = [r2l+r12-x11 -Y11*ones(size(phi2)) zeros(size(phi2))];
 vec_vp2_cog10 = vec_vp2_cog2 + vec_cog2_212 + vec_212_1112 + vec_1112_1011 + vec_1011_cog10;
 
 % Dit geeft bij de controle shaking forces en moment:
@@ -966,7 +965,6 @@ M_shak_check = -1*(J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 + J
                   + (m8*(times(vec_vp2_cog8(:,1),acc_8y) - times(vec_vp2_cog8(:,2),acc_8x))) ...
                   + (m9*(times(vec_vp2_cog9(:,1),acc_9y) - times(vec_vp2_cog9(:,2),acc_9x))) ...
                   + (m10*(times(vec_vp2_cog10(:,1),acc_10y) - times(vec_vp2_cog10(:,2),acc_10x))) ...
-                  - 0*m11*Y11*ddx11 ...
                   + (m11*(times(vec_vp2_cog11(:,1),acc_11y) - times(vec_vp2_cog11(:,2),acc_11x))) ...
                   + (m12*(times(vec_vp2_cog12(:,1),acc_12y) - times(vec_vp2_cog12(:,2),acc_12x))) );
 
