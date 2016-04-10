@@ -195,12 +195,12 @@ phi12_init = phi_init(10);
 
 
 t_begin = 0;                   % start time of simulation
-t_end = 100;                   % end time of simulation
-Ts = 0.05;                     % time step of simulation
+t_end = 2*pi/25;               % end time of simulation = volledige rotatie
+Ts = (t_end-t_begin)/2000;     % time step of simulation
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
-omega = -0.1;
+omega = -25;
 alpha = 0;
 phi2 = omega*t + pi/2;
 dphi2 = omega*ones(size(phi2));             % ones(size(phi2)) creëert een vector met allemaal 1tjes in met de grootte van de vector phi2

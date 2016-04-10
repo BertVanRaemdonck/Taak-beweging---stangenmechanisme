@@ -30,7 +30,7 @@ function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56
 % and check them when you need them.
 
 % Declaratie nieuwe variabelen:
-g = 0;%9.81;           % valversnelling
+g = 9.81;           % valversnelling
 
 
 %% *** Declaratie afstandsvectoren matrix A ***
@@ -978,6 +978,13 @@ tussenuitkomst = m2*cross(vec_vp2_cog2, acc_2) + m3*cross(vec_vp2_cog3, acc_3) .
 M_shak_check = - (J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 ...
                 + J7*ddphi7 + J8*ddphi8 + J10*ddphi10 + J12*ddphi12 ...
                 + tussenuitkomst(:,3))
+            
+tussenuitkomst_shaking_moment = cross(vec_vp2_cog2,G2) + cross(vec_vp2_cog3,G3) ...
++ cross(vec_vp2_cog4,G4) + cross(vec_vp2_cog5,G5) ...
++ cross(vec_vp2_cog6,G6) + cross(vec_vp2_cog7,G7) ...
++ cross(vec_vp2_cog8,G8) + cross(vec_vp2_cog9,G9) ...
++ cross(vec_vp2_cog10,G10) + cross(vec_vp2_cog11,G11) ...
++ cross(vec_vp2_cog12,G12);
 % ==> zelfde resultaat
             
 size(J2*ddphi2)
@@ -992,7 +999,7 @@ size(m2*cross(vec_vp2_cog2, acc_2))
     % RICHTING OF -X RICHTING?
 F_shak_x = -(F12x + F17x + F14x);                            
 F_shak_y = -(F12y + F17y + F14y - F19 + F111 - m2*g - m3*g - m4*g - m5*g - m6*g - m7*g - m8*g - m9*g - m10*g - m11*g - m12*g);
-M_shak = -(M12 - M19 + M111 + F14y*x4 - F14x*y4 + F17y*x7 - F17x*y7 - F19.*(r2l+r12+x9) + F111.*(r2l+r12-x11));
+M_shak = -(M12 - M19 + M111 + F14y*x4 - F14x*y4 + F17y*x7 - F17x*y7 - F19.*(r2l+r12+x9) + F111.*(r2l+r12-x11) + tussenuitkomst_shaking_moment(:,3));
 
 % Plotten van controle:
 if fig_dyn_4bar
