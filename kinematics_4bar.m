@@ -237,6 +237,24 @@ for k=1:t_size
     phi12_init = phi12(k) + Ts*dphi12(k);
     
     
+    %% *** control calculations position ***
+    
+    pos_1112_a = -r2l*exp(j*phi2) + r12*exp(j*phi12);
+    pos_1112_b = r2l + r12 - x11 + 0*j;
+    
+    pos_810_a =  r2l + r12 - x11 - r11*j + r10*exp(j*phi10);
+    pos_810_b =  r2l + r12 + x9 + j*y9 - r8l*exp(j*phi8);
+    
+    pos_56_a =   x7 + j*y7 -r7*exp(j*phi7) + r6k*exp(j*phi6);
+    pos_56_b =   x4 + j*y4 -x5.*exp(j*phi4);
+    
+    pos_68_a =   x7 + j*y7 -r7*exp(j*phi7) + (r6k+r6l)*exp(j*phi6);
+    pos_68_b =   r2l + r12 + x9 + j*y9 + r8k*exp(j*phi8);
+    
+    pos_34_a =   r2k*exp(j*(phi2-pi/2)) + r3*exp(j*phi3);
+    pos_34_b =   x4 + j*y4 + (r4k+r4l*j)*exp(j*(phi4+pi/2));
+    
+    
     %% *** control calculations velocity ***
     
     % dphi3 en dphi4
@@ -669,6 +687,46 @@ if fig_kin_4bar
     set(gcf,'NextPlot','add');
     axes;
     h = title({'Versnellingen in functie van de tijd in s'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+    
+    %% alle positiecontroles
+    
+    figure('Name', 'Positiecontroles', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(5,1,1)
+    plot(t, real(pos_1112_a - pos_1112_b))
+    hold on
+    plot(t, imag(pos_1112_a - pos_1112_b))
+    hold off
+    ylabel('\Delta positie o [m]') 
+    subplot(5,1,2)
+    plot(t, real(pos_810_a - pos_810_b))
+    hold on
+    plot(t, imag(pos_810_a - pos_810_b))
+    hold off
+    ylabel('\Delta positie m [m]') 
+    subplot(5,1,3)
+    plot(t, real(pos_56_a - pos_56_b))
+    hold on
+    plot(t, imag(pos_56_a - pos_56_b))
+    hold off
+    ylabel('\Delta positie e [m]') 
+    subplot(5,1,4)
+    plot(t, real(pos_68_a - pos_68_b))
+    hold on
+    plot(t, imag(pos_68_a - pos_68_b))
+    hold off
+    ylabel('\Delta positie j [m]')
+    subplot(5,1,5)
+    plot(t, real(pos_34_a - pos_34_b))
+    hold on
+    plot(t, imag(pos_34_a - pos_34_b))
+    hold off
+    ylabel('\Delta positie d [m]')
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controles van de posities'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
