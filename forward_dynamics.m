@@ -665,10 +665,7 @@ phi2 = phi2(1:k,:);
 dphi2 = dphi2(1:k,:);
 
 if fig_forward_dyn
-    
-    size(t)
-    size(phi2)
-    
+       
     screen_size = get(groot, 'ScreenSize');
     figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])

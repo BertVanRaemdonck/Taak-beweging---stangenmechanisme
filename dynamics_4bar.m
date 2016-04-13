@@ -987,10 +987,7 @@ tussenuitkomst_shaking_moment = cross(vec_vp2_cog2,G2) + cross(vec_vp2_cog3,G3) 
 + cross(vec_vp2_cog12,G12);
 % ==> zelfde resultaat
             
-size(J2*ddphi2)
-size(m2*cross(vec_vp2_cog2, acc_2))
-% Het bovenste (M_shak_check) kan ook met cross(vec_vp2_cogi,acc_i), maar geen zin om deze nu te veranderen
-              
+
               
 % De werkelijke shaking forces en moment zijn:
 % DIT MOET IEMAND OOK NOG EENS GOED BEKIJKEN, WANT IN MIJN OGEN IS DIT

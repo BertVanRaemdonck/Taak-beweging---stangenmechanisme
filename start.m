@@ -20,8 +20,8 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 0;        % draw figures of kinematic analysis if 1
-fig_dyn_4bar = 0;        % draw figures of dynamic analysis if 1
+fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
+fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
 fig_forward_dyn = 1;     % draw figures of forward dynamic if 1
 
 % kinematic parameters (link lengths)
@@ -264,9 +264,9 @@ movie(Movie)
 phi2_init = pi/2;
 dphi2_init = -25;
 
-[phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
- dphi2, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
- ddphi2,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
+[phi2_check,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi12, ...
+ dphi2_check, dphi3, dphi4, dx5, dphi6, dphi7, dphi8, dx9, dphi10, dx11, dphi12, ...
+ ddphi2_check,ddphi3,ddphi4,ddx5,ddphi6,ddphi7,ddphi8,ddx9,ddphi10,ddx11,ddphi12, ...
  F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
  F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
  M19, M111, M45]...
@@ -277,3 +277,29 @@ dphi2_init = -25;
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_forward_dyn);
+
+               
+if fig_forward_dyn
+    
+        
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, phi2-phi2_check)
+    ylabel('\Delta phi2 [rad]')   
+    
+    subplot(3,1,2)
+    plot(t, dphi2-dphi2_check)
+    ylabel('\Delta dphi2 [rad/s]')
+    
+    subplot(3,1,3)
+    plot(t, ddphi2-ddphi2_check)
+    ylabel('\Delta ddphi2 [rad/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle voorwaartse dynamica (2)'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end
