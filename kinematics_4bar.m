@@ -138,7 +138,6 @@ for k=1:t_size
         display 'The fsolve exit flag was not 1, probably no convergence!'
         exitflag
     end
-    
     % Declaratie nieuwe variabele
     r6 = r6k + r6l;
     dphi2(k)= omega;
@@ -155,6 +154,7 @@ for k=1:t_size
     phi10(k) =  x(8);
     x11(k) =    x(9);
     phi12(k) =  x(10);
+    
     
     %% *** velocity analysis ***
     %    dphi3              dphi4               dx5                 dphi6               dphi7               dphi8               dx9                 dphi10              dx11                dphi12
