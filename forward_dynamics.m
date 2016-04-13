@@ -565,7 +565,7 @@ acc_12y(k) = acc_12(k,2);
 
    B = [m2*acc_2x(k);
         m2*(acc_2y(k)+g);
-        M12;               
+        M12(k);               
         m3*acc_3x(k);
         m3*(acc_3y(k)+g);
         0;
@@ -607,6 +607,8 @@ acc_12y(k) = acc_12(k,2);
         r2k*sin(phi2(k))*dphi2(k)^2+r3*cos(phi3(k))*dphi3(k)^2+(r4l*cos(phi4(k))+r4k*sin(phi4(k)))*dphi4(k)^2;
         -r2k*cos(phi2(k))*dphi2(k)^2+r3*sin(phi3(k))*dphi3(k)^2+(r4l*sin(phi4(k))-r4k*cos(phi4(k)))*dphi4(k)^2];
      
+   
+    
      x=A\B;
      
  % save results
@@ -659,7 +661,13 @@ acc_12y(k) = acc_12(k,2);
 
 end
 
+phi2 = phi2(1:k,:);
+dphi2 = dphi2(1:k,:);
+
 if fig_forward_dyn
+    
+    size(t)
+    size(phi2)
     
     screen_size = get(groot, 'ScreenSize');
     figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...

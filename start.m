@@ -20,8 +20,8 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % program data
-fig_kin_4bar = 1;        % draw figures of kinematic analysis if 1
-fig_dyn_4bar = 1;        % draw figures of dynamic analysis if 1
+fig_kin_4bar = 0;        % draw figures of kinematic analysis if 1
+fig_dyn_4bar = 0;        % draw figures of dynamic analysis if 1
 fig_forward_dyn = 1;     % draw figures of forward dynamic if 1
 
 % kinematic parameters (link lengths)
@@ -276,4 +276,4 @@ dphi2_init = -25;
                    m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, m_piston_1, m_piston_2,...
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
-                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t);
+                   J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_forward_dyn);
