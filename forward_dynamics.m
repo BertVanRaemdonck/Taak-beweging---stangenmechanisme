@@ -10,7 +10,7 @@ function [phi2,  phi3,  phi4,  x5,  phi6,  phi7,  phi8,  x9,  phi10,  x11,  phi1
                             m2,m3,ma,mb,m4,m5,m6k,m6l,m6,m7,m8k,m8l,m8,m9,m10,m11,m12, mpiston1, mpiston2,...
                             X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                             Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
-                            J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t)
+                            J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_forward_dyn)
 
 g=9.81;
 
@@ -128,9 +128,6 @@ cog10_810_x = zeros(size(M12));
 cog10_810_y = zeros(size(M12));
 cog10_1011_x = zeros(size(M12));
 cog10_1011_y = zeros(size(M12));
-
-cog11_111_y = zeros(size(M12));
-cog11_1011_y = zeros(size(M12));
 
 cog12_212_x = zeros(size(M12));
 cog12_212_y = zeros(size(M12));
@@ -254,6 +251,10 @@ acc_11y = zeros(size(M12));
 acc_12x = zeros(size(M12));
 acc_12y = zeros(size(M12));
 
+cog11_111_y = Y11*ones(size(M12));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_1011_y = -(r11-Y11)*ones(size(M12));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
+
+optim_options = optimset('Display','off');
 Ts = t(2) - t(1);      % timestep
 t_size = size(t,1);    % number of simulation steps
 for k=1:t_size
@@ -363,8 +364,7 @@ cog10_810_y(k) = (r10-X10)*sin(phi10(k));    % X10 vanaf scharnier 10,11
 cog10_1011_x(k) = -X10*cos(phi10(k));
 cog10_1011_y(k) = -X10*sin(phi10(k));
 
-cog11_111_y(k) = Y11*ones(size(M12));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
-cog11_1011_y(k) = -(r11-Y11)*ones(size(M12));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
+
 
 cog12_212_x(k) = -X12*cos(phi12(k));          % voor stang 12 gerekend vanaf massacentrum
 cog12_212_y(k) = -X12*sin(phi12(k));          % X12 vanaf scharnier 2,12
@@ -376,14 +376,14 @@ cog12_1112_y(k) = (r12-X12)*sin(phi12(k));
 % Declaratie 3D omega en alpha vectoren ***
 
 % 3D omega (dphi) and alpha (ddphi) vectors)    
-omega2(k) = [0 0 dphi2(k)]; 
-omega3(k) = [0 0 dphi3(k)]; 
-omega4(k) = [0 0 dphi4(k)]; 
-omega6(k) = [0 0 dphi6(k)]; 
-omega7(k) = [0 0 dphi7(k)]; 
-omega8(k) = [0 0 dphi8(k)]; 
-omega10(k) = [0 0 dphi10(k)]; 
-omega12(k) = [0 0 dphi12(k)]; 
+omega2(k,:) = [0 0 dphi2(k)]; 
+omega3(k,:) = [0 0 dphi3(k)]; 
+omega4(k,:) = [0 0 dphi4(k)]; 
+omega6(k,:) = [0 0 dphi6(k)]; 
+omega7(k,:) = [0 0 dphi7(k)]; 
+omega8(k,:) = [0 0 dphi8(k)]; 
+omega10(k,:) = [0 0 dphi10(k)]; 
+omega12(k,:) = [0 0 dphi12(k)]; 
 
 
 
@@ -392,61 +392,61 @@ omega12(k) = [0 0 dphi12(k)];
 
 % 3D model vectors:
 
-vec_23_cog3(k) = [-cog3_23_x(k)    -cog3_23_y(k)   0];
+vec_23_cog3(k,:) = [-cog3_23_x(k)    -cog3_23_y(k)   0];
 vec_23_cog3x(k) = vec_23_cog3(k,1);
 vec_23_cog3y(k) = vec_23_cog3(k,2);
-vec_212_cog12(k) = [-cog12_212_x(k)    -cog12_212_y(k)   0];
+vec_212_cog12(k,:) = [-cog12_212_x(k)    -cog12_212_y(k)   0];
 vec_212_cog12x(k) = vec_212_cog12(k,1);
 vec_212_cog12y(k) = vec_212_cog12(k,2);
-vec_vp7_cog7(k) = [-cog7_17_x(k)    -cog7_17_y(k)   0];
+vec_vp7_cog7(k,:) = [-cog7_17_x(k)    -cog7_17_y(k)   0];
 vec_vp7_cog7x(k) = vec_vp7_cog7(k,1);
 vec_vp7_cog7y(k) = vec_vp7_cog7(k,2);
-vec_67_cog6(k) = [-cog6_67_x(k)    -cog6_67_y(k)   0];
+vec_67_cog6(k,:) = [-cog6_67_x(k)    -cog6_67_y(k)   0];
 vec_67_cog6x(k) = vec_67_cog6(k,1);
 vec_67_cog6y(k) = vec_67_cog6(k,2);
-vec_vp7_67(k) = [-r7*cos(phi7(k))   -r7*sin(phi7(k)) 0];
+vec_vp7_67(k,:) = [-r7*cos(phi7(k))   -r7*sin(phi7(k)) 0];
 vec_vp7_67x(k) = vec_vp7_67(k,1);
 vec_vp7_67y(k) = vec_vp7_67(k,2);
-vec_68_cog8(k) = [-cog8_68_x(k)    -cog8_68_y(k)   0];
+vec_68_cog8(k,:) = [-cog8_68_x(k)    -cog8_68_y(k)   0];
 vec_68_cog8x(k) = vec_68_cog8(k,1);
 vec_68_cog8y(k) = vec_68_cog8(k,2);
-vec_67_68(k) = [(r6k+r6l)*cos(phi6(k))   (r6k+r6l)*sin(phi6(k))  0];
+vec_67_68(k,:) = [(r6k+r6l)*cos(phi6(k))   (r6k+r6l)*sin(phi6(k))  0];
 vec_67_68x(k) = vec_67_68(k,1);
 vec_67_68y(k) = vec_67_68(k,2);
-vec_67_56(k) = [r6k*cos(phi6(k))   r6k*sin(phi6(k))   0];
+vec_67_56(k,:) = [r6k*cos(phi6(k))   r6k*sin(phi6(k))   0];
 vec_67_56x(k) = vec_67_56(k,1);
 vec_67_56y(k) = vec_67_56(k,2);
-vec_68_810(k) = [-(r8k+r8l)*cos(phi8(k))   -(r8k+r8l)*sin(phi8(k))  0];
+vec_68_810(k,:) = [-(r8k+r8l)*cos(phi8(k))   -(r8k+r8l)*sin(phi8(k))  0];
 
 %Extra vectoren nodig:
-vec_vp2_cog2(k) = [(X2*cos(phi2(k)-pi/2))-(Y2*cos(phi2(k))) (X2*sin(phi2(k)-pi/2))-(Y2*sin(phi2(k))) 0];
+vec_vp2_cog2(k,:) = [(X2*cos(phi2(k)-pi/2))-(Y2*cos(phi2(k))) (X2*sin(phi2(k)-pi/2))-(Y2*sin(phi2(k))) 0];
 vec_vp2_cog2x(k) = vec_vp2_cog2(k,1);
 vec_vp2_cog2y(k) = vec_vp2_cog2(k,2);
-vec_212_cog2(k) = [-cog2_212_x(k)    -cog2_212_y(k)   0];
-vec_cog2_212(k) = -vec_212_cog2(k);
-vec_vp2_212(k) = vec_vp2_cog2(k) + vec_cog2_212(k);
+vec_212_cog2(k,:) = [-cog2_212_x(k)    -cog2_212_y(k)   0];
+vec_cog2_212 = -vec_212_cog2;
+vec_vp2_212 = vec_vp2_cog2 + vec_cog2_212;
 vec_vp2_212x(k) = vec_vp2_212(k,1);
 vec_vp2_212y(k) = vec_vp2_212(k,2);
-vec_23_cog2(k) = [-cog2_23_x(k)    -cog2_23_y(k)   0];
-vec_cog2_23(k) = -vec_23_cog2;
-vec_vp2_23(k) = vec_vp2_cog2 + vec_cog2_23;
+vec_23_cog2(k,:) = [-cog2_23_x(k)    -cog2_23_y(k)   0];
+vec_cog2_23 = -vec_23_cog2;
+vec_vp2_23 = vec_vp2_cog2 + vec_cog2_23;
 vec_vp2_23x(k) = vec_vp2_23(k,1);
 vec_vp2_23y(k) = vec_vp2_23(k,2);
-vec_23_34(k) = [r3*cos(phi3(k)) r3*sin(phi3(k)) 0];
-vec_vp4_cog4(k) = [(-Y4*cos(phi4(k)))+(X4*cos(phi4(k)+pi/2))  (-Y4*sin(phi4(k)))+(X4*sin(phi4(k)+pi/2)) 0];       % moet hetzelfde zijn als vp4_34 maar Y4 ipv r2k en X4 ipv r2l                         
+vec_23_34(k,:) = [r3*cos(phi3(k)) r3*sin(phi3(k)) 0];
+vec_vp4_cog4(k,:) = [(-Y4*cos(phi4(k)))+(X4*cos(phi4(k)+pi/2))  (-Y4*sin(phi4(k)))+(X4*sin(phi4(k)+pi/2)) 0];       % moet hetzelfde zijn als vp4_34 maar Y4 ipv r2k en X4 ipv r2l                         
 vec_vp4_cog4x(k) = vec_vp4_cog4(k,1);
 vec_vp4_cog4y(k) = vec_vp4_cog4(k,2);
-vec_vp4_cog5(k) = [-1*x5(k)*cos(phi4(k))  -1*x5(k)*sin(phi4(k))  0];       % Moet kleine x5 zijn, want deze positie varieert continu + elk element apart vermenigvuldigen
+vec_vp4_cog5(k,:) = [-1*x5(k)*cos(phi4(k))  -1*x5(k)*sin(phi4(k))  0];       % Moet kleine x5 zijn, want deze positie varieert continu + elk element apart vermenigvuldigen
 
-vec_68_89(k) = [-r8k*cos(phi8(k))  -r8k*sin(phi8(k))  0];
-vec_1011_cog10(k) = [X10*cos(phi10(k))  X10*sin(phi10(k))  0];
+vec_68_89(k,:) = [-r8k*cos(phi8(k))  -r8k*sin(phi8(k))  0];
+vec_1011_cog10(k,:) = [X10*cos(phi10(k))  X10*sin(phi10(k))  0];
 vec_1011_cog10x(k) = vec_1011_cog10(k,1);
 vec_1011_cog10y(k) = vec_1011_cog10(k,2);
-vec_212_1112(k) = [r12*cos(phi12(k))  r12*sin(phi12(k))   0];
+vec_212_1112(k,:) = [r12*cos(phi12(k))  r12*sin(phi12(k))   0];
 
-vec_1011_810(k) = [r10*cos(phi10(k))  r10*sin(phi10(k))  0];
+vec_1011_810(k,:) = [r10*cos(phi10(k))  r10*sin(phi10(k))  0];
 
-vec_34_cog4(k) = [(-(r4k-X4)*cos(phi4(k)+pi/2))+((r4l-Y4)*cos(phi4(k)))  (-(r4k-X4)*sin(phi4(k)+pi/2))+((r4l-Y4)*sin(phi4(k))) 0];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
+vec_34_cog4(k,:) = [(-(r4k-X4)*cos(phi4(k)+pi/2))+((r4l-Y4)*cos(phi4(k)))  (-(r4k-X4)*sin(phi4(k)+pi/2))+((r4l-Y4)*sin(phi4(k))) 0];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
 
 
 
@@ -457,40 +457,41 @@ vec_34_cog4(k) = [(-(r4k-X4)*cos(phi4(k)+pi/2))+((r4l-Y4)*cos(phi4(k)))  (-(r4k-
 % bv. acc_2 = versnelling massacentrum van stang 2
 %     acc_2_12 = versnelling van scharnierpunt 2,12
 
-acc_2(k) =                   cross(omega2(k),cross(omega2(k),vec_vp2_cog2(k)));  % normaal gezien nul
-acc_2_12(k) = acc_2(k) +     cross(omega2(k),cross(omega2(k),-vec_212_cog2(k)));
-acc_2_3(k) = acc_2(k) +      cross(omega2(k),cross(omega2(k),-vec_23_cog2(k)));
+acc_2(k,:) =                   cross(omega2(k,:),cross(omega2(k,:),vec_vp2_cog2(k,:)));  % normaal gezien nul
+acc_2_12(k,:) = acc_2(k,:) +     cross(omega2(k,:),cross(omega2(k,:),-vec_212_cog2(k,:)));
+acc_2_3(k,:) = acc_2(k,:) +      cross(omega2(k,:),cross(omega2(k,:),-vec_23_cog2(k,:)));
 
-acc_3(k) = acc_2_3(k) +      cross(omega3(k),cross(omega3(k),vec_23_cog3(k)));
-acc_3_4(k) = acc_2_3(k) +    cross(omega3(k),cross(omega3(k),vec_23_34(k)));   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_3(k,:) = acc_2_3(k,:) +      cross(omega3(k,:),cross(omega3(k,:),vec_23_cog3(k,:)));
+acc_3_4(k,:) = acc_2_3(k,:) +    cross(omega3(k,:),cross(omega3(k,:),vec_23_34(k,:)));   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
-acc_4(k) =                   cross(omega4(k),cross(omega4(k),vec_vp4_cog4(k)));
-acc_4_check(k) = acc_3_4(k) +cross(omega4(k),cross(omega4(k),vec_34_cog4(k)));
+acc_4(k,:) =                   cross(omega4(k,:),cross(omega4(k,:),vec_vp4_cog4(k,:)));
+acc_4_check(k,:) = acc_3_4(k,:) +cross(omega4(k,:),cross(omega4(k,:),vec_34_cog4(k,:)));
 %Deze controle klopt!
 
-acc_7(k) =                cross(omega7(k),cross(omega7(k),vec_vp7_cog7(k))) ;
-acc_7_6(k) =              cross(omega7(k),cross(omega7(k),vec_vp7_67(k)));
+acc_7(k,:) =                cross(omega7(k,:),cross(omega7(k,:),vec_vp7_cog7(k,:))) ;
+acc_7_6(k,:) =              cross(omega7(k,:),cross(omega7(k,:),vec_vp7_67(k,:)));
 
-acc_6(k) = acc_7_6(k) +      cross(omega6(k),cross(omega6(k),vec_67_cog6(k)));
-acc_6_8(k) = acc_7_6(k) +    cross(omega6(k),cross(omega6(k),vec_67_68(k)));
+acc_6(k,:) = acc_7_6(k,:) +      cross(omega6(k,:),cross(omega6(k,:),vec_67_cog6(k,:)));
+acc_6_8(k,:) = acc_7_6(k,:) +    cross(omega6(k,:),cross(omega6(k,:),vec_67_68(k,:)));
 
 %acc_5_lin = [-1*times(ddx5,cos(phi4))  -1*times(ddx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
 %acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
 % => Dit klopt niet: er moet nog een coriolisvernelling in. Gemakkelijker
 % is de versnelling via stang 6 te definiëren
-acc_5(k) = acc_7_6(k) +      cross(omega6(k),cross(omega6(k),vec_67_56(k))) ;
+acc_5(k,:) = acc_7_6(k,:) +      cross(omega6(k,:),cross(omega6(k,:),vec_67_56(k,:))) ;
 
-acc_8(k) = acc_6_8(k) +      cross(omega8(k),cross(omega8(k),vec_68_cog8(k))) ;
-acc_8_9(k) = acc_6_8(k) +    cross(omega8(k),cross(omega8(k),vec_68_89(k))) ;
-acc_8_10(k) = acc_6_8(k)+    cross(omega8(k),cross(omega8(k),vec_68_810(k))) ;  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
-
-
-acc_12(k) = acc_2_12(k) +    cross(omega12(k),cross(omega12(k),vec_212_cog12(k)));
-acc_11_12(k) = acc_2_12(k) + cross(omega12(k),cross(omega12(k),vec_212_1112(k)));
+acc_8(k,:) = acc_6_8(k,:) +      cross(omega8(k,:),cross(omega8(k,:),vec_68_cog8(k,:))) ;
+acc_8_9(k,:) = acc_6_8(k,:) +    cross(omega8(k,:),cross(omega8(k,:),vec_68_89(k,:))) ;
+acc_8_10(k,:) = acc_6_8(k,:)+    cross(omega8(k,:),cross(omega8(k,:),vec_68_810(k,:))) ;  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
 
 
-acc_10(k) =       cross(omega10(k),cross(omega10(k),vec_1011_cog10(k)));
-acc_10_8(k) =     cross(omega10(k),cross(omega10(k),vec_1011_810(k)));
+acc_12(k,:) = acc_2_12(k,:) +    cross(omega12(k,:),cross(omega12(k,:),vec_212_cog12(k,:)));
+acc_11_12(k,:) = acc_2_12(k,:) + cross(omega12(k,:),cross(omega12(k,:),vec_212_1112(k,:)));
+
+
+
+acc_10(k,:) =       cross(omega10(k,:),cross(omega10(k,:),vec_1011_cog10(k,:)));
+acc_10_8(k,:) =     cross(omega10(k,:),cross(omega10(k,:),vec_1011_810(k,:)));
 
 % Declaratie van de deelversnellingen voor matrix B:
 acc_2x(k) = acc_2(k,1);
@@ -507,12 +508,12 @@ acc_7x(k) = acc_7(k,1);
 acc_7y(k) = acc_7(k,2);
 acc_8x(k) = acc_8(k,1);
 acc_8y(k) = acc_8(k,2);
-acc_9x(k) = acc_9(k,1);
-acc_9y(k) = acc_9(k,2);
+acc_9x(k) = acc_8_9(k,1);
+acc_9y(k) = acc_8_9(k,2);
 acc_10x(k) = acc_10(k,1);
 acc_10y(k) = acc_10(k,2);
-acc_11x(k) = acc_11(k,1);
-acc_11y(k) = acc_11(k,2);
+acc_11x(k) = acc_11_12(k,1);
+acc_11y(k) = acc_11_12(k,2);
 acc_12x(k) = acc_12(k,1);
 acc_12y(k) = acc_12(k,2);
 
@@ -562,7 +563,7 @@ acc_12y(k) = acc_12(k,2);
           0           0            0             0             0               0               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0                0               0                      0            0           0      r2k*sin(phi2(k))    r3*cos(phi3(k))     r4l*cos(phi4(k))+r4k*sin(phi4(k))  0                 0                   0                    0                   0     0                       0       0];
 %         F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F1011x           F1011y          F1112x           F1112y          F111                   M19          M111        M45
 
-   B = [ m2*acc_2x(k);
+   B = [m2*acc_2x(k);
         m2*(acc_2y(k)+g);
         M12;               
         m3*acc_3x(k);
@@ -570,7 +571,7 @@ acc_12y(k) = acc_12(k,2);
         0;
         m4*acc_4x(k);
         m4*(acc_4y(k)+g);
-        (J4+(X4^2+Y4^2)*m4)*ddphi4(k) + m4*g*vec_vp4_cog4(k,1);     % Hier nog aanpassen in A matrix
+        (J4+(X4^2+Y4^2)*m4)*ddphi4(k)+m4*g*vec_vp4_cog4(k,1);     % Hier nog aanpassen in A matrix
         m5*acc_5x(k);
         m5*(acc_5y(k)+g);
         0;
@@ -595,16 +596,16 @@ acc_12y(k) = acc_12(k,2);
         m12*acc_12x(k);
         m12*(acc_12y(k)+g);
         0;
-         - r2l*cos(phi2(k))*dphi2(k)^2 + r12*cos(phi12(k))*dphi12(k)^2;
-         - r2l*sin(phi2(k))*dphi2(k)^2 + r12*sin(phi12(k))*dphi12(k)^2;
-         r10*cos(phi10(k))*dphi10(k)^2 + r8l*cos(phi8(k))*dphi8(k)^2;
-         r10*sin(phi10(k))*dphi10(k)^2 + r8l*sin(phi8(k))*dphi8(k)^2;
-         -r7*cos(phi7(k))*dphi7(k)^2 + r6k*cos(phi6(k))*dphi6(k)^2 + 2*sin(phi4(k))*dphi4(k)*dx5(k) + x5(k)*cos(phi4(k))*dphi4(k)^2;
-         -r7*sin(phi7(k))*dphi7(k)^2 + r6k*sin(phi6(k))*dphi6(k)^2 - 2*cos(phi4(k))*dphi4(k)*dx5(k) + x5(k)*sin(phi4(k))*dphi4(k)^2;
-         -r7*cos(phi7(k))*dphi7(k)^2 + r6*cos(phi6(k))*dphi6(k)^2 - r8k*cos(phi8(k))*dphi8(k)^2;
-         -r7*sin(phi7(k))*dphi7(k)^2 + r6*sin(phi6(k))*dphi6(k)^2 - r8k*sin(phi8(k))*dphi8(k)^2;
-         r2k*sin(phi2(k))*dphi2(k)^2 + r3*cos(phi3(k))*dphi3(k)^2 + (r4l*cos(phi4(k)) + r4k*sin(phi4(k)))*dphi4(k)^2;
-         - r2k*cos(phi2(k))*dphi2(k)^2 + r3*sin(phi3(k))*dphi3(k)^2 + (r4l*sin(phi4(k)) - r4k*cos(phi4(k)))*dphi4(k)^2];
+        -r2l*cos(phi2(k))*dphi2(k)^2+r12*cos(phi12(k))*dphi12(k)^2;
+        -r2l*sin(phi2(k))*dphi2(k)^2+r12*sin(phi12(k))*dphi12(k)^2;
+        r10*cos(phi10(k))*dphi10(k)^2+r8l*cos(phi8(k))*dphi8(k)^2;
+        r10*sin(phi10(k))*dphi10(k)^2+r8l*sin(phi8(k))*dphi8(k)^2;
+        -r7*cos(phi7(k))*dphi7(k)^2+r6k*cos(phi6(k))*dphi6(k)^2+2*sin(phi4(k))*dphi4(k)*dx5(k)+x5(k)*cos(phi4(k))*dphi4(k)^2;
+        -r7*sin(phi7(k))*dphi7(k)^2+r6k*sin(phi6(k))*dphi6(k)^2-2*cos(phi4(k))*dphi4(k)*dx5(k)+x5(k)*sin(phi4(k))*dphi4(k)^2;
+        -r7*cos(phi7(k))*dphi7(k)^2+r6*cos(phi6(k))*dphi6(k)^2-r8k*cos(phi8(k))*dphi8(k)^2;
+        -r7*sin(phi7(k))*dphi7(k)^2+r6*sin(phi6(k))*dphi6(k)^2-r8k*sin(phi8(k))*dphi8(k)^2;
+        r2k*sin(phi2(k))*dphi2(k)^2+r3*cos(phi3(k))*dphi3(k)^2+(r4l*cos(phi4(k))+r4k*sin(phi4(k)))*dphi4(k)^2;
+        -r2k*cos(phi2(k))*dphi2(k)^2+r3*sin(phi3(k))*dphi3(k)^2+(r4l*sin(phi4(k))-r4k*cos(phi4(k)))*dphi4(k)^2];
      
      x=A\B;
      
@@ -658,3 +659,26 @@ acc_12y(k) = acc_12(k,2);
 
 end
 
+if fig_forward_dyn
+    
+    screen_size = get(groot, 'ScreenSize');
+    figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+    subplot(3,1,1)
+    plot(t, phi2)
+    ylabel('\phi2 [rad]')   
+    
+    subplot(3,1,2)
+    plot(t, dphi2)
+    ylabel('dphi2 [rad/s]')
+    
+    subplot(3,1,3)
+    plot(t, ddphi2)
+    ylabel('ddphi2 [rad/s²]')
+    
+    set(gcf,'NextPlot','add');
+    axes;
+    h = title({'Controle voorwaartse dynamica'; ''});
+    set(gca,'Visible','off');
+    set(h,'Visible','on')
+end
