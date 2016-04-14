@@ -1,17 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Kinematica en werkuigendynamica.
-%
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
-% Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
-% Maarten De Munck <maarten.demunck@mech.kuleuven.be>
-% Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
-% Wim Meeussen <wim.meeussen@mech.kuleuven.be>
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 function [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
     F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
     M12, M19, M111, M45] ...

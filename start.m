@@ -1,16 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Kinematica en werkuigendynamica.
-%
-% Voorbeeldanalyse van een vierstangenmechanisme.
-%
-% Bram Demeulenaere <bram.demeulenaere@mech.kuleuven.be>
-% Maarten De Munck <maarten.demunck@mech.kuleuven.be>
-% Johan Rutgeerts <johan.rutgeerts@mech.kuleuven.be>
-% Wim Meeussen <wim.meeussen@mech.kuleuven.be>
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 clear
 close all
 
@@ -287,15 +274,15 @@ if fig_forward_dyn
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
     subplot(3,1,1)
     plot(t, phi2-phi2_check)
-    ylabel('\Delta phi2 [rad]')   
+    ylabel('\Delta \theta_2 [rad]')   
     
     subplot(3,1,2)
     plot(t, dphi2-dphi2_check)
-    ylabel('\Delta dphi2 [rad/s]')
+    ylabel('\Delta d\theta_2 [rad/s]')
     
     subplot(3,1,3)
     plot(t, ddphi2-ddphi2_check)
-    ylabel('\Delta ddphi2 [rad/s²]')
+    ylabel('\Delta dd\theta_2 [rad/s²]')
     
     set(gcf,'NextPlot','add');
     axes;
