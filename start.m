@@ -168,7 +168,7 @@ L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepun
 
 % initial condition for first step of position analysis with fsolve (phi3 and phi4)
 % VERY IMPORTANT because it determines which branch of the mechanism you're in
-phi_init = [0; 2*pi/3 ; 1.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 2 ; pi/12 ; 1 ; pi/12];    
+phi_init = [0; 2*pi/3 ; 0.25 ; pi/12 ; 2*pi/3 ; 7*pi/12 ; 0.5 ; pi/12 ; 0.25 ; pi/12];    
         
 phi3_init =  phi_init(1);
 phi4_init =  phi_init(2);
@@ -184,14 +184,14 @@ phi12_init = phi_init(10);
 
 t_begin = 0;                   % start time of simulation
 t_end = 2*pi/25;               % end time of simulation = volledige rotatie
-Ts = (t_end-t_begin)/2000;     % time step of simulation
+Ts = (t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
 omega = -25;
 alpha = 0;
 phi2 = omega*t + pi/2;
-dphi2 = omega*ones(size(phi2));             % ones(size(phi2)) creëert een vector met allemaal 1tjes in met de grootte van de vector phi2
+dphi2 = omega*ones(size(phi2));
 ddphi2 = alpha*ones(size(phi2));
 
 % calculation of the kinematics (see kin_4bar.m)
@@ -224,17 +224,6 @@ ddphi2 = alpha*ones(size(phi2));
                    X2,X3,X4,X5,X6k,X6l,X6,X7,X8k,X8l,X8,X9,X10,X11,X12, ...
                    Y2,Y3,Y4,Y5,Y6k,Y6l,Y6,Y7,Y8k,Y8l,Y8,Y9,Y10,Y11,Y12, ...
                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_dyn_4bar);
-               
-% extra controle van krachten
-%figure()
-%plot()
-%ylabel('Extra controle')
-% => Alle versnellingen dynamica nagekeken
-% => Alle krachtvergelijkingen van de matrix nagekeken
-
-% Wat al zeker klopt: M19, F89x, M45, M12
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % STEP 3. Movie
@@ -290,3 +279,54 @@ if fig_forward_dyn
     set(gca,'Visible','off');
     set(h,'Visible','on')
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STEP 5. Influence of rev_arm_angle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+fig_kin_4bar = 0;
+nb_data_points = 75;
+
+x9_max_ampl = zeros(1,nb_data_points);
+x9_max_index = zeros(1,nb_data_points); % index for which x9 becomes maximal
+x11_max_index = zeros(1,nb_data_points); % index for which x11 becomes maximal
+
+var_rev_arm_angle = zeros(1, nb_data_points);
+
+for i = [1:1:nb_data_points+1]
+    var_rev_arm_angle(i) = -rev_arm_angle + 2*rev_arm_angle*(i-1)/nb_data_points;
+    x7 = (6.164 + 2.75 * cos(var_rev_arm_angle(i))) * conv;  
+    y7 = (5.031 - 2.75 * sin(var_rev_arm_angle(i))) * conv;
+    
+    [   phi3,   phi4,   x5,     phi6,   phi7,   phi8,   x9,     phi10,      x11,    phi12, ... 
+    dphi3,  dphi4,  dx5,    dphi6,  dphi7,  dphi8,  dx9,    dphi10,     dx11,   dphi12, ...
+    ddphi3, ddphi4, ddx5,   ddphi6, ddphi7, ddphi8, ddx9,   ddphi10,    ddx11,  ddphi12, ...
+    a56_x_check, a56_y_check, a67_x_check, a67_y_check, a68_x_check, a68_y_check, a89_x_check, ...
+    a89_y_check, a810_x_check, a810_y_check, a1011_x_check, a1011_y_check] = ...
+    kinematics_4bar(r2l, r2k, r3, r4l, r4k, r6l, r6k, r7, r8l, r8k, r10, r11, r12, x4, y4, x7, y7, y9, ...
+                    phi1, phi2, dphi2, ddphi2, omega, alpha, ...
+                    phi3_init, phi4_init, x5_init, phi6_init, phi7_init, phi8_init, x9_init, phi10_init, x11_init, phi12_init, ...
+                    t, fig_kin_4bar);
+                
+    x9_max_ampl(i) = max(x9 - mean(x9));
+    [dummy, x9_max_index(i)] = max(x9); % 'dummy' is not used, except to get to the second output of the max functions
+    [dummy, x11_max_index(i)] = max(x11);
+
+end
+
+screen_size = get(groot, 'ScreenSize');
+
+figure('Name', 'Invloed controlearm', 'NumberTitle', 'off', ...
+       'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
+subplot(2,1,1)
+plot(180/pi*var_rev_arm_angle, x9_max_ampl)
+ylabel('amplitude x_9 [m]')
+subplot(2,1,2)
+plot(180/pi*var_rev_arm_angle, (180/pi)*(Ts*dphi2)*(x9_max_index - x11_max_index),'Color', [0 0.4470 0.7410]);
+ylabel('faseverschil x_9 en x_{11} [°]')
+
+set(gcf,'NextPlot','add');
+axes;
+h = title({'Invloed van de controlearm op x_9'; ''});
+set(gca,'Visible','off');
+set(h,'Visible','on')

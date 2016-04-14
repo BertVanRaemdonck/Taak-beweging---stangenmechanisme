@@ -411,86 +411,88 @@ end % loop over positions
 
 %% *** create movie ***
 
-% startpunt
-% nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
-sch_1_2 = 0;
-% andere vaste punten (coördinaten = complexe getallen)
-sch_1_7 = (x7 + j*y7)*exp(j*phi1);
-sch_1_4 = (x4 + j*y4)*exp(j*phi1);
+if fig_kin_4bar
+    % startpunt
+    % nomenclatuur: scharnier tussen staaf x en staaf y = sch_x_y
+    sch_1_2 = 0;
+    % andere vaste punten (coördinaten = complexe getallen)
+    sch_1_7 = (x7 + j*y7)*exp(j*phi1);
+    sch_1_4 = (x4 + j*y4)*exp(j*phi1);
 
-% define which positions we want as frames in our movie
-frames = 40;    % number of frames in movie
-delta = floor(t_size/frames); % time between frames
-index_vec = [1:delta:t_size]';
+    % define which positions we want as frames in our movie
+    frames = 40;    % number of frames in movie
+    delta = floor(t_size/frames); % time between frames
+    index_vec = [1:delta:t_size]';
 
-% Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
-% This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
-% axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
-% plots.
-x_left = -1.5*r2l;
-y_bottom = -1.5*max(r2l, r11);
-x_right = x7 + 1.5*(r7 + r6);
-y_top = 1.2*max(y4,max(y7,y9)); 
+    % Create a window large enough for the whole mechanisme in all positions, to prevent scrolling.
+    % This is done by plotting a diagonal from (x_left, y_bottom) to (x_right, y_top), setting the
+    % axes equal and saving the axes into "movie_axes", so that "movie_axes" can be used for further
+    % plots.
+    x_left = -1.5*r2l;
+    y_bottom = -1.5*max(r2l, r11);
+    x_right = x7 + 1.5*(r7 + r6);
+    y_top = 1.2*max(y4,max(y7,y9)); 
 
-figure(10)
-hold on
-plot([x_left, x_right], [y_bottom, y_top]);
-axis equal;
-movie_axes = axis;   %save current axes into movie_axes
-
-% draw and save movie frame
-for m=1:length(index_vec)
-    index = index_vec(m);
-    
-    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
-    % opzichte van elkaar.
-    
-    sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
-    sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
-    sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
-    
-    sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
-    sch_10_11 = sch_11_12 - j*r11;
-    sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
-        
-    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
-        
-    sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
-    sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
-    sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
-    sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
-    
-    hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
-    
-    
-    staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
-    loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
-    loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
-    staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
-    knoop810 = [sch_8_101 sch_8_102];
-      
-    
     figure(10)
-    clf
     hold on
-    plot(real(staaf2), imag(staaf2), '-o')
-    plot(real(loop1), imag(loop1), '-o')
-    plot(real(loop2), imag(loop2), '-o')
-    plot(real(staaf4), imag(staaf4), '-o')
-    plot(real(staaf3), imag(staaf3), '-o')
-    plot(real(knoop810), imag(knoop810), '-o')
-       
-    
-    axis(movie_axes);     % set axes as in movie_axes
-    Movie(m) = getframe;  % save frame to a variable Film
+    plot([x_left, x_right], [y_bottom, y_top]);
+    axis equal;
+    movie_axes = axis;   %save current axes into movie_axes
+
+    % draw and save movie frame
+    for m=1:length(index_vec)
+        index = index_vec(m);
+
+        % Volgens mij moet je ze in de volgorde van de loop definiëren ten
+        % opzichte van elkaar.
+
+        sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
+        sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
+        sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
+
+        sch_11_12 = sch_2_12 + r12*exp(j*phi12(index));
+        sch_10_11 = sch_11_12 - j*r11;
+        sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
+
+        sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+
+        sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
+        sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
+        sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
+        sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
+
+        hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+        sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
+
+
+        staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
+        loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
+        loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
+        staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
+        staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
+        knoop810 = [sch_8_101 sch_8_102];
+
+
+        figure(10)
+        clf
+        hold on
+        plot(real(staaf2), imag(staaf2), '-o')
+        plot(real(loop1), imag(loop1), '-o')
+        plot(real(loop2), imag(loop2), '-o')
+        plot(real(staaf4), imag(staaf4), '-o')
+        plot(real(staaf3), imag(staaf3), '-o')
+        plot(real(knoop810), imag(knoop810), '-o')
+
+
+        axis(movie_axes);     % set axes as in movie_axes
+        Movie(m) = getframe;  % save frame to a variable Film
+    end
+
+    % save movie
+    save fourbar_movie Movie
+    close(10)
+
 end
-
-% save movie
-save fourbar_movie Movie
-close(10)
-
 
 %% *** plot figures ***
 
