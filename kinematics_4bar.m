@@ -462,13 +462,15 @@ if fig_kin_4bar
         sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
 
         hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+        vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index)); % Ongeconnecteerde punt van staaf 4
         sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
 
 
         staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
         loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
         loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-        staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
+        staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b]; % Wordt getekend zonder bolletjes
+        scharnieren4 = [sch_1_4 sch_3_4b]; % Wordt enkel als bolletjes getekend
         staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
         knoop810 = [sch_8_101 sch_8_102];
 
@@ -479,7 +481,8 @@ if fig_kin_4bar
         plot(real(staaf2), imag(staaf2), '-o')
         plot(real(loop1), imag(loop1), '-o')
         plot(real(loop2), imag(loop2), '-o')
-        plot(real(staaf4), imag(staaf4), '-o')
+        plot(real(staaf4), imag(staaf4), '-')
+        plot(real(scharnieren4), imag(scharnieren4), 'o')
         plot(real(staaf3), imag(staaf3), '-o')
         plot(real(knoop810), imag(knoop810), '-o')
 
@@ -495,6 +498,8 @@ if fig_kin_4bar
 end
 
 %% *** plot figures ***
+
+screen_size = get(groot, 'ScreenSize');
 
 if fig_kin_4bar
     %% assembly figuur
@@ -524,14 +529,26 @@ if fig_kin_4bar
     sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
     hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
+    vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index)); % Ongeconnecteerde punt van staaf 4
     sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
        
-    figure
+    figure('Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/3])
+    hold on;
+    plot([-r2l, 1.2*(r2l+r12)], [-1.3*r2l, 1.1*y4])
+    axis equal;
+    plot_axis = axis;
+    close all;
+    
+    figure('Name', 'Assembly', 'NumberTitle', 'off', ...
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/3])
+    clf
+    hold on
     
     staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
     loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
     loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-    staaf4 = [sch_1_4 hoekpunt_4 sch_3_4b];
+    staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b]; % Wordt getekend zonder bolletjes
+    scharnieren4 = [sch_1_4 sch_3_4b]; % Wordt enkel als bolletjes getekend
     staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
     knoop810 = [sch_8_101 sch_8_102];
     
@@ -541,14 +558,15 @@ if fig_kin_4bar
     plot(real(loop1), imag(loop1), 'ro-')
     plot(real(loop2), imag(loop2), 'ro-')
     plot(real(staaf2), imag(staaf2), 'ro-')
-    plot(real(staaf4), imag(staaf4), 'ro-')
+    plot(real(staaf4), imag(staaf4), 'r-')
+    plot(real(scharnieren4), imag(scharnieren4), 'ro')
     plot(real(staaf3), imag(staaf3), 'ro-')
     xlabel('[m]')
     ylabel('[m]')
     title('assembly')
-    axis equal
+    axis(plot_axis)
+    hold off
     
-    screen_size = get(groot, 'ScreenSize');
     
     %% alle posities
     figure('Name', 'Posities', 'NumberTitle', 'off', ...
