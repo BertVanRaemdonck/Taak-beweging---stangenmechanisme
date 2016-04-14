@@ -184,7 +184,7 @@ phi12_init = phi_init(10);
 
 t_begin = 0;                   % start time of simulation
 t_end = 2*pi/25;               % end time of simulation = volledige rotatie
-Ts = (t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
+Ts = 20*(t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
@@ -261,21 +261,33 @@ if fig_forward_dyn
     screen_size = get(groot, 'ScreenSize');
     figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, phi2-phi2_check)
-    ylabel('\Delta \theta_2 [rad]')   
+    subplot(3,2,1)
+    plot(t, phi2_check)
+    ylabel('\theta_2 [rad]')   
     
-    subplot(3,1,2)
-    plot(t, dphi2-dphi2_check)
+    subplot(3,2,2)
+    plot(t, phi2_check-phi2)
+    ylabel('\Delta \theta_2 [rad]') 
+    
+    subplot(3,2,3)
+    plot(t, dphi2_check)
+    ylabel('d\theta_2 [rad/s]') 
+    
+    subplot(3,2,4)
+    plot(t, dphi2_check-dphi2)
     ylabel('\Delta d\theta_2 [rad/s]')
     
-    subplot(3,1,3)
-    plot(t, ddphi2-ddphi2_check)
+    subplot(3,2,5)
+    plot(t, ddphi2_check)
+    ylabel('dd\theta_2 [rad/s²]') 
+    
+    subplot(3,2,6)
+    plot(t, ddphi2_check-ddphi2)
     ylabel('\Delta dd\theta_2 [rad/s²]')
     
     set(gcf,'NextPlot','add');
     axes;
-    h = title({'Controle voorwaartse dynamica (2)'; ''});
+    h = title({'Controle voorwaartse dynamica'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
 end
@@ -285,7 +297,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fig_kin_4bar = 0;
-nb_data_points = 75;
+nb_data_points = 50;
 
 x9_max_ampl = zeros(1,nb_data_points);
 x9_max_index = zeros(1,nb_data_points); % index for which x9 becomes maximal

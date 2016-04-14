@@ -664,26 +664,4 @@ end
 phi2 = phi2(1:k,:);
 dphi2 = dphi2(1:k,:);
 
-if fig_forward_dyn
-       
-    screen_size = get(groot, 'ScreenSize');
-    figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
-           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, phi2)
-    ylabel('\theta_2 [rad]')   
-    
-    subplot(3,1,2)
-    plot(t, dphi2)
-    ylabel('d\theta_2 [rad/s]')
-    
-    subplot(3,1,3)
-    plot(t, ddphi2)
-    ylabel('dd\theta_2 [rad/s²]')
-    
-    set(gcf,'NextPlot','add');
-    axes;
-    h = title({'Controle voorwaartse dynamica'; ''});
-    set(gca,'Visible','off');
-    set(h,'Visible','on')
 end

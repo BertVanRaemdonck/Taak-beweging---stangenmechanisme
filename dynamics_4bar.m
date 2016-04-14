@@ -867,38 +867,28 @@ dE_kin = m2*dot(vel_2,acc_2,2) + m3*dot(vel_3,acc_3,2) + m4*dot(vel_4,acc_4,2) +
 %        + m6*times(vel_6,acc_6) + m7*times(vel_7,acc_7) + m8*times(vel_8,acc_8) + m9*times(vel_9,acc_9) ...
 %        + m10*times(vel_10,acc_10) + m11*times(vel_11,acc_11) + m12*times(vel_12,acc_12);
 
-%size(P)
-%size(dE_kin)
-% size(P2)
-% size(dE_kin2)
-% M12_check2 = (dE_kin2 - P2)/(dphi2*ones(size(phi2)));
 M12_check = times((dphi2.^-1),(dE_kin - P));                     % .^ verheft elk element van de matrix/vector tot de macht die er bijstaat
-
-%size(M12)
-%size(M12_check)
 
 if fig_dyn_4bar
     
     screen_size = get(groot, 'ScreenSize');
     figure('Name', 'Controle aandrijfmoment', 'NumberTitle', 'off', ...
-           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, M12-M12_check)
-    ylabel('\DeltaM12 [Nm]')   
+           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/3])
     
-    subplot(3,1,2)
+    subplot(1,2,1)
     plot(t, M12)
     ylabel('M12 [Nm]')
-    
-    subplot(3,1,3)
-    plot(t, M12_check)
-    ylabel('M12 check [Nm]')
+       
+    subplot(1,2,2)
+    plot(t, M12-M12_check)
+    ylabel('\DeltaM12 [Nm]')
     
     set(gcf,'NextPlot','add');
     axes;
     h = title({'Controle aandrijfmoment M12'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
+    
 end
 
 %% *** Controle: conservatie van momentum ***
@@ -987,79 +977,41 @@ M_shak = -(M12 - M19 + M111 + F14y*x4 - F14x*y4 + F17y*x7 - F17x*y7 - F19.*(r2l+
 % Plotten van controle:
 if fig_dyn_4bar
     
-    screen_size = get(groot, 'ScreenSize');
-    figure('Name', 'Controle shaking force_x', 'NumberTitle', 'off', ...
+    screen_size = get(groot, 'ScreenSize');    
+    figure('Name', 'Controle shaking forces', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, F_shak_x-F_shak_x_check)
-    ylabel('\DeltaF shak_x [N]')   
-    
-    subplot(3,1,2)
+    subplot(3,2,1)
     plot(t, F_shak_x)
-    ylabel('F shak_x [N]')
+    ylabel('F_{shak,x} [N]')  
     
-    subplot(3,1,3)
-    plot(t, F_shak_x_check)
-    ylabel('F shak_x check [N]')
+    subplot(3,2,2)
+    plot(t, F_shak_x - F_shak_x_check)
+    ylabel('\Delta F_{shak,x} [N]')
     
-    set(gcf,'NextPlot','add');
-    axes;
-    h = title({'Controle shaking forces (1) '; ''});
-    set(gca,'Visible','off');
-    set(h,'Visible','on')
-    
-    
-    
-    figure('Name', 'Controle shaking force_y', 'NumberTitle', 'off', ...
-           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, F_shak_y-F_shak_y_check)
-    ylabel('\DeltaF shak_y [N]')   
-    
-    subplot(3,1,2)
+    subplot(3,2,3)
     plot(t, F_shak_y)
-    ylabel('F shak_y [N]')
+    ylabel('F_{shak,y} [N]')
     
-    subplot(3,1,3)
-    plot(t, F_shak_y_check)
-    ylabel('F shak_y check [N]')
+    subplot(3,2,4)
+    plot(t, F_shak_y - F_shak_y_check)
+    ylabel('\Delta F_{shak,y} [N]')
     
-    set(gcf,'NextPlot','add');
-    axes;
-    h = title({'Controle shaking forces (2) '; ''});
-    set(gca,'Visible','off');
-    set(h,'Visible','on')
+    subplot(3,2,5)
+    plot(t, M_shak )
+    ylabel('M_{shak} [Nm]')
     
-    
-    figure('Name', 'Controle shaking moment', 'NumberTitle', 'off', ...
-           'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-    subplot(3,1,1)
-    plot(t, M_shak-M_shak_check)
-    ylabel('\DeltaM shak [Nm]')   
-    
-    subplot(3,1,2)
-    plot(t, M_shak)
-    ylabel('M shak [Nm]')
-    
-    subplot(3,1,3)
-    plot(t, M_shak_check)
-    ylabel('M_shak_check [Nm]')
+    subplot(3,2,6)
+    plot(t, M_shak - M_shak_check)
+    ylabel('\Delta M_{shak} [Nm]')
     
     set(gcf,'NextPlot','add');
     axes;
-    h = title({'Controle shaking forces (3) '; ''});
+    h = title({'Controle shaking forces'; ''});
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
 end
 
-% disp([row col])
-% if min(max(M_shak-M_shak_check), max(M12-M12_check)) < 0.00000001
-%     disp('                         gevonden!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-% end
-
-% end
-% end
 
 
 
