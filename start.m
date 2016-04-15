@@ -17,8 +17,8 @@ conv = 0.19;                % conversie factor reële waardes en lengtes simulat
 r2k = 1.203 * conv;         % eccentric crank circle diameter
 r2l = 2.0 * conv;           % 'langere' zijde van de eccentric crank
 r3 = 9.750 * conv;          % eccentric rod
-r4l = 3.021 * conv;           % vervang lengte van link crank (dg) (verticaal) = link crank vert
-r4k = 0.801 * conv;           % vervang lengte van link crank (dg) (horizontaal) = link crank back set
+r4l = 3.021 * conv;         % vervang lengte van link crank (dg) (verticaal) = link crank vert
+r4k = 0.801 * conv;         % vervang lengte van link crank (dg) (horizontaal) = link crank back set
 r6k = 1.625 * conv;         % radius rod extension
 r6l = 9.125 * conv;         % radius rod
 r7 = 1.625 * conv;          % lifting link
@@ -35,10 +35,10 @@ x7 = (6.164 + 2.75 * cos(rev_arm_angle)) * conv;  % horizontale positie scharnie
 y7 = (5.031 - 2.75 * sin(rev_arm_angle)) * conv;  % verticale positie scharnier 1-7 = reverse arm pivot vert + ligting arm length (met hoekcorrectie)
 y9 = 3.5 * conv;            % valve CL to cyl CL
 
-phi1 = 0;                   % omdat dat ook in de voorbeelden zo staat
+phi1 = 0;                   
 
 
-% Definitie extra parameters:   (voorlopig gekozen)
+% Definitie extra parameters:   +- arbitrair gekozen
 breedte5 = 0.05;            % breedte schuifscharnier
 hoogte5 = 0.05;             % hoogte schuifscharnier
 breedte9 = 0.2;             % breedte piston1, stang 9
@@ -47,42 +47,39 @@ breedte11 = 0.3;            % breedte piston2, stang 11
 hoogte11 = 0.2;             % hoogte piston2, stang11
 
 
-% massa's (nog na te kijken)!!
-% Nieuwe variabele nodig:
 R_wiel = 7.875/2 * conv;
 
-rho_l1 = 14.72;             % massa per lengte stang, alles behalve drijfstang
-rho_l2 = 71.76;             % massa per lengte drijfstang
-rho_A = 100;                 % massa per oppervlakte van het element (bij stang 2 driehoek), voorlopig genomen als waarde
+rho_l1 = 14.72;                 % massa per lengte stang, alles behalve drijfstang
+rho_l2 = 71.76;                 % massa per lengte drijfstang
 
-m2 = 1.2 * 2*pi*R_wiel*rho_l2;   % stang 2 = wiel met velg met sectie ~ stang 12 + correctiefactor voor spaken
+m2 = 1.2 * 2*pi*R_wiel*rho_l2;  % stang 2 = wiel met velg met sectie ~ stang 12 + correctiefactor voor spaken
 m3 = r3 * rho_l1;
-m4 = (r4l+r4k) * rho_l1;         % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
+m4 = (r4l+r4k) * rho_l1;        % totale massa van stang 4, ma en mb zijn de massa's van de aparte delen
 ma = r4l * rho_l1;
 mb = r4k * rho_l1;
-m5 = 1;                      % massa van schuifscharnier
-m6 = (r6k+r6l) * rho_l1;     % totale massa van stang 6, m6k en m6l zijn de massa's van de aparte delen
+m5 = 1;                         % massa van schuifscharnier
+m6 = (r6k+r6l) * rho_l1;        % totale massa van stang 6, m6k en m6l zijn de massa's van de aparte delen
 m6k = r6k * rho_l1;
 m6l = r6l * rho_l1;
 m7 = r7 * rho_l1;
-m8 = (r8k +r8l) * rho_l1;    % totale massa van stang 8, m8k en m8l zijn de massa's van de aparte dele
+m8 = (r8k +r8l) * rho_l1;       % totale massa van stang 8, m8k en m8l zijn de massa's van de aparte dele
 m8k = r8k * rho_l1;
 m8l = r8l * rho_l1;
 m10 = r10 * rho_l1;
 m11 = r11 * rho_l1;
 m12 = r12 * rho_l2;
 
-m_piston_1 = 15;            % voorlopig gekozen, stang 9
-m_piston_2 = 20;            % voorlopig gekozen, stang 11
+m_piston_1 = 15;            
+m_piston_2 = 20;            
 
-m9 = m_piston_1;            % extra nodig 
+m9 = m_piston_1;            
 m11 = m11 + m_piston_2;
 
 
 % dynamic parameters, defined in a local frame on each of the bars.
-% NOG EENS GOED NAKIJKEN, IN PRINCIPE DAN ENKEL X COORDINAAT voor stangen?
+X2 = 0;
 X3 = r3/2;                  % zwaartepunt
-X4 = (mb*r4k/2)/(m4);       % Uitgerekend vanaf vaste punt, zou zo moeten kloppen volgens mij
+X4 = (mb*r4k/2)/(m4);       % Uitgerekend vanaf vaste punt, zonder uitsteeksel mee te nemen
 X5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 X6k = r6k/2;
 X6l = r6l/2;
@@ -93,19 +90,13 @@ X8l = r8l/2;
 X8 = (r8k + r8l)/2;
 X9 = 0;                  
 X10 = r10/2;
-X11 = 0;                % GEEN MASSA VERDELING IN X-RICHTING !!!!!
+X11 = 0;                
 X12 = r12/2;
 
-% driehoek is geen driehoek maar cirkel dus cog in scharnier (kan eventueel
-% verwijderd worden)
-X2 = 0;
+
 Y2 = 0;
-
-% zwaartepunten van pistons ook bepalen? (dan wel nieuw symbool voor 11
-%       nodig want r11 is al in gebruik)
-
 Y3 = 0;                     % Y coordinates of cog
-Y4 = ((ma*r4l/2)+(mb*r4l))/m4;      % Uitgerekend vanaf vaste punt, zou zo moeten kloppen volgens mij
+Y4 = ((ma*r4l/2)+(mb*r4l))/m4;      % Uitgerekend vanaf vaste punt, zonder uitsteeksel mee te nemen
 Y5 = 0;                     % in lokaal assenstelsel is cog schuifscharnier in scharnierpunt
 Y6k = 0;
 Y6l = 0;
@@ -116,16 +107,13 @@ Y8l = 0;
 Y8 = 0;
 Y9 = 0;
 Y10 = 0;
-Y11 = ((r11*rho_l1)*r11/2)/(m11);   % IN VERGELIJKINGEN IS DAT HET ZWAARTEPUNT VAN STANG 11 + DE PISTON ZIJN!!!!
+Y11 = ((r11*rho_l1)*r11/2)/(m11);
 Y12 = 0;
 
 
-
-%Vanaf hieronder nog aanpassen en controleren!!!!
-
 % Traagheidsmomenten:
 
-J2 = m2*R_wiel^2;         % door het vaste punt, zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
+J2 = m2*R_wiel^2;       
 J3 = m3*r3^2/12;
 
 J4l = ma*r4l^2/12;
@@ -134,7 +122,7 @@ J4l_cog4 = J4l + (X4^2 + (Y4-r4l/2)^2) * ma;
 J4k_cog4 = J4k + ((r4k/2-X4)^2 + (r4l-Y4)^2) * mb;
 J4 = J4l_cog4 + J4k_cog4;
 
-J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als gevulde balk?  zie "https://en.wikipedia.org/wiki/List_of_moments_of_inertia"
+J5 = m5*((hoogte5^2)+(breedte5^2)) / 12 ;     % te benaderen als volle balk
 J6k = m6k*r6k^2/12;
 J6l = m6l*r6l^2/12;
 J6 = m6*(r6k+r6l)^2/12;
@@ -156,7 +144,6 @@ J12 = m12*r12^2/12;
 
 
 % Extra parameter nodig
-
 L9 = r8l - X8;              % Afstand tussen scharnierpunt 8,9 en het zwaartepunt van stang 8
 
 
@@ -184,7 +171,7 @@ phi12_init = phi_init(10);
 
 t_begin = 0;                   % start time of simulation
 t_end = 2*pi/25;               % end time of simulation = volledige rotatie
-Ts = 20*(t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
+Ts = (t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
 t = [t_begin:Ts:t_end]';       % time vector
 
 % initialization of driver
@@ -211,8 +198,6 @@ ddphi2 = alpha*ones(size(phi2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % calculation of the dynamics (see dyn_4bar.m)
-
-
 [F12x, F12y, F23x, F23y, F212x, F212y, F34x, F34y, F14x, F14y, F45, F56x, F56y, F67x, F67y, ...
    F68x, F68y, F17x, F17y, F89x, F89y, F810x, F810y, F19, F1011x, F1011y, F1112x, F1112y, F111, ...
    M12, M19, M111, M45] ...
@@ -255,8 +240,7 @@ dphi2_init = -25;
                    J2,J3,J4,J5,J6k,J6l,J6,J7,J8k,J8l,J8,J9,J10,J11,J12, t, fig_forward_dyn);
 
                
-if fig_forward_dyn
-    
+if fig_forward_dyn   
         
     screen_size = get(groot, 'ScreenSize');
     figure('Name', 'Controle voorwaartse dynamica', 'NumberTitle', 'off', ...
@@ -298,6 +282,17 @@ end
 
 fig_kin_4bar = 0;
 nb_data_points = 50;
+
+% Declarated again to diminish the amount of time steps, to get faster
+% calculations
+t_begin = 0;                   % start time of simulation
+t_end = 2*pi/25;               % end time of simulation = volledige rotatie
+Ts = 20*(t_end-t_begin)/2000;     % time step of simulation => Multiply by factor get faster analysis
+t = [t_begin:Ts:t_end]';       % time vector
+
+phi2 = omega*t + pi/2;
+dphi2 = omega*ones(size(phi2));
+ddphi2 = alpha*ones(size(phi2));
 
 x9_max_ampl = zeros(1,nb_data_points);
 x9_max_index = zeros(1,nb_data_points); % index for which x9 becomes maximal

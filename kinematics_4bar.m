@@ -443,9 +443,6 @@ if fig_kin_4bar
     for m=1:length(index_vec)
         index = index_vec(m);
 
-        % Volgens mij moet je ze in de volgorde van de loop definiëren ten
-        % opzichte van elkaar.
-
         sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
         sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2));
         sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
@@ -454,23 +451,23 @@ if fig_kin_4bar
         sch_10_11 = sch_11_12 - j*r11;
         sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
 
-        sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+        sch_8_9   = r2l + r12 + x9(index) + j*y9;                       % De bovenste van de twee zuigers
 
         sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
-        sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
+        sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index)));                 % Het blokje dat over de roterende staaf glijdt
         sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
         sch_8_102 = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
 
-        hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-        vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index)); % Ongeconnecteerde punt van staaf 4
+        hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi));           % Het hoekpunt van staaf 4
+        vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index));              % Ongeconnecteerde punt van staaf 4
         sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
 
 
-        staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
+        staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2];                    % De driehoekige staaf 2
         loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
         loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-        staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b]; % Wordt getekend zonder bolletjes
-        scharnieren4 = [sch_1_4 sch_3_4b]; % Wordt enkel als bolletjes getekend
+        staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b];              % Wordt getekend zonder bolletjes
+        scharnieren4 = [sch_1_4 sch_3_4b];                              % Wordt enkel als bolletjes getekend
         staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
         knoop810 = [sch_8_101 sch_8_102];
 
@@ -510,9 +507,6 @@ if fig_kin_4bar
     sch_1_7 = (x7 + j*y7)*exp(j*phi1);
     sch_1_4 = (x4 + j*y4)*exp(j*phi1);
     
-    % Volgens mij moet je ze in de volgorde van de loop definiëren ten
-    % opzichte van elkaar.
-    
     sch_2_12  = sch_1_2 + r2l*exp(j*(phi2(index) + pi));
     sch_2_3   = sch_1_2 + r2k*exp(j*(phi2(index) - pi/2)); 
     sch_3_4a  = sch_2_3 + r3*exp(j*phi3(index));
@@ -521,15 +515,15 @@ if fig_kin_4bar
     sch_10_11 = sch_11_12 - j*r11;
     sch_8_101 = sch_10_11 + r10*exp(j*phi10(index));
         
-    sch_8_9   = r2l + r12 + x9(index) + j*y9; % De bovenste van de twee zuigers
+    sch_8_9   = r2l + r12 + x9(index) + j*y9;                       % De bovenste van de twee zuigers
         
     sch_6_7   = sch_1_7 + r7*exp(j*(phi7(index) + pi));
-    sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index))); % Het blokje dat over de roterende staaf glijdt
+    sch_5_6   = sch_6_7 + r6k*exp(j*(phi6(index)));                 % Het blokje dat over de roterende staaf glijdt
     sch_6_8   = sch_5_6 + r6l*exp(j*phi6(index));
     sch_8_102  = sch_6_8 + (r8l + r8k)*exp(j*(phi8(index) + pi));
     
-    hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi)); % Het hoekpunt van staaf 4, staat ook naar 'beneden' gericht + verkeerde afstand genomen
-    vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index)); % Ongeconnecteerde punt van staaf 4
+    hoekpunt_4 = sch_1_4 + r4l*exp(j*(phi4(index) + pi));           % Het hoekpunt van staaf 4
+    vrijpunt_4 = sch_1_4 + 2/3*r4l*exp(j*phi4(index));              % Ongeconnecteerde punt van staaf 4
     sch_3_4b   = hoekpunt_4 + r4k*exp(j*(phi4(index) + pi/2));
        
     figure('Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/3])
@@ -544,11 +538,11 @@ if fig_kin_4bar
     clf
     hold on
     
-    staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2]; % De driehoekige staaf 2
+    staaf2 = [sch_1_2 sch_2_3 sch_2_12 sch_1_2];                    % De driehoekige staaf 2
     loop1  = [sch_2_12 sch_11_12 sch_10_11 sch_8_101];
     loop2  = [sch_1_7 sch_6_7 sch_5_6 sch_6_8 sch_8_9 sch_8_102]; 
-    staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b]; % Wordt getekend zonder bolletjes
-    scharnieren4 = [sch_1_4 sch_3_4b]; % Wordt enkel als bolletjes getekend
+    staaf4 = [vrijpunt_4 sch_1_4 hoekpunt_4 sch_3_4b];              % Wordt getekend zonder bolletjes
+    scharnieren4 = [sch_1_4 sch_3_4b];                              % Wordt enkel als bolletjes getekend
     staaf3  = [sch_2_3 sch_3_4a sch_3_4b];
     knoop810 = [sch_8_101 sch_8_102];
     

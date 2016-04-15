@@ -22,70 +22,56 @@ g = 9.81;           % valversnelling
 %% *** Declaratie afstandsvectoren matrix A ***
 
 % cogi_P_x, cogn_P_y = vector from the centre of gravity of bar i to point P
-cog2_23_x = r2k*cos(phi2-pi/2);        % voor stang 2 gerekend vanaf vaste punt
+cog2_23_x = r2k*cos(phi2-pi/2);                     % voor stang 2 gerekend vanaf vaste punt
 cog2_23_y = r2k*sin(phi2-pi/2);
 cog2_212_x = -r2l*cos(phi2);
 cog2_212_y = -r2l*sin(phi2);
 
-cog3_23_x = -X3*cos(phi3);               % voor stang 3 gerekend vanaf massacentrum
-cog3_23_y = -X3*sin(phi3);               % X3 vanaf scharnier 1,3
+cog3_23_x = -X3*cos(phi3);                          % voor stang 3 gerekend vanaf massacentrum
+cog3_23_y = -X3*sin(phi3);                          % X3 vanaf scharnier 1,3
 cog3_34_x = (r3-X3)*cos(phi3);
 cog3_34_y = (r3-X3)*sin(phi3);
 
-proj_45_x = cos(phi4-pi/2);             % projectie van kracht F45
+proj_45_x = cos(phi4-pi/2);                         % projectie van kracht F45
 proj_45_y = sin(phi4-pi/2);
 
-vp4_45 = x5;                           % voor stang 4 gerekend vanaf vaste punt
-vp4_34_x = (-r4l*cos(phi4)) + (r4k*cos(phi4+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
-vp4_34_y = (-r4l*sin(phi4)) + (r4k*sin(phi4+pi/2));     % Inderdaad fouten in de mintekens, zou zou het volgens mij moeten kloppen
+vp4_45 = x5;                                        % voor stang 4 gerekend vanaf vaste punt
+vp4_34_x = (-r4l*cos(phi4)) + (r4k*cos(phi4+pi/2));      
+vp4_34_y = (-r4l*sin(phi4)) + (r4k*sin(phi4+pi/2));    
 
-cog6_56_x = -(X6-r6k)*cos(phi6);        % voor stang 6 gerekend vanaf massacentrum
-cog6_56_y = -(X6-r6k)*sin(phi6);        % X6 vanaf scharnier 6,7
+cog6_56_x = -(X6-r6k)*cos(phi6);                    % voor stang 6 gerekend vanaf massacentrum
+cog6_56_y = -(X6-r6k)*sin(phi6);                    % X6 vanaf scharnier 6,7
 cog6_67_x = -X6*cos(phi6);
 cog6_67_y = -X6*sin(phi6);
 cog6_68_x = (r6k + r6l - X6)*cos(phi6);
 cog6_68_y = (r6k + r6l - X6)*sin(phi6);
 
-cog7_17_x = X7*cos(phi7);               % voor stang 7 gerekend vanaf massacentrum
-cog7_17_y = X7*sin(phi7);               % X7 vanaf scharnier 1,7
+cog7_17_x = X7*cos(phi7);                           % voor stang 7 gerekend vanaf massacentrum
+cog7_17_y = X7*sin(phi7);                           % X7 vanaf scharnier 1,7
 cog7_67_x = -(r7-X7)*cos(phi7);
 cog7_67_y = -(r7-X7)*sin(phi7);
 
-cog8_68_x = (r8k + r8l -X8)*cos(phi8);          % voor stang 8 gerekend vanaf massacentrum
-cog8_68_y = (r8k + r8l -X8)*sin(phi8);          % X8 vanaf scharnier 8,10
-cog8_89_x = L9*cos(phi8);               % L9 de afstand van cog tot aangrijping F89
+cog8_68_x = (r8k + r8l -X8)*cos(phi8);              % voor stang 8 gerekend vanaf massacentrum
+cog8_68_y = (r8k + r8l -X8)*sin(phi8);              % X8 vanaf scharnier 8,10
+cog8_89_x = L9*cos(phi8);                           % L9 de afstand van cog tot aangrijping F89
 cog8_89_y = L9*sin(phi8);
 cog8_810_x = -X8*cos(phi8);
 cog8_810_y = -X8*sin(phi8);
 
 
-cog10_810_x = (r10-X10)*cos(phi10);     % voor stang 10 gerekend vanaf massacenrum
-cog10_810_y = (r10-X10)*sin(phi10);    % X10 vanaf scharnier 10,11
+cog10_810_x = (r10-X10)*cos(phi10);                 % voor stang 10 gerekend vanaf massacenrum
+cog10_810_y = (r10-X10)*sin(phi10);                 % X10 vanaf scharnier 10,11
 cog10_1011_x = -X10*cos(phi10);
 cog10_1011_y = -X10*sin(phi10);
 
-cog11_111_y = Y11*ones(size(phi2));                      % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
-cog11_1011_y = -(r11-Y11)*ones(size(phi2));              % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_111_y = Y11*ones(size(phi2));                 % voor stang 11 gerekend vanaf massacentrum, mag geen scalar zijn, maar vector met dezelfde waarde overal
+cog11_1011_y = -(r11-Y11)*ones(size(phi2));         % X11 vanaf scharnier 1,11, mag geen scalar zijn, maar vector met dezelfde waarde overal
 
-cog12_212_x = -X12*cos(phi12);          % voor stang 12 gerekend vanaf massacentrum
-cog12_212_y = -X12*sin(phi12);          % X12 vanaf scharnier 2,12
+cog12_212_x = -X12*cos(phi12);                      % voor stang 12 gerekend vanaf massacentrum
+cog12_212_y = -X12*sin(phi12);                      % X12 vanaf scharnier 2,12
 cog12_1112_x = (r12-X12)*cos(phi12);
 cog12_1112_y = (r12-X12)*sin(phi12);
 
-
-% Voorbeeldcode:
-% cog2_P_x = -X2*cos(phi2)-Y2*cos(phi2+pi/2);
-% cog2_P_y = -X2*sin(phi2)-Y2*sin(phi2+pi/2);
-% cog2_Q_x = (r2-X2)*cos(phi2)-Y2*cos(phi2+pi/2);
-% cog2_Q_y = (r2-X2)*sin(phi2)-Y2*sin(phi2+pi/2);
-% cog3_Q_x = -Y3*cos(phi3+pi/2)-X3*cos(phi3);
-% cog3_Q_y = -Y3*sin(phi3+pi/2)-X3*sin(phi3);
-% cog3_R_x = (r3-X3)*cos(phi3)-Y3*cos(phi3+pi/2);
-% cog3_R_y = (r3-X3)*sin(phi3)-Y3*sin(phi3+pi/2);
-% cog4_S_x = -X4*cos(phi4)-Y4*cos(phi4+pi/2);
-% cog4_S_y = -X4*sin(phi4)-Y4*sin(phi4+pi/2);
-% cog4_R_x = (r4-X4)*cos(phi4)-Y4*cos(phi4+pi/2);
-% cog4_R_y = (r4-X4)*sin(phi4)-Y4*sin(phi4+pi/2);
 
 %% *** Declaratie 3D omega en alpha vectoren ***
 
@@ -111,7 +97,6 @@ alpha12 = [zeros(size(phi2)) zeros(size(phi2)) ddphi12];
 %% *** 3D vectoren voor versnellingen ***
 
 % 3D model vectors:
-
 vec_23_cog3 = [-cog3_23_x    -cog3_23_y   zeros(size(phi2))];
 vec_212_cog12 = [-cog12_212_x    -cog12_212_y   zeros(size(phi2))];
 vec_vp7_cog7 = [-cog7_17_x    -cog7_17_y   zeros(size(phi2))];
@@ -130,16 +115,12 @@ vec_23_34 = [r3*cos(phi3) r3*sin(phi3) zeros(size(phi2))];
 vec_vp4_cog4 = [(-Y4*cos(phi4))+(X4*cos(phi4+pi/2))  (-Y4*sin(phi4))+(X4*sin(phi4+pi/2)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar Y4 ipv r2k en X4 ipv r2l                         
 vec_vp4_cog5 = [-1*times(x5,cos(phi4))  -1*times(x5,sin(phi4))  zeros(size(phi2))];       % Moet kleine x5 zijn, want deze positie varieert continu + elk element apart vermenigvuldigen
 vec_68_89 = [-r8k*cos(phi8)  -r8k*sin(phi8)  zeros(size(phi2))];
-vec_1011_cog10 = [X10*cos(phi10)  X10*sin(phi10)  zeros(size(phi2))];   % Foutje in gevonden
+vec_1011_cog10 = [X10*cos(phi10)  X10*sin(phi10)  zeros(size(phi2))];  
 vec_212_1112 = [r12*cos(phi12)  r12*sin(phi12)   zeros(size(phi2))];
 vec_1011_810 = [r10*cos(phi10)  r10*sin(phi10)  zeros(size(phi2))];
 
 vec_34_cog4 = [(-(r4k-X4)*cos(phi4+pi/2))+((r4l-Y4)*cos(phi4))  (-(r4k-X4)*sin(phi4+pi/2))+((r4l-Y4)*sin(phi4)) zeros(size(phi2))];       % moet hetzelfde zijn als vp4_34 maar (a-Y4) ipv a en (b-X4) ipv b + tegengesteld gericht
-% Voorbeeldcode
-% P_cog2_vec = [-cog2_P_x    -cog2_P_y    zeros(size(phi2))];
-% Q_cog3_vec = [-cog3_Q_x    -cog3_Q_y    zeros(size(phi2))];
-% S_cog4_vec = [-cog4_S_x    -cog4_S_y    zeros(size(phi2))];
-% PQ_vec = [r2*cos(phi2) r2*sin(phi2) zeros(size(phi2))];
+
 
 %% *** 3D versnellingsvectoren voor matrix B ***
 
@@ -147,12 +128,12 @@ vec_34_cog4 = [(-(r4k-X4)*cos(phi4+pi/2))+((r4l-Y4)*cos(phi4))  (-(r4k-X4)*sin(p
 % bv. acc_2 = versnelling massacentrum van stang 2
 %     acc_2_12 = versnelling van scharnierpunt 2,12
 
-acc_2 =                cross(omega2,cross(omega2,vec_vp2_cog2)) +    cross(alpha2,vec_vp2_cog2);  % normaal gezien nul
+acc_2 =                cross(omega2,cross(omega2,vec_vp2_cog2)) +    cross(alpha2,vec_vp2_cog2);    % controle: = 0
 acc_2_12 = acc_2 +     cross(omega2,cross(omega2,-vec_212_cog2)) +    cross(alpha2,-vec_212_cog2);
 acc_2_3 = acc_2 +      cross(omega2,cross(omega2,-vec_23_cog2)) +     cross(alpha2,-vec_23_cog2);
 
 acc_3 = acc_2_3 +      cross(omega3,cross(omega3,vec_23_cog3)) +     cross(alpha3,vec_23_cog3);
-acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpha3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_3_4 = acc_2_3 +    cross(omega3,cross(omega3,vec_23_34)) +       cross(alpha3,vec_23_34);       % enkel nodig voor controle
 
 acc_4 =                cross(omega4,cross(omega4,vec_vp4_cog4)) +    cross(alpha4,vec_vp4_cog4);
 acc_4_check = acc_3_4 +cross(omega4,cross(omega4,vec_34_cog4))  +    cross(alpha4,vec_34_cog4);
@@ -164,15 +145,11 @@ acc_7_6 =              cross(omega7,cross(omega7,vec_vp7_67)) +      cross(alpha
 acc_6 = acc_7_6 +      cross(omega6,cross(omega6,vec_67_cog6)) +     cross(alpha6,vec_67_cog6);
 acc_6_8 = acc_7_6 +    cross(omega6,cross(omega6,vec_67_68)) +       cross(alpha6,vec_67_68);
 
-%acc_5_lin = [-1*times(ddx5,cos(phi4))  -1*times(ddx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
-%acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
-% => Dit klopt niet: er moet nog een coriolisvernelling in. Gemakkelijker
-% is de versnelling via stang 6 te definiëren
 acc_5 = acc_7_6 +      cross(omega6,cross(omega6,vec_67_56)) +       cross(alpha6,vec_67_56);
 
 acc_8 = acc_6_8 +      cross(omega8,cross(omega8,vec_68_cog8)) +     cross(alpha8,vec_68_cog8);
 acc_8_9 = acc_6_8 +    cross(omega8,cross(omega8,vec_68_89))   +     cross(alpha8,vec_68_89);
-acc_8_10 = acc_6_8+    cross(omega8,cross(omega8,vec_68_810))  +     cross(alpha8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_8_10 = acc_6_8+    cross(omega8,cross(omega8,vec_68_810))  +     cross(alpha8,vec_68_810);      % enkel nodig voor controle
 
 acc_9 = [ddx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan acc_8_9
 % Deze controle klopt!
@@ -180,13 +157,13 @@ acc_9 = [ddx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet
 acc_12 = acc_2_12 +    cross(omega12,cross(omega12,vec_212_cog12))+  cross(alpha12,vec_212_cog12);
 acc_11_12 = acc_2_12 + cross(omega12,cross(omega12,vec_212_1112))+   cross(alpha12,vec_212_1112);
 
-acc_11 = [-ddx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan acc_11_12
-acc_10_11 = acc_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
-%Deze controle klopt!
+acc_11 = [-ddx11  zeros(size(phi2))  zeros(size(phi2))];        % controle: moet gelijk zijn aan acc_11_12
+acc_10_11 = acc_11_12;                                          % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan acc_11
+% Deze controle klopt!
 
 acc_10 = acc_10_11 +   cross(omega10,cross(omega10,vec_1011_cog10))+ cross(alpha10,vec_1011_cog10);
-acc_10_8 = acc_10_11 + cross(omega10,cross(omega10,vec_1011_810))  + cross(alpha10,vec_1011_810);
-% Zou gelijk moeten zijn aan acc_8_10, wat ook zo is!
+acc_10_8 = acc_10_11 + cross(omega10,cross(omega10,vec_1011_810))  + cross(alpha10,vec_1011_810);   % controle: = acc_8_10
+% Deze controle klopt!
 
 % controle versnellingen:
 
@@ -300,18 +277,6 @@ acc_11y = acc_11(:,2);
 acc_12x = acc_12(:,1);
 acc_12y = acc_12(:,2);
 
-% Voorbeeldcode versnellingen
-% acc_2 =       cross(omega2,cross(omega2,P_cog2_vec))+cross(alpha2,P_cog2_vec);
-% acc_Q =       cross(omega2,cross(omega2,PQ_vec    ))+cross(alpha2,PQ_vec    );
-% acc_3 = acc_Q+cross(omega3,cross(omega3,Q_cog3_vec))+cross(alpha3,Q_cog3_vec);
-% acc_4 =       cross(omega4,cross(omega4,S_cog4_vec))+cross(alpha4,S_cog4_vec);
-% acc_2x = acc_2(:,1);
-% acc_2y = acc_2(:,2);
-% acc_3x = acc_3(:,1);
-% acc_3y = acc_3(:,2);
-% acc_4x = acc_4(:,1);
-% acc_4y = acc_4(:,2);
-
 
 %% *** Dynamische analyse ***
 
@@ -358,10 +323,6 @@ M45 = zeros(size(phi2));
 % calculate dynamics for each time step
 t_size = size(t,1);    % number of simulation steps
 
-% for row = 3:3:33
-%   for col = 1:33
-
-
 for k=1:t_size
     
 %       F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F1011x           F1011y          F1112x           F1112y          F111        M12         M19          M111        M45
@@ -399,10 +360,6 @@ for k=1:t_size
         0           0            0             0             0              -1               0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               0               -1               0           0           0            0           0;
         0           0            0             0             cog12_212_y(k) -cog12_212_x(k)  0             0                  0          0           0            0             0            0             0             0             0             0             0             0             0             0               0              0           0                0               cog12_1112_y(k) -cog12_1112_x(k) 0           0           0            0           0];
 %       F12x        F12y         F23x          F23y          F212x           F212y           F34x          F34y               F14x       F14y        F45          F56x          F56y         F67x          F67y          F68x          F68y          F17x          F17y          F89x          F89y          F810x           F810y          F19         F1011x           F1011y          F1112x           F1112y          F111        M12         M19          M111        M45
-
-    
-
-  %A(row,col) = -A(row,col);
 
 
   B = [ m2*acc_2x(k);
@@ -494,10 +451,6 @@ if fig_dyn_4bar
     
     figure('Name', 'Krachten', 'NumberTitle', 'off', ...
            'Position', [screen_size(3)/3 screen_size(4)/6 screen_size(3)/3 screen_size(4)/1.5])
-       
-%  'Position', [0 screen_size(2) screen_size(3) screen_size(4)])   is bijna
-%  volledig scherm
-
     subplot(6,2,1)
     plot(t, F12x)
     ylabel('F12x (a_x) [N]')
@@ -636,33 +589,6 @@ if fig_dyn_4bar
     set(gca,'Visible','off');
     set(h,'Visible','on')
     
-%     figure
-%     subplot(221)
-%     plot(F_P_x,F_P_y),grid
-%     xlabel('F_P_x [N]')
-%     ylabel('F_P_y [N]')
-%     axis tight
-%     subplot(222)
-%     plot(F_Q_x,F_Q_y),grid
-%     xlabel('F_Q_x [N]')
-%     ylabel('F_Q_y [N]')
-%     axis tight
-%     subplot(223)
-%     plot(F_R_x,F_R_y),grid
-%     xlabel('F_R_x [N]')
-%     ylabel('F_R_y [N]')
-%     axis tight
-%     subplot(224)
-%     plot(F_S_x,F_S_y),grid
-%     xlabel('F_S_x [N]')
-%     ylabel('F_S_y [N]')
-%     axis tight
-%     
-%     figure
-%     plot(t,M_P)
-%     ylabel('M_P [N-m]')
-%     xlabel('t [s]')
-    
 end
 
 %% *** Controle: variatie van (kinetische) energie ***
@@ -685,17 +611,17 @@ G12= [zeros(size(phi2)) -m12*g*ones(size(phi2)) zeros(size(phi2))];
 
 % Snelheden massacentra en benodigde punten:
 
-vel_2 =                cross(omega2,vec_vp2_cog2);  % normaal gezien nul
+vel_2 =                cross(omega2,vec_vp2_cog2);      % normaal gezien nul
 vel_2_12 = vel_2 +     cross(omega2,-vec_212_cog2);
 vel_2_3 = vel_2 +      cross(omega2,-vec_23_cog2);
 
 vel_3 = vel_2_3 +      cross(omega3,vec_23_cog3);
-vel_3_4 = vel_2_3 +    cross(omega3,vec_23_34);   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+vel_3_4 = vel_2_3 +    cross(omega3,vec_23_34);         % enkel nodig voor controle
 
 vel_4 =                cross(omega4,vec_vp4_cog4);
 vel_4_check = vel_3_4 +cross(omega4,vec_34_cog4);
 
-vel_5_lin = [-1*times(dx5,cos(phi4))  -1*times(dx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
+vel_5_lin = [-1*times(dx5,cos(phi4))  -1*times(dx5,sin(phi4))  zeros(size(phi2))];  % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
 vel_5 = vel_5_lin +    cross(omega4,vec_vp4_cog5);
 
 vel_7 =                cross(omega7,vec_vp7_cog7);
@@ -706,15 +632,15 @@ vel_6_8 = vel_7_6 +    cross(omega6,vec_67_68);
 
 vel_8 = vel_6_8 +      cross(omega8,vec_68_cog8);
 vel_8_9 = vel_6_8 +    cross(omega8,vec_68_89);
-vel_8_10 = vel_6_8+    cross(omega8,vec_68_810);  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+vel_8_10 = vel_6_8+    cross(omega8,vec_68_810);        % enkel nodig voor controle
 
-vel_9 = [dx9  zeros(size(phi2))  zeros(size(phi2))];           % controle: moet gelijk zijn aan vel_8_9
+vel_9 = [dx9  zeros(size(phi2))  zeros(size(phi2))];    % controle: moet gelijk zijn aan vel_8_9
 
 vel_12 = vel_2_12 +    cross(omega12,vec_212_cog12);
 vel_11_12 = vel_2_12 + cross(omega12,vec_212_1112);
 
-vel_11 = [-dx11  zeros(size(phi2))  zeros(size(phi2))];         % controle: moet gelijk zijn aan vel_11_12
-vel_10_11 = vel_11_12;   % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan vel_11
+vel_11 = [-dx11  zeros(size(phi2))  zeros(size(phi2))]; % controle: moet gelijk zijn aan vel_11_12
+vel_10_11 = vel_11_12;                                  % controle: moet zo kloppen aangezien ze vast hangen + gelijk aan vel_11
 
 vel_10_8 = vel_10_11 + cross(omega10,vec_1011_810);
 
@@ -847,11 +773,6 @@ P = dot(G2,vel_2,2) + dot(G3,vel_3,2) + dot(G4,vel_4,2) + dot(G5,vel_5,2) ...
 % dot(A,B,2) werkt het inwendig product uit, maar behandeld de rijen als
 % vectoren ipv de kolommen
 
-% Uitprobeersel, werkt waarschijnlijk niet
-%P2 = times(G2,vel_2) + times(G3,vel_3) + times(G4,vel_4) + times(G5,vel_5) ...
-%    + times(G6,vel_6) + times(G7,vel_7) + times(G8,vel_8) + times(G9,vel_9) + times(G10,vel_10) ...
-%    + times(G11,vel_11) + times(G12,vel_12);
-
 % Variatie van kinetische energie:
 
 dE_kin = m2*dot(vel_2,acc_2,2) + m3*dot(vel_3,acc_3,2) + m4*dot(vel_4,acc_4,2) + m5*dot(vel_5,acc_5,2) ...
@@ -860,12 +781,7 @@ dE_kin = m2*dot(vel_2,acc_2,2) + m3*dot(vel_3,acc_3,2) + m4*dot(vel_4,acc_4,2) +
        + J2*dot(omega2,alpha2,2) + J3*dot(omega3,alpha3,2) + J4*dot(omega4,alpha4,2) ...
        + J6*dot(omega6,alpha6,2) + J7*dot(omega7,alpha7,2) + J8*dot(omega8,alpha8,2) ...
        + J10*dot(omega10,alpha10,2) + J12*dot(omega12,alpha12,2) + J5*dot(omega4,alpha4,2);
-   % stangen 9 en 11 roteren niet, daarom geen rotatieterm in dE_kin??
-
-% Uitprobeersel, werkt waarschijnlijk niet
-% dE_kin2 = m2*times(vel_2,acc_2) + m3*times(vel_3,acc_3) + m4*times(vel_4,acc_4) + m5*times(vel_5,acc_5) ...
-%        + m6*times(vel_6,acc_6) + m7*times(vel_7,acc_7) + m8*times(vel_8,acc_8) + m9*times(vel_9,acc_9) ...
-%        + m10*times(vel_10,acc_10) + m11*times(vel_11,acc_11) + m12*times(vel_12,acc_12);
+	
 
 M12_check = times((dphi2.^-1),(dE_kin - P));                     % .^ verheft elk element van de matrix/vector tot de macht die er bijstaat
 
@@ -944,6 +860,7 @@ M_shak_check = -1*(J2*ddphi2 + J3*ddphi3 + J4*ddphi4 + J5*ddphi4 + J6*ddphi6 + J
                   + (m11*(times(vec_vp2_cog11(:,1),acc_11y) - times(vec_vp2_cog11(:,2),acc_11x))) ...
                   + (m12*(times(vec_vp2_cog12(:,1),acc_12y) - times(vec_vp2_cog12(:,2),acc_12x))) );
 
+% tweede manier om M_shak_check te berekenen. Geeft zelfde resultaat
 tussenuitkomst = m2*cross(vec_vp2_cog2, acc_2) + m3*cross(vec_vp2_cog3, acc_3) ...
                 + m4*cross(vec_vp2_cog4, acc_4) + m5*cross(vec_vp2_cog5, acc_5) ...
                 + m6*cross(vec_vp2_cog6, acc_6) + m7*cross(vec_vp2_cog7, acc_7) ...
@@ -961,15 +878,10 @@ tussenuitkomst_shaking_moment = cross(vec_vp2_cog2,G2) + cross(vec_vp2_cog3,G3) 
 + cross(vec_vp2_cog8,G8) + cross(vec_vp2_cog9,G9) ...
 + cross(vec_vp2_cog10,G10) + cross(vec_vp2_cog11,G11) ...
 + cross(vec_vp2_cog12,G12);
-% ==> zelfde resultaat
             
 
               
 % De werkelijke shaking forces en moment zijn:
-% DIT MOET IEMAND OOK NOG EENS GOED BEKIJKEN, WANT IN MIJN OGEN IS DIT
-% TOTAAL RANDOM WAT JE ER ALLEMAAL AAN TOEWIJST...
-    % + WAT MET DE KRACHTEN (BV F19) DIE JE POSITIEF HEBT GEDEFINIEERD IN DE -Y
-    % RICHTING OF -X RICHTING?
 F_shak_x = -(F12x + F17x + F14x);                            
 F_shak_y = -(F12y + F17y + F14y - F19 + F111 - m2*g - m3*g - m4*g - m5*g - m6*g - m7*g - m8*g - m9*g - m10*g - m11*g - m12*g);
 M_shak = -(M12 - M19 + M111 + F14y*x4 - F14x*y4 + F17y*x7 - F17x*y7 - F19.*(r2l+r12+x9) + F111.*(r2l+r12-x11) + tussenuitkomst_shaking_moment(:,3));

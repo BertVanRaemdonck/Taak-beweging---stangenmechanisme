@@ -327,47 +327,47 @@ cog2_23_y(k) = r2k*sin(phi2(k)-pi/2);
 cog2_212_x(k) = -r2l*cos(phi2(k));
 cog2_212_y(k) = -r2l*sin(phi2(k));
 
-cog3_23_x(k) = -X3*cos(phi3(k));               % voor stang 3 gerekend vanaf massacentrum
-cog3_23_y(k) = -X3*sin(phi3(k));               % X3 vanaf scharnier 1,3
+cog3_23_x(k) = -X3*cos(phi3(k));             % voor stang 3 gerekend vanaf massacentrum
+cog3_23_y(k) = -X3*sin(phi3(k));             % X3 vanaf scharnier 1,3
 cog3_34_x(k) = (r3-X3)*cos(phi3(k));
 cog3_34_y(k) = (r3-X3)*sin(phi3(k));
 
-proj_45_x(k) = cos(phi4(k)-pi/2);             % projectie van kracht F45
+proj_45_x(k) = cos(phi4(k)-pi/2);            % projectie van kracht F45
 proj_45_y(k) = sin(phi4(k)-pi/2);
 
 vp4_45(k) = x5(k);                           % voor stang 4 gerekend vanaf vaste punt
-vp4_34_x(k) = (-r4l*cos(phi4(k))) + (r4k*cos(phi4(k)+pi/2));      % Fout ontdekt: a is de lange zijde, b is de korte zijde
-vp4_34_y(k) = (-r4l*sin(phi4(k))) + (r4k*sin(phi4(k)+pi/2));     % Inderdaad fouten in de mintekens, zou zou het volgens mij moeten kloppen
+vp4_34_x(k) = (-r4l*cos(phi4(k))) + (r4k*cos(phi4(k)+pi/2));     
+vp4_34_y(k) = (-r4l*sin(phi4(k))) + (r4k*sin(phi4(k)+pi/2));    
 
-cog6_56_x(k) = -(X6-r6k)*cos(phi6(k));        % voor stang 6 gerekend vanaf massacentrum
-cog6_56_y(k) = -(X6-r6k)*sin(phi6(k));        % X6 vanaf scharnier 6,7
+cog6_56_x(k) = -(X6-r6k)*cos(phi6(k));       % voor stang 6 gerekend vanaf massacentrum
+cog6_56_y(k) = -(X6-r6k)*sin(phi6(k));       % X6 vanaf scharnier 6,7
 cog6_67_x(k) = -X6*cos(phi6(k));
 cog6_67_y(k) = -X6*sin(phi6(k));
 cog6_68_x(k) = (r6k + r6l - X6)*cos(phi6(k));
 cog6_68_y(k) = (r6k + r6l - X6)*sin(phi6(k));
 
-cog7_17_x(k) = X7*cos(phi7(k));               % voor stang 7 gerekend vanaf massacentrum
-cog7_17_y(k) = X7*sin(phi7(k));               % X7 vanaf scharnier 1,7
+cog7_17_x(k) = X7*cos(phi7(k));              % voor stang 7 gerekend vanaf massacentrum
+cog7_17_y(k) = X7*sin(phi7(k));              % X7 vanaf scharnier 1,7
 cog7_67_x(k) = -(r7-X7)*cos(phi7(k));
 cog7_67_y(k) = -(r7-X7)*sin(phi7(k));
 
-cog8_68_x(k) = (r8k + r8l -X8)*cos(phi8(k));          % voor stang 8 gerekend vanaf massacentrum
-cog8_68_y(k) = (r8k + r8l -X8)*sin(phi8(k));          % X8 vanaf scharnier 8,10
-cog8_89_x(k) = L9*cos(phi8(k));               % L9 de afstand van cog tot aangrijping F89
+cog8_68_x(k) = (r8k + r8l -X8)*cos(phi8(k)); % voor stang 8 gerekend vanaf massacentrum
+cog8_68_y(k) = (r8k + r8l -X8)*sin(phi8(k)); % X8 vanaf scharnier 8,10
+cog8_89_x(k) = L9*cos(phi8(k));              % L9 de afstand van cog tot aangrijping F89
 cog8_89_y(k) = L9*sin(phi8(k));
 cog8_810_x(k) = -X8*cos(phi8(k));
 cog8_810_y(k) = -X8*sin(phi8(k));
 
 
-cog10_810_x(k) = (r10-X10)*cos(phi10(k));     % voor stang 10 gerekend vanaf massacenrum
+cog10_810_x(k) = (r10-X10)*cos(phi10(k));    % voor stang 10 gerekend vanaf massacenrum
 cog10_810_y(k) = (r10-X10)*sin(phi10(k));    % X10 vanaf scharnier 10,11
 cog10_1011_x(k) = -X10*cos(phi10(k));
 cog10_1011_y(k) = -X10*sin(phi10(k));
 
 
 
-cog12_212_x(k) = -X12*cos(phi12(k));          % voor stang 12 gerekend vanaf massacentrum
-cog12_212_y(k) = -X12*sin(phi12(k));          % X12 vanaf scharnier 2,12
+cog12_212_x(k) = -X12*cos(phi12(k));         % voor stang 12 gerekend vanaf massacentrum
+cog12_212_y(k) = -X12*sin(phi12(k));         % X12 vanaf scharnier 2,12
 cog12_1112_x(k) = (r12-X12)*cos(phi12(k));
 cog12_1112_y(k) = (r12-X12)*sin(phi12(k));
 
@@ -462,7 +462,7 @@ acc_2_12(k,:) = acc_2(k,:) +     cross(omega2(k,:),cross(omega2(k,:),-vec_212_co
 acc_2_3(k,:) = acc_2(k,:) +      cross(omega2(k,:),cross(omega2(k,:),-vec_23_cog2(k,:)));
 
 acc_3(k,:) = acc_2_3(k,:) +      cross(omega3(k,:),cross(omega3(k,:),vec_23_cog3(k,:)));
-acc_3_4(k,:) = acc_2_3(k,:) +    cross(omega3(k,:),cross(omega3(k,:),vec_23_34(k,:)));   % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_3_4(k,:) = acc_2_3(k,:) +    cross(omega3(k,:),cross(omega3(k,:),vec_23_34(k,:)));   % enkel nodig voor controle
 
 acc_4(k,:) =                   cross(omega4(k,:),cross(omega4(k,:),vec_vp4_cog4(k,:)));
 acc_4_check(k,:) = acc_3_4(k,:) +cross(omega4(k,:),cross(omega4(k,:),vec_34_cog4(k,:)));
@@ -474,15 +474,11 @@ acc_7_6(k,:) =              cross(omega7(k,:),cross(omega7(k,:),vec_vp7_67(k,:))
 acc_6(k,:) = acc_7_6(k,:) +      cross(omega6(k,:),cross(omega6(k,:),vec_67_cog6(k,:)));
 acc_6_8(k,:) = acc_7_6(k,:) +    cross(omega6(k,:),cross(omega6(k,:),vec_67_68(k,:)));
 
-%acc_5_lin = [-1*times(ddx5,cos(phi4))  -1*times(ddx5,sin(phi4))  zeros(size(phi2))];            % times(A,B) geeft de vector terug waar elk element van A vermenigvuldigd wordt met het overeenkomstige element van B
-%acc_5 = acc_5_lin +    cross(omega4,cross(omega4,vec_vp4_cog5)) +    cross(alpha4,vec_vp4_cog5);
-% => Dit klopt niet: er moet nog een coriolisvernelling in. Gemakkelijker
-% is de versnelling via stang 6 te definiëren
 acc_5(k,:) = acc_7_6(k,:) +      cross(omega6(k,:),cross(omega6(k,:),vec_67_56(k,:))) ;
 
 acc_8(k,:) = acc_6_8(k,:) +      cross(omega8(k,:),cross(omega8(k,:),vec_68_cog8(k,:))) ;
 acc_8_9(k,:) = acc_6_8(k,:) +    cross(omega8(k,:),cross(omega8(k,:),vec_68_89(k,:))) ;
-acc_8_10(k,:) = acc_6_8(k,:)+    cross(omega8(k,:),cross(omega8(k,:),vec_68_810(k,:))) ;  % tot besef gekomen dat we deze niet nodig hebben, tenzij voor controle
+acc_8_10(k,:) = acc_6_8(k,:)+    cross(omega8(k,:),cross(omega8(k,:),vec_68_810(k,:))) ;  % enkel nodig voor controle
 
 
 acc_12(k,:) = acc_2_12(k,:) +    cross(omega12(k,:),cross(omega12(k,:),vec_212_cog12(k,:)));
