@@ -28,6 +28,8 @@ global x_boreleft x_boreright y_bore
 global currentloadfile currentliftfile
 global bcr
 global rof
+global bcr_edit rof_edit exc_edit contourgrad_edit          % needed to set these values from the script
+global mass_edit spring_edit sprload_edit rpm_edit          % needed to set these values from the script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
