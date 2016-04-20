@@ -768,9 +768,9 @@ elseif strcmp(action,'genmotlawload'),
 [liftloadfile, liftloadpath]=uigetfile('*.mot','load motion law');
 
 currentliftfile=liftloadfile;
-eval(['cd ' liftloadpath]);
-eval(['load ' liftloadfile]);
-eval(['cd ' rootdir]);
+cd(liftloadpath);
+load(liftloadfile);
+cd(rootdir);
 
 tetatot=[0:1:360];
 Stot=eval(strtok(liftloadfile,'.'));
@@ -1376,9 +1376,9 @@ elseif strcmp(action,'genextloadload'),
 
 
 currentloadfile=loadloadfile;
-eval(['cd ' loadloadpath]);
-eval(['load ' loadloadfile]);
-eval(['cd ' rootdir]);
+cd(loadloadpath);
+load(loadloadfile);
+cd(rootdir);
 
 betaloadtot=[0:1:360];
 extloadtot=eval(strtok(loadloadfile,'.'));
