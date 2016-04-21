@@ -1,6 +1,15 @@
 clear;
 close all;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTANT
+%
+% To get this program to run smoothly, please fill in the location of the
+% motion law and external load files on your computer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
+ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+
 % assigned values
 follower_mass = 20;
 follower_c = 0;
@@ -10,12 +19,27 @@ cam_rpm = 60/T_cycle;
 
 matcam();
 % loading the files with the motion law and load profile
-matcam('genmotlawload')
-matcam('genextloadload')
+if exist(mot_law_location, 'file') == 2
+    matcam('genmotlawload', mot_law_location)
+else
+    matcam('genmotlawload')
+end
+
+if exist(ext_load_location, 'file') == 2
+    matcam('genextloadload', ext_load_location)
+else
+    matcam('genextloadload')
+end
 
 % setting the additional parameters for the analysis
+global genmotlaw_startangle_edit genmotlaw_endangle_edit
+global genmotlaw_startlift_edit genmotlaw_endlift_edit
 global bcr_edit rof_edit exc_edit contourgrad_edit          
-global mass_edit spring_edit sprload_edit rpm_edit          
+global mass_edit spring_edit sprload_edit rpm_edit
+set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
 set(bcr_edit, 'string', '80');
 set(rof_edit, 'string', '20');
 set(exc_edit, 'string', '0');
@@ -48,30 +72,6 @@ global force_x force_y;
 F_x = force_x;                                  % Total force in x direction
 F_y = force_y;                                  % Total force in y direction
 
+close all;
 figure()
-plot(F_load)
-
-
-% global beta0 beta1
-% global lambda_plot lambda
-% global roc_plot roc gamma
-
-% global RRtotgamma VVtotgamma AAtotgamma
-% global Rtotrad 
-% global rof
-% global extload extloadtot
-% global betaload betaloadtot
-% global betaload0 betaload1
-% global x_pitch y_pitch
-% global x_pitch_plot y_pitch_plot
-% global x_contour y_contour
-% global x_contour_plot y_contour_plot
-% global x_rolfol y_rolfol
-% global x_rod y_rod x_rod_ref y_rod_ref
-% global x_center y_center
-% global x_pressangle y_pressangle
-% global x_refangle y_refangle
-% global x_boreleft x_boreright y_bore
-% global currentloadfile currentliftfile
-% global bcr
-% global rof
+plot(alpha)

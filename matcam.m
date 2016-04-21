@@ -1,4 +1,4 @@
-function matcam(action);
+function matcam(action, argument);
 
 global rootdir
 global S V A
@@ -28,6 +28,8 @@ global x_boreleft x_boreright y_bore
 global currentloadfile currentliftfile
 global bcr
 global rof
+global genmotlaw_startangle_edit genmotlaw_endangle_edit    % needed to set these values from the script
+global genmotlaw_startlift_edit genmotlaw_endlift_edit      % needed to set these values from the script
 global bcr_edit rof_edit exc_edit contourgrad_edit          % needed to set these values from the script
 global mass_edit spring_edit sprload_edit rpm_edit          % needed to set these values from the script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -767,8 +769,18 @@ set(gcf,'userdata',[ ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 elseif strcmp(action,'genmotlawload'),
 
-[liftloadfile, liftloadpath]=uigetfile('*.mot','load motion law');
-
+if nargin < 2
+    [liftloadfile, liftloadpath]=uigetfile('*.mot','load motion law');
+else
+    temp = strsplit(argument, '\');
+    liftloadpath = temp(1);
+    for i = 2:1:length(temp)-1
+        liftloadpath = strcat(liftloadpath, '\', temp(i));
+    end
+    liftloadpath = char(liftloadpath);
+    liftloadfile = char(temp(length(temp)));
+end
+    
 currentliftfile=liftloadfile;
 cd(liftloadpath);
 load(liftloadfile);
@@ -853,7 +865,6 @@ beta1=str2num(get(genmotlaw_endangle_edit,'string'));
 
 L0=str2num(get(genmotlaw_startlift_edit,'string'));
 L1=str2num(get(genmotlaw_endlift_edit,'string'));
-
 
 teta=[beta0:1:beta1];
 beta=(beta1-beta0);
@@ -1374,8 +1385,18 @@ elseif strcmp(action,'genextloadclear'),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 elseif strcmp(action,'genextloadload'),
-[loadloadfile, loadloadpath]=uigetfile('*.exl','load external load file');
-
+    
+if nargin < 2
+    [loadloadfile, loadloadpath]=uigetfile('*.exl','load external load file');
+else
+    temp = strsplit(argument, '\');
+    loadloadpath = temp(1);
+    for i = 2:1:length(temp)-1
+        loadloadpath = strcat(loadloadpath, '\', temp(i));
+    end
+    loadloadpath = char(loadloadpath);
+    loadloadfile = char(temp(length(temp)));
+end
 
 currentloadfile=loadloadfile;
 cd(loadloadpath);
