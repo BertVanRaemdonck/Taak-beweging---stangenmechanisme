@@ -1,6 +1,8 @@
 clear;
 close all;
 
+%% Declaration of variables and loading in matcam
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPORTANT
 %
@@ -12,7 +14,7 @@ ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_extern
 
 % assigned values
 follower_mass = 20;
-follower_c = 0;
+zeta = 0.077;
 T_cycle = 0.5;
 omega = 2*pi/T_cycle;
 cam_rpm = 60/T_cycle;
@@ -51,8 +53,9 @@ else
 end
 
 matcam('calc')
+close all
 
-%% inladen matcam variabelen
+%% Making matcam variables locally accessible
 
 global Stot Vtot Atot;    
 S = Stot;                                       % Lift
@@ -73,6 +76,11 @@ global force_x force_y;
 F_x = force_x;                                  % Total force in x direction
 F_y = force_y;                                  % Total force in y direction
 
-close all;
+% test to see if the loading of the variables workes
 figure()
 plot(alpha)
+
+%% 4) Dynamics of a flexible follower
+
+beta_min = 330-265;                 % minimal angle of a rise in degrees
+t_min = beta_min*(pi/180) / omega;  % minimal time of a rise in seconds
