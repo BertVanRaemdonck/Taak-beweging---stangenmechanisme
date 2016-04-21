@@ -17,19 +17,7 @@ T_cycle = 0.5;
 omega = 2*pi/T_cycle;
 cam_rpm = 60/T_cycle;
 
-matcam();
-% loading the files with the motion law and load profile
-if exist(mot_law_location, 'file') == 2
-    matcam('genmotlawload', mot_law_location)
-else
-    matcam('genmotlawload')
-end
-
-if exist(ext_load_location, 'file') == 2
-    matcam('genextloadload', ext_load_location)
-else
-    matcam('genextloadload')
-end
+matcam()
 
 % setting the additional parameters for the analysis
 global genmotlaw_startangle_edit genmotlaw_endangle_edit
@@ -49,7 +37,20 @@ set(spring_edit, 'string', '2');
 set(sprload_edit, 'string', '10');
 set(rpm_edit, 'string', num2str(cam_rpm));
 
-matcam('genmotlawcalc')
+% loading the files with the motion law and load profile
+if exist(mot_law_location, 'file') == 2
+    matcam('genmotlawload', mot_law_location)
+else
+    matcam('genmotlawload')
+end
+
+if exist(ext_load_location, 'file') == 2
+    matcam('genextloadload', ext_load_location)
+else
+    matcam('genextloadload')
+end
+
+matcam('calc')
 
 %% inladen matcam variabelen
 
