@@ -9,8 +9,8 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
-ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
 follower_mass = 20;
@@ -446,7 +446,10 @@ if 1 == 1                                       % Recalibration matcam
     
     global Rtotrad
     R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
-
+    
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 P1 = F_tot .*(omega*ones(size(S))) .*(sin(alpha)) .* R_tot;      % instantaneous power
@@ -506,7 +509,10 @@ if 1 == 1                                       % Recalibration matcam
     
     global Rtotrad
     R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
-
+    
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sin(alpha)) + (eccentricity.*cos(alpha)) ); 
