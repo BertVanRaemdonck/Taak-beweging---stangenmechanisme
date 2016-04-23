@@ -9,8 +9,8 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
+ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
 
 % assigned values
 follower_mass = 20;
@@ -53,7 +53,7 @@ else
 end
 
 matcam('calc')
-%close all
+close all
 
 %% Making matcam variables locally accessible
 
@@ -152,7 +152,9 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
 
-
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 
@@ -237,6 +239,9 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
 
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 
@@ -302,6 +307,9 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
 
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 figure()
@@ -372,6 +380,9 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
 
+    % Close matcam window
+    matcam_figure = gcf;
+    close(matcam_figure.Number)
 end 
 
 figure()
