@@ -9,8 +9,8 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
-ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
 follower_mass = 20;
@@ -32,11 +32,11 @@ set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for c
 set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
 set(bcr_edit, 'string', '80');
 set(rof_edit, 'string', '20');
-set(exc_edit, 'string', '0');
+set(exc_edit, 'string', '0');                               % Analysis first without an eccentric follower
 set(contourgrad_edit, 'string', '0');
 set(mass_edit, 'string', num2str(follower_mass));
-set(spring_edit, 'string', '2');
-set(sprload_edit, 'string', '10');
+set(spring_edit, 'string', '0');                            % Analysis without a spring first, see section 3) for calculation of the spring
+set(sprload_edit, 'string', '0');                           % Analysis without a spring first, see section 3) for calculation of the spring
 set(rpm_edit, 'string', num2str(cam_rpm));
 
 % loading the files with the motion law and load profile
@@ -53,7 +53,7 @@ else
 end
 
 matcam('calc')
-close all
+%close all
 
 %% Making matcam variables locally accessible
 
@@ -75,10 +75,174 @@ F_tot = force_tot;                              % Total force
 global force_x force_y;
 F_x = force_x;                                  % Total force in x direction
 F_y = force_y;                                  % Total force in y direction
-
+global roc;                                     % Radius curvature
+radius_of_curvature = roc;
 % test to see if the loading of the variables workes
+%figure()
+%plot(alpha)
+
+%% 2) Calculating cam dimensions:
+
+% Without eccentricity
+
 figure()
-plot(alpha)
+plot(radius_of_curvature)                       % plotting radius of curvature
+axis([0 360 0 500])
+title('Graph of radius of curvature without eccentricity')
+
+figure()
+plot(alpha)                                     % plotting pressure angle
+title('Graph of pressure angle without eccentricity')
+
+% With eccentricity
+
+eccentricity = 10;                              % Chosen by hand
+
+matcam()
+
+if 1 == 1                                       % Recalibration matcam
+    % setting the additional parameters for the analysis
+set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
+set(bcr_edit, 'string', '80');
+set(rof_edit, 'string', '20');
+set(exc_edit, 'string', num2str(eccentricity));             % Analysis first without an eccentric follower
+set(contourgrad_edit, 'string', '0');
+set(mass_edit, 'string', num2str(follower_mass));
+set(spring_edit, 'string', '0');                            % Analysis without a spring first, see section 3) for calculation of the spring
+set(sprload_edit, 'string', '0');                           % Analysis without a spring first, see section 3) for calculation of the spring
+set(rpm_edit, 'string', num2str(cam_rpm));
+
+% loading the files with the motion law and load profile
+if exist(mot_law_location, 'file') == 2
+    matcam('genmotlawload', mot_law_location)
+else
+    matcam('genmotlawload')
+end
+
+if exist(ext_load_location, 'file') == 2
+    matcam('genextloadload', ext_load_location)
+else
+    matcam('genextloadload')
+end
+
+matcam('calc')
+% Making matcam variables locally accessible
+  
+S = Stot;                                       % Lift
+V = Vtot;                                       % Velocity
+A = Atot;                                       % Acceleration
+
+theta = tetatot;                                % Cam angle in degrees
+theta_rad = tetatotrad;                         % Cam angle in radians
+
+alpha = alfa;                                   % Pressure angle
+
+F_spring = force_spring;                        % Spring force
+F_load = force_load;                            % External load
+
+F_acc = force_acc;                              % Inertial force
+F_tot = force_tot;                              % Total force
+
+F_x = force_x;                                  % Total force in x direction
+F_y = force_y;                                  % Total force in y direction
+                                   
+radius_of_curvature = roc;                      % Radius curvature
+
+
+end 
+
+
+
+figure()
+plot(radius_of_curvature)                       % plotting radius of curvature
+axis([0 360 -500 500])
+title('Graph of radius of curvature with eccentricity')
+
+figure()
+plot(alpha)                                     % plotting pressure angle
+title('Graph of pressure angle with eccentricity')
+
+
+%% 3) Calculation spring constant:
+
+figure()
+plot(F_tot)                                     % plotting total contact force without a spring
+title('Graph of total contact force without a spring')
+
+
+F_v0 = 20;                                      % Spring preload [N]   (chosen by hand)
+g = 10;                                         % Gravitational acceleration [m/s^2]
+gamma = 0;                                      % Angle between follower and vertical axis [°]
+
+
+k = max((F_load - F_v0*ones(size(S)) - follower_mass.*omega.*omega.*A - follower_mass*g*cos(gamma)*ones(size(S)))./S)
+
+k = ceil(k);                                    % Rounds k up to the next integer
+
+
+matcam()
+
+if 1 == 1                                       % Recalibration matcam
+    % setting the additional parameters for the analysis
+set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
+set(bcr_edit, 'string', '80');
+set(rof_edit, 'string', '20');
+set(exc_edit, 'string', num2str(eccentricity));             % Analysis first without an eccentric follower
+set(contourgrad_edit, 'string', '0');
+set(mass_edit, 'string', num2str(follower_mass));
+set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
+set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
+set(rpm_edit, 'string', num2str(cam_rpm));
+
+% loading the files with the motion law and load profile
+if exist(mot_law_location, 'file') == 2
+    matcam('genmotlawload', mot_law_location)
+else
+    matcam('genmotlawload')
+end
+
+if exist(ext_load_location, 'file') == 2
+    matcam('genextloadload', ext_load_location)
+else
+    matcam('genextloadload')
+end
+
+matcam('calc')
+% Making matcam variables locally accessible
+  
+S = Stot;                                       % Lift
+V = Vtot;                                       % Velocity
+A = Atot;                                       % Acceleration
+
+theta = tetatot;                                % Cam angle in degrees
+theta_rad = tetatotrad;                         % Cam angle in radians
+
+alpha = alfa;                                   % Pressure angle
+
+F_spring = force_spring;                        % Spring force
+F_load = force_load;                            % External load
+
+F_acc = force_acc;                              % Inertial force
+F_tot = force_tot;                              % Total force
+
+F_x = force_x;                                  % Total force in x direction
+F_y = force_y;                                  % Total force in y direction
+                                   
+radius_of_curvature = roc;                      % Radius curvature
+
+end 
+
+
+figure()
+plot(F_tot)                                     % plotting total contact force with a spring
+title('Graph of total contact force with a spring')
+
 
 %% 4) Dynamics of a flexible follower
 
