@@ -378,6 +378,139 @@ figure()
 plot(F_tot)                                     % plotting total contact force with the same spring and double the rotation speed
 title('Graph of total contact force, double rotation speed, different spring')
 
+%% 3) Calculation instantaneous power
+
+if 1 == 1                                       % Recalibration matcam
+    
+    matcam()
+    % setting the additional parameters for the analysis
+    set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
+    set(bcr_edit, 'string', '80');
+    set(rof_edit, 'string', '20');
+    set(exc_edit, 'string', '0');                               % Analysis without eccentricity
+    set(contourgrad_edit, 'string', '0');
+    set(mass_edit, 'string', num2str(follower_mass));
+    set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
+    set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
+    set(rpm_edit, 'string', num2str(cam_rpm));
+
+    % loading the files with the motion law and load profile
+    if exist(mot_law_location, 'file') == 2
+        matcam('genmotlawload', mot_law_location)
+    else
+        matcam('genmotlawload')
+    end
+
+    if exist(ext_load_location, 'file') == 2
+        matcam('genextloadload', ext_load_location)
+    else
+        matcam('genextloadload')
+    end
+
+    matcam('calc')
+    % Making matcam variables locally accessible
+
+    S = Stot;                                       % Lift
+    V = Vtot;                                       % Velocity
+    A = Atot;                                       % Acceleration
+
+    theta = tetatot;                                % Cam angle in degrees
+    theta_rad = tetatotrad;                         % Cam angle in radians
+
+    alpha = alfa;                                   % Pressure angle
+
+    F_spring = force_spring;                        % Spring force
+    F_load = force_load;                            % External load
+
+    F_acc = force_acc;                              % Inertial force
+    F_tot = force_tot;                              % Total force
+
+    F_x = force_x;                                  % Total force in x direction
+    F_y = force_y;                                  % Total force in y direction
+
+    radius_of_curvature = roc;                      % Radius curvature
+    
+    global Rtotrad
+    R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
+
+end 
+
+P1 = F_tot .*(omega*ones(size(S))) .*(sin(alpha)) .* R_tot;      % instantaneous power
+
+if 1 == 1                                       % Recalibration matcam
+    
+    matcam()
+    % setting the additional parameters for the analysis
+    set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+    set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
+    set(bcr_edit, 'string', '80');
+    set(rof_edit, 'string', '20');
+    set(exc_edit, 'string', num2str(eccentricity));             % Analysis with eccentricity
+    set(contourgrad_edit, 'string', '0');
+    set(mass_edit, 'string', num2str(follower_mass));
+    set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
+    set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
+    set(rpm_edit, 'string', num2str(cam_rpm));
+
+    % loading the files with the motion law and load profile
+    if exist(mot_law_location, 'file') == 2
+        matcam('genmotlawload', mot_law_location)
+    else
+        matcam('genmotlawload')
+    end
+
+    if exist(ext_load_location, 'file') == 2
+        matcam('genextloadload', ext_load_location)
+    else
+        matcam('genextloadload')
+    end
+
+    matcam('calc')
+    % Making matcam variables locally accessible
+
+    S = Stot;                                       % Lift
+    V = Vtot;                                       % Velocity
+    A = Atot;                                       % Acceleration
+
+    theta = tetatot;                                % Cam angle in degrees
+    theta_rad = tetatotrad;                         % Cam angle in radians
+
+    alpha = alfa;                                   % Pressure angle
+
+    F_spring = force_spring;                        % Spring force
+    F_load = force_load;                            % External load
+
+    F_acc = force_acc;                              % Inertial force
+    F_tot = force_tot;                              % Total force
+
+    F_x = force_x;                                  % Total force in x direction
+    F_y = force_y;                                  % Total force in y direction
+
+    radius_of_curvature = roc;                      % Radius curvature
+    
+    global Rtotrad
+    R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
+
+end 
+
+P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sin(alpha)) + (eccentricity.*cos(alpha)) ); 
+% Niet hetzelfde, dus afgeleide formule werkt niet...
+
+figure()
+plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
+title('Graph of instantaneous power 1')
+
+figure()
+plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
+title('Graph of instantaneous power 2')
+
+
+
 
 %% 4) Dynamics of a flexible follower
 
