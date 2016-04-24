@@ -180,10 +180,12 @@ F_v0 = 20;                                      % Spring preload [N]   (chosen b
 g = 9.81;                                       % Gravitational acceleration [m/s^2]
 gamma = 0;                                      % Angle between follower and vertical axis [°]
 
-% Min teken moet erbij, maar doet dan ambetant
-k = max((-F_load - F_v0*ones(size(S)) - follower_mass.*omega.*omega.*A)./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
+conversie_factor = (180^2)/(pi^2*1000);         % Conversion factor of converting [(kg*rad^2)/(s^2*°^2)] to [(N*rad^2)/mm]
 
-k = ceil(k);                                    % Rounds k up to the next integer
+% Min teken moet erbij, maar doet dan ambetant
+k = max((-F_load - F_v0*ones(size(S)) - follower_mass.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
+
+k = 5*ceil(k/5);                                % Rounds k up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
 
 if 1 == 1                                       % Recalibration matcam
@@ -323,9 +325,9 @@ F_v0_double = 150;                               % Spring preload [N]   (chosen 
 double_omega = (2*pi*double_rpm)/60;
 
 % Min teken moet erbij, maar doet dan ambetant
-k_double = max((-F_load - F_v0_double*ones(size(S)) - follower_mass.*double_omega.*double_omega.*A )./S)   % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
+k_double = max((-F_load - F_v0_double*ones(size(S)) - follower_mass.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) weggedaan omdat zwaartekracht te verwaarlozen is, geeft ook te zwakke veer
 
-k_double = ceil(k_double);
+k_double = 5*ceil(k_double/5);                  % Rounds k_double up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
 if 1 == 1                                       % Recalibration matcam
     
@@ -510,9 +512,9 @@ if 1 == 1                                       % Recalibration matcam
     global Rtotrad
     R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
     
-    % Close matcam window
-    matcam_figure = gcf;
-    close(matcam_figure.Number)
+%     % Close matcam window
+%     matcam_figure = gcf;
+%     close(matcam_figure.Number)
 end 
 
 P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sin(alpha)) + (eccentricity.*cos(alpha)) ); 
