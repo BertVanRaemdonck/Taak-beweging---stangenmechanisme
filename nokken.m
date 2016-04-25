@@ -9,10 +9,10 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
-% mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
-% ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+%mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
+mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+%ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
 m_follower = 20;
@@ -458,6 +458,10 @@ end
 
 P1 = F_tot .*(omega*ones(size(S))) .*(sin(alpha)) .* R_tot;      % instantaneous power
 
+figure()
+plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
+title('Graph of instantaneous power 1')
+
 if 1 == 1                                       % Recalibration matcam
     
     matcam()
@@ -514,7 +518,7 @@ if 1 == 1                                       % Recalibration matcam
     global Rtotrad
     R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
     
-%     % Close matcam window
+     % Close matcam window
 %     matcam_figure = gcf;
 %     close(matcam_figure.Number)
 end 
@@ -523,13 +527,33 @@ P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(
 % Niet hetzelfde, dus afgeleide formule werkt niet...
 
 figure()
-plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
-title('Graph of instantaneous power 1')
+plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
+title('Graph of instantaneous power 2')      % Wordt niet geplot om 1 of andere reden?!
 
 figure()
-plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
-title('Graph of instantaneous power 2')
+plot(P1-P2)
+title('Graph of difference P1 and P2')
 
+%% 3) Calculation average power usage
+
+% Defining integration boundaries:
+theta_min = 1;
+theta_max = length(S);                      % Normally 361 values
+
+P_tot1 = zeros(size(S));
+P_tot2 = zeros(size(S));
+
+i = theta_min;
+while i < theta_max
+    P_tot1(i+1) = P_tot1(i) + (P1(i) + P1(i+1))/2;
+    P_tot2(i+1) = P_tot2(i) + (P2(i) + P2(i+1))/2;
+    
+    i = i+1;
+
+end 
+
+P_average1 = (sum(P_tot1))/(theta_max-theta_min)
+P_average2 = (sum(P_tot2))/(theta_max-theta_min)
 
 
 
@@ -555,6 +579,7 @@ sys = tf(numerator, denominator);
 T_s = 0.001;
 tau = 0:T_s:10;
 %crit_rise_input = 
+figure()
 plot(theta(266:331), S(266:331))
 % !!!! MOET NOG DEDIMENSIONALISEREN !!!!
 
