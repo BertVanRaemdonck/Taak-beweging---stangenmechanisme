@@ -21,6 +21,9 @@ T_cycle = 0.5;
 omega = 2*pi/T_cycle;
 cam_rpm = 60/T_cycle;
 
+R_0 = 80;
+R_v = 20;
+
 matcam()
 
 % setting the additional parameters for the analysis
@@ -32,8 +35,8 @@ set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for c
 set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
 set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
 set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-set(bcr_edit, 'string', '80');
-set(rof_edit, 'string', '20');
+set(bcr_edit, 'string', num2str(R_0));
+set(rof_edit, 'string', num2str(R_v));
 set(exc_edit, 'string', '0');                               % Analysis first without an eccentric follower
 set(contourgrad_edit, 'string', '0');
 set(mass_edit, 'string', num2str(m_follower));
@@ -79,6 +82,8 @@ F_x = force_x;                                  % Total force in x direction
 F_y = force_y;                                  % Total force in y direction
 global roc;                                     % Radius curvature
 radius_of_curvature = roc;
+global Rtotrad
+
 % test to see if the loading of the variables workes
 %figure()
 %plot(alpha)
@@ -109,8 +114,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis first without an eccentric follower
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -198,8 +203,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -266,8 +271,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -339,8 +344,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -403,8 +408,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', '0');                               % Analysis without eccentricity
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -448,15 +453,14 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
     
-    global Rtotrad
-    R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
+    R_tot = R_0 + R_v ;                             % Total distance between center of rotation and center of follower
     
     % Close matcam window
     matcam_figure = gcf;
     close(matcam_figure.Number)
 end 
 
-P1 = F_tot .*(omega*ones(size(S))) .*(sind(alpha)) .* R_tot;      % instantaneous power
+P1 = F_tot .*(omega*ones(size(S))) .*(sind(alpha)) .* ((R_tot + S).*0.001);      % instantaneous power
 
 figure()
 plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -470,8 +474,8 @@ if 1 == 1                                       % Recalibration matcam
     set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
     set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-    set(bcr_edit, 'string', '80');
-    set(rof_edit, 'string', '20');
+    set(bcr_edit, 'string', num2str(R_0));
+    set(rof_edit, 'string', num2str(R_v));
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with eccentricity
     set(contourgrad_edit, 'string', '0');
     set(mass_edit, 'string', num2str(m_follower));
@@ -515,20 +519,19 @@ if 1 == 1                                       % Recalibration matcam
 
     radius_of_curvature = roc;                      % Radius curvature
     
-    global Rtotrad
-    R_tot = Rtotrad;                                % Total distance between center of rotation and center of follower
+    R_tot = R_0 + R_v;                              % Total distance between center of rotation and center of follower
     
      % Close matcam window
 %     matcam_figure = gcf;
 %     close(matcam_figure.Number)
 end 
 
-P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sind(alpha)) + (eccentricity.*cosd(alpha)) ); 
-% Niet hetzelfde, dus afgeleide formule werkt niet...
+P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );         % weggedaan (((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2))
+% Wel hetzelfde, formule zou nu moeten kloppen 
 
 figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
-title('Graph of instantaneous power 2')      % Wordt niet geplot om 1 of andere reden?!
+title('Graph of instantaneous power 2')      
 
 figure()
 plot(P1-P2)
