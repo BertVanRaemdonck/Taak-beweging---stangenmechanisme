@@ -535,8 +535,26 @@ title('Graph of instantaneous power 2')
 
 %% 4) Dynamics of a flexible follower
 
+% Values critical rise/fall
 beta_min = 330-265;                 % minimal angle of a rise in degrees
 t_min = beta_min*(pi/180) / omega;  % minimal time of a rise in seconds
 
+% Calculate minimal follower stiffness
 k_follower = m_follower*(0.75*2*pi/(zeta*t_min))^2-k*1000;  % Spring constant of the follower in N/m
 k_follower = k_follower/1000                                % Spring constant of the follower in N/mm
+
+% Numerical simulation cam/follower system
+omega_n = sqrt((k_follower+k)/m_follower);
+t_n = 2*pi/omega_n;
+lambda = t_min / t_n;
+
+numerator = (2*pi*lambda)^2;
+denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
+sys = tf(numerator, denominator);
+
+T_s = 0.001;
+tau = 0:T_s:10;
+%crit_rise_input = 
+plot(theta(266:331), S(266:331))
+% !!!! MOET NOG DEDIMENSIONALISEREN !!!!
+
