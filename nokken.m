@@ -88,6 +88,22 @@ global Rtotrad
 %figure()
 %plot(alpha)
 
+%% 2) Calculating motion laws
+
+figure()
+plot(S)                                     % plotting the lift
+title('Graph of lift')
+
+figure()
+plot(V)                                     % plotting the velocity
+title('Graph of velocity')
+
+figure()
+plot(A)                                     % plotting the acceleration
+title('Graph of acceleration')
+
+
+
 %% 2) Calculating cam dimensions:
 
 % Without eccentricity
@@ -454,6 +470,8 @@ if 1 == 1                                       % Recalibration matcam
     radius_of_curvature = roc;                      % Radius curvature
     
     R_tot = R_0 + R_v ;                             % Total distance between center of rotation and center of follower
+    R_tot_rad = Rtotrad ;
+    
     
     % Close matcam window
     matcam_figure = gcf;
@@ -461,6 +479,8 @@ if 1 == 1                                       % Recalibration matcam
 end 
 
 P1 = F_tot .*(omega*ones(size(S))) .*(sind(alpha)) .* ((R_tot + S).*0.001);      % instantaneous power
+
+P1_2 = F_tot .*(omega*ones(size(S))) .*(sind(alpha)) .* ((R_tot_rad).*0.001);    % instantaneous power calculated by values of matcam
 
 figure()
 plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -520,14 +540,18 @@ if 1 == 1                                       % Recalibration matcam
     radius_of_curvature = roc;                      % Radius curvature
     
     R_tot = R_0 + R_v;                              % Total distance between center of rotation and center of follower
+    R_tot_rad = Rtotrad;
     
      % Close matcam window
 %     matcam_figure = gcf;
 %     close(matcam_figure.Number)
 end 
 
-P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );         % weggedaan (((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2))
+P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );         % instantaneous power
 % Wel hetzelfde, formule zou nu moeten kloppen 
+
+P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2)).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );      % instantaneous power calculated by values of matcam
+
 
 figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -536,6 +560,15 @@ title('Graph of instantaneous power 2')
 figure()
 plot(P1-P2)
 title('Graph of difference P1 and P2')
+
+figure()
+plot(P1-P1_2)
+title('Graph of difference P1 and P1_2')
+
+figure()
+plot(P2-P2_2)
+title('Graph of difference P2 and P2_2')
+
 
 %% 3) Calculation average power usage
 
