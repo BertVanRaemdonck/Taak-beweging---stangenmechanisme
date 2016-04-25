@@ -9,11 +9,13 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
+% mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+% ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
-follower_mass = 20;
+m_follower = 20;
 zeta = 0.077;
 T_cycle = 0.5;
 omega = 2*pi/T_cycle;
@@ -34,7 +36,7 @@ set(bcr_edit, 'string', '80');
 set(rof_edit, 'string', '20');
 set(exc_edit, 'string', '0');                               % Analysis first without an eccentric follower
 set(contourgrad_edit, 'string', '0');
-set(mass_edit, 'string', num2str(follower_mass));
+set(mass_edit, 'string', num2str(m_follower));
 set(spring_edit, 'string', '0');                            % Analysis without a spring first, see section 3) for calculation of the spring
 set(sprload_edit, 'string', '0');                           % Analysis without a spring first, see section 3) for calculation of the spring
 set(rpm_edit, 'string', num2str(cam_rpm));
@@ -58,9 +60,9 @@ close all
 %% Making matcam variables locally accessible
 
 global Stot Vtot Atot;    
-S = Stot;                                       % Lift
-V = Vtot;                                       % Velocity
-A = Atot;                                       % Acceleration
+S = Stot;                                       % Lift in mm
+V = Vtot;                                       % Velocity in mm/degree
+A = Atot;                                       % Acceleration in mm/degree^2
 global tetatot tetatotrad rpm;
 theta = tetatot;                                % Cam angle in degrees
 theta_rad = tetatotrad;                         % Cam angle in radians
@@ -111,7 +113,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis first without an eccentric follower
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', '0');                            % Analysis without a spring first, see section 3) for calculation of the spring
     set(sprload_edit, 'string', '0');                           % Analysis without a spring first, see section 3) for calculation of the spring
     set(rpm_edit, 'string', num2str(cam_rpm));
@@ -132,9 +134,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -183,7 +185,7 @@ gamma = 0;                                      % Angle between follower and ver
 conversie_factor = (180^2)/(pi^2*1000);         % Conversion factor of converting [(kg*rad^2)/(s^2*°^2)] to [(N*rad^2)/mm]
 
 % Min teken moet erbij, maar doet dan ambetant
-k = max((-F_load - F_v0*ones(size(S)) - follower_mass.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
+k = max((-F_load - F_v0*ones(size(S)) - m_follower.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
 
 k = 5*ceil(k/5);                                % Rounds k up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
@@ -200,7 +202,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
     set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
     set(rpm_edit, 'string', num2str(cam_rpm));
@@ -221,9 +223,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -268,7 +270,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', num2str(k));                     % Analysis with same spring 
     set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with same spring
     set(rpm_edit, 'string', num2str(double_rpm));               % Analysis with double rotation speed
@@ -289,9 +291,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -325,7 +327,7 @@ F_v0_double = 150;                               % Spring preload [N]   (chosen 
 double_omega = (2*pi*double_rpm)/60;
 
 % Min teken moet erbij, maar doet dan ambetant
-k_double = max((-F_load - F_v0_double*ones(size(S)) - follower_mass.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) weggedaan omdat zwaartekracht te verwaarlozen is, geeft ook te zwakke veer
+k_double = max((-F_load - F_v0_double*ones(size(S)) - m_follower.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) weggedaan omdat zwaartekracht te verwaarlozen is, geeft ook te zwakke veer
 
 k_double = 5*ceil(k_double/5);                  % Rounds k_double up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
@@ -341,7 +343,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', num2str(k_double));              % Analysis with different spring 
     set(sprload_edit, 'string', num2str(F_v0_double));          % Analysis with different spring
     set(rpm_edit, 'string', num2str(double_rpm));               % Analysis with double rotation speed
@@ -362,9 +364,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -405,7 +407,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', '0');                               % Analysis without eccentricity
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
     set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
     set(rpm_edit, 'string', num2str(cam_rpm));
@@ -426,9 +428,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -468,7 +470,7 @@ if 1 == 1                                       % Recalibration matcam
     set(rof_edit, 'string', '20');
     set(exc_edit, 'string', num2str(eccentricity));             % Analysis with eccentricity
     set(contourgrad_edit, 'string', '0');
-    set(mass_edit, 'string', num2str(follower_mass));
+    set(mass_edit, 'string', num2str(m_follower));
     set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
     set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
     set(rpm_edit, 'string', num2str(cam_rpm));
@@ -489,9 +491,9 @@ if 1 == 1                                       % Recalibration matcam
     matcam('calc')
     % Making matcam variables locally accessible
 
-    S = Stot;                                       % Lift
-    V = Vtot;                                       % Velocity
-    A = Atot;                                       % Acceleration
+    S = Stot;                                       % Lift in mm
+    V = Vtot;                                       % Velocity in mm/degree
+    A = Atot;                                       % Acceleration in mm/degree^2
 
     theta = tetatot;                                % Cam angle in degrees
     theta_rad = tetatotrad;                         % Cam angle in radians
@@ -535,3 +537,6 @@ title('Graph of instantaneous power 2')
 
 beta_min = 330-265;                 % minimal angle of a rise in degrees
 t_min = beta_min*(pi/180) / omega;  % minimal time of a rise in seconds
+
+k_follower = m_follower*(0.75*2*pi/(zeta*t_min))^2-k*1000;  % Spring constant of the follower in N/m
+k_follower = k_follower/1000                                % Spring constant of the follower in N/mm
