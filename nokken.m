@@ -456,7 +456,7 @@ if 1 == 1                                       % Recalibration matcam
     close(matcam_figure.Number)
 end 
 
-P1 = F_tot .*(omega*ones(size(S))) .*(sin(alpha)) .* R_tot;      % instantaneous power
+P1 = F_tot .*(omega*ones(size(S))) .*(sind(alpha)) .* R_tot;      % instantaneous power
 
 figure()
 plot(P1)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -523,7 +523,7 @@ if 1 == 1                                       % Recalibration matcam
 %     close(matcam_figure.Number)
 end 
 
-P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sin(alpha)) + (eccentricity.*cos(alpha)) ); 
+P2 = F_tot .*(omega*ones(size(S))) .*( ( ( ((R_tot.^2)-((eccentricity*ones(size(S))).^2)).^(-1/2)).*sind(alpha)) + (eccentricity.*cosd(alpha)) ); 
 % Niet hetzelfde, dus afgeleide formule werkt niet...
 
 figure()
