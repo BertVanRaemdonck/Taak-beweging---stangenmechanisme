@@ -9,10 +9,10 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
-mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-%ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
-ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
+%mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+%ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
 m_follower = 20;
@@ -612,10 +612,15 @@ numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
-T_s = 0.001;
-tau = 0:T_s:10;
-%crit_rise_input = 
-figure()
-plot(theta(266:331), S(266:331))
-% !!!! MOET NOG DEDIMENSIONALISEREN !!!!
+T_s = 1/66;
+tau = 0:T_s:20;
+crit_rise_input = zeros(size(tau));
+crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
+
+init_rise = 1;
+init_vel = 0;
+[A,B,C,D] = tf2ss(numerator, denominator);
+X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+lsim(sys, crit_rise_input, tau, X0);            % picture
+gamma = lsim(sys, crit_rise_input, tau, X0);    % saving data
 
