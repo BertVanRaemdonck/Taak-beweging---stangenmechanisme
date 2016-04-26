@@ -9,10 +9,12 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
+%mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
 %mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
+mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
+%ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
 %ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
 
 % assigned values
 m_follower = 20;
@@ -615,10 +617,6 @@ theta_M = find(At==max(At)) - 1;
 figure()
 plot(At)
 title('arbeid')
-
-figure()
-plot(At)
-title('arbeid2')
 
 i = theta_m;
 K = 0.1;
