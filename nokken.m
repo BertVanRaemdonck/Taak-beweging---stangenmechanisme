@@ -554,7 +554,7 @@ P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).
 
 P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2)).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );      % instantaneous power calculated by values of matcam
 
-M21 = -P1 ./ (omega*ones(size(S)));
+
 
 figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -571,10 +571,6 @@ title('Graph of difference P1 and P2')
 % figure()                                          % Extra control plot
 % plot(P2-P2_2)
 % title('Graph of difference P2 and P2_2')
-
-figure()
-plot(M21)
-title('koppelvraag')
 
 
 
@@ -596,11 +592,19 @@ while i < theta_max
 
 end 
 
-P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      % breedte van interval is 1° daarom delen door 360°
+P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      % width of the interval is in degrees, not in radian --> dividing by 360°
 P_average2 = P_tot2(theta_max)/(theta_max - theta_min)
 
 
-%% 3) Calculation torque and flywheel
+%% 3) Calculation torque and dimensions flywheel
+
+M21 = -P1 ./ (omega*ones(size(S)));
+
+
+figure()
+plot(M21)
+title('Graph of needed torque')
+
 
 M_average = -P_average1 / omega
 
@@ -614,16 +618,16 @@ while i < theta_max
     i = i+1;
 end
 
-theta_m = find(At==min(At)) - 1;   % index begint vanaf 1 te tellen en niet van 0
+theta_m = find(At==min(At)) - 1;   % index starts counting from 1, not from 0
 theta_M = find(At==max(At)) - 1;
 
 figure()
 plot(At)
-title('arbeid')
+title('Graph of needed work')
 
 i = theta_m;
 K = 0.1;                            % speed variations between -5% and +5%
-Am = 0;
+Am = 0;                             % maximum work surplus (in Nm°)
 while i < theta_M
     Am = Am + (M21(i) - (M_average) + (M21(i+1) - M_average))/2;
     i=i+1;
@@ -633,8 +637,15 @@ conv_deg_to_rad = pi/180;               % conversion factor to change degrees in
 
 I = (Am / (K * omega^2)) * conv_deg_to_rad
 
+% Disc flywheel with constant mass
 m_flywheel = 10;                        % in kg
 d_flywheel = sqrt((I*8)/m_flywheel)     % diameter of an disc type flywheel
+
+% Disc flywheel in a chosen material and with available space
+rho_steel = 7800;                       % in kg/ m^3
+R_flywheel = 0.25;                      % in m
+
+t_flywheel = (2*I)/(pi*(R_flywheel^4)*rho_steel)
 
 
 %% 4) Dynamics of a flexible follower
