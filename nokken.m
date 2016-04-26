@@ -604,7 +604,7 @@ k_follower = m_follower*(0.75*2*pi/(zeta*t_min))^2-k*1000;  % Spring constant of
 k_follower = k_follower/1000                                % Spring constant of the follower in N/mm
 
 % Numerical simulation cam/follower system
-omega_n = sqrt((k_follower+k)/m_follower);
+omega_n = sqrt(1000*(k_follower+k)/m_follower);
 t_n = 2*pi/omega_n;
 lambda = t_min / t_n;
 
@@ -613,7 +613,7 @@ denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
 T_s = 1/66;
-tau = 0:T_s:20;
+tau = 0:T_s:10;
 crit_rise_input = zeros(size(tau));
 crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
 
@@ -621,6 +621,7 @@ init_rise = 1;
 init_vel = 0;
 [A,B,C,D] = tf2ss(numerator, denominator);
 X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
-lsim(sys, crit_rise_input, tau, X0);            % picture
-gamma = lsim(sys, crit_rise_input, tau, X0);    % saving data
+lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
+gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
 
+% Approximate analysis
