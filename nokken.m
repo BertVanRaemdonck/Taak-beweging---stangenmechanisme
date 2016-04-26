@@ -621,6 +621,13 @@ end
 theta_m = find(At==min(At)) - 1;   % index starts counting from 1, not from 0
 theta_M = find(At==max(At)) - 1;
 
+precision = 0.1;
+
+theta_m_torque = find(abs(M21-M_average) < precision ) -1;
+%theta_M_torque = find(abs(M21-M_average) < precision ,1,last) -1        commando last doesn't work, should have calculated the last value wich suffices
+% Gives the same values as above!!!   --> extra control
+
+
 figure()
 plot(At)
 title('Graph of needed work')
