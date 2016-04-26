@@ -10,11 +10,11 @@ close all;
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
-%mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
+mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+%mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
 %ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
-%ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
-ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+%ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
 
 % assigned values
 m_follower = 20;
@@ -564,13 +564,13 @@ figure()
 plot(P1-P2)
 title('Graph of difference P1 and P2')
 
-figure()
-plot(P1-P1_2)
-title('Graph of difference P1 and P1_2')
+% figure()                                          % Extra control plot
+% plot(P1-P1_2)
+% title('Graph of difference P1 and P1_2')
 
-figure()
-plot(P2-P2_2)
-title('Graph of difference P2 and P2_2')
+% figure()                                          % Extra control plot
+% plot(P2-P2_2)
+% title('Graph of difference P2 and P2_2')
 
 figure()
 plot(M21)
@@ -589,15 +589,18 @@ P_tot2 = zeros(size(S));
 
 i = theta_min;
 while i < theta_max
-    P_tot1(i+1) = P_tot1(i) + (P1(i) + P1(i+1))/2;      % breedte van interval is 1° daarom delen door 360°
+    P_tot1(i+1) = P_tot1(i) + (P1(i) + P1(i+1))/2;      
     P_tot2(i+1) = P_tot2(i) + (P2(i) + P2(i+1))/2;
     
     i = i+1;
 
 end 
 
-P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      
+P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      % breedte van interval is 1° daarom delen door 360°
 P_average2 = P_tot2(theta_max)/(theta_max - theta_min)
+
+
+%% 3) Calculation torque and flywheel
 
 M_average = -P_average1 / omega
 
@@ -619,14 +622,21 @@ plot(At)
 title('arbeid')
 
 i = theta_m;
-K = 0.1;
+K = 0.1;                            % speed variations between -5% and +5%
 Am = 0;
 while i < theta_M
     Am = Am + (M21(i) - (M_average) + (M21(i+1) - M_average))/2;
     i=i+1;
 end
 
-I = Am / (K * omega^2)
+conv_deg_to_rad = pi/180;               % conversion factor to change degrees in radians
+
+I = (Am / (K * omega^2)) * conv_deg_to_rad
+
+m_flywheel = 10;                        % in kg
+d_flywheel = sqrt((I*8)/m_flywheel)     % diameter of an disc type flywheel
+
+
 %% 4) Dynamics of a flexible follower
 
 % Values critical rise/fall
