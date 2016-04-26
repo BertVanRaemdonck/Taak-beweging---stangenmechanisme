@@ -9,9 +9,9 @@ close all;
 % To get this program to run smoothly, please fill in the location of the
 % motion law and external load files on your computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot'; 
+mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
 %mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
 %ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
 
 % assigned values
@@ -552,6 +552,7 @@ P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).
 
 P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2)).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );      % instantaneous power calculated by values of matcam
 
+M21 = -P1 ./ (omega*ones(size(S)));
 
 figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -569,6 +570,11 @@ figure()
 plot(P2-P2_2)
 title('Graph of difference P2 and P2_2')
 
+figure()
+plot(M21)
+title('koppelvraag')
+
+
 
 %% 3) Calculation average power usage
 
@@ -581,18 +587,48 @@ P_tot2 = zeros(size(S));
 
 i = theta_min;
 while i < theta_max
-    P_tot1(i+1) = P_tot1(i) + (P1(i) + P1(i+1))/2;
+    P_tot1(i+1) = P_tot1(i) + (P1(i) + P1(i+1))/2;      % breedte van interval is 1° daarom delen door 360°
     P_tot2(i+1) = P_tot2(i) + (P2(i) + P2(i+1))/2;
     
     i = i+1;
 
 end 
 
-P_average1 = (sum(P_tot1))/(theta_max-theta_min)
-P_average2 = (sum(P_tot2))/(theta_max-theta_min)
+P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      
+P_average2 = P_tot2(theta_max)/(theta_max - theta_min)
 
+M_average = -P_average1 / omega
 
+At = zeros(size(S));
 
+i = theta_min;
+
+while i < theta_max
+    At(i+1) = At(i) + ((M21(i) - M_average) + (M21(i+1) - M_average))/2;
+    
+    i = i+1;
+end
+
+theta_m = find(At==min(At)) - 1;   % index begint vanaf 1 te tellen en niet van 0
+theta_M = find(At==max(At)) - 1;
+
+figure()
+plot(At)
+title('arbeid')
+
+figure()
+plot(At)
+title('arbeid2')
+
+i = theta_m;
+K = 0.1;
+Am = 0;
+while i < theta_M
+    Am = Am + (M21(i) - (M_average) + (M21(i+1) - M_average))/2;
+    i=i+1;
+end
+
+I = Am / (K * omega^2)
 %% 4) Dynamics of a flexible follower
 
 % Values critical rise/fall
