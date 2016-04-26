@@ -674,10 +674,15 @@ numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
-T_s = 1/66;
-tau = 0:T_s:10;
+% T_s = 1/66;
+% tau = 0:T_s:5;
+% crit_rise_input = zeros(size(tau));
+% crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
+Ts = 1/200;
+tau = 0:Ts:5;
+tau_rise = tau(1:1/Ts);
 crit_rise_input = zeros(size(tau));
-crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
+crit_rise_input(1:1/Ts) = 1 - tau_rise + 1/(2*pi).*sin(2*pi.*tau_rise);
 
 init_rise = 1;
 init_vel = 0;
@@ -694,30 +699,40 @@ A1_approx = Q/(2*pi*lambda)^N;    % Amplitude of response @tau=1. Closely approx
 
 gamma_approx_envelope = A1_approx*exp(-zeta*2*pi*lambda*(tau-1));
 
-% Controle
-figure()
-plot(tau(66:length(tau)), gamma(66:length(tau)));
-hold on;
-plot(tau(66:length(tau)), gamma_approx_envelope(66:length(tau)));
-hold off;
-
-nb_data_points = 50;
-last_max_pos = 66;
+    % Verification
+last_max_pos = 1/Ts;
 difference = [];
 
-
-while last_max_pos < length(gamma)-2
-    [last_max, new_max_pos] = max(gamma(last_max_pos+1:length(gamma)));
-    offset = 1;
-    while new_max_pos == 1
-        [last_max, new_max_pos] = max(gamma(new_max_pos+1:length(gamma)));
+while last_max_pos < length(gamma)-1
+    offset = 0;
+    new_max_pos = 1;
+    while new_max_pos == 1 && last_max_pos + offset < length(gamma)-1
         offset = offset + 1;
+        [new_max, new_max_pos] = max(gamma(last_max_pos+offset:length(gamma)));        
     end
     last_max_pos = last_max_pos + new_max_pos + offset;
-    difference = [difference (gamma_approx_envelope(last_max_pos)-last_max)/last_max];
+    if last_max_pos < length(gamma)-1
+        difference = [difference (new_max-gamma_approx_envelope(last_max_pos))/new_max];
+    end
 end
 
-figure()
+figure('Name', 'Controle Benaderende Analyse', 'NumberTitle', 'off');
+subplot(1,2,1)
+plot(tau(1/Ts:length(tau)), gamma(1/Ts:length(tau)));
+hold on;
+plot(tau(1/Ts:length(tau)), gamma_approx_envelope(1/Ts:length(tau)));
+hold off;
+xlabel('\tau')
+ylabel('\gamma(\tau)')
+subplot(1,2,2)
 plot(difference)
+xlabel('index maximum')
+ylabel('relatieve fout benadering')
+set(gcf,'NextPlot','add');
+
+axes;
+h = title({'Nauwkeurigheid van de benaderende analyse'; ''});
+set(gca,'Visible','off');
+set(h,'Visible','on')
 
 
