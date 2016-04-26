@@ -601,7 +601,7 @@ t_min = beta_min*(pi/180) / omega;  % minimal time of a rise in seconds
 
 % Calculate minimal follower stiffness
 k_follower = m_follower*(0.75*2*pi/(zeta*t_min))^2-k*1000;  % Spring constant of the follower in N/m
-k_follower = k_follower/1000                                % Spring constant of the follower in N/mm
+k_follower = k_follower/1000;                               % Spring constant of the follower in N/mm
 
 % Numerical simulation cam/follower system
 omega_n = sqrt(1000*(k_follower+k)/m_follower);
@@ -621,7 +621,41 @@ init_rise = 1;
 init_vel = 0;
 [A,B,C,D] = tf2ss(numerator, denominator);
 X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+figure()
 lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
 gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
 
 % Approximate analysis
+Q = (2*pi)^2;
+N = 3;
+A1_approx = Q/(2*pi*lambda)^N;    % Amplitude of response @tau=1. Closely approximates the result of the numerical analysis
+
+gamma_approx_envelope = A1_approx*exp(-zeta*2*pi*lambda*(tau-1));
+
+% Controle
+figure()
+plot(tau(66:length(tau)), gamma(66:length(tau)));
+hold on;
+plot(tau(66:length(tau)), gamma_approx_envelope(66:length(tau)));
+hold off;
+
+nb_data_points = 50;
+last_max_pos = 66;
+difference = [];
+
+
+while last_max_pos < length(gamma)-2
+    [last_max, new_max_pos] = max(gamma(last_max_pos+1:length(gamma)));
+    offset = 1;
+    while new_max_pos == 1
+        [last_max, new_max_pos] = max(gamma(new_max_pos+1:length(gamma)));
+        offset = offset + 1;
+    end
+    last_max_pos = last_max_pos + new_max_pos + offset;
+    difference = [difference (gamma_approx_envelope(last_max_pos)-last_max)/last_max];
+end
+
+figure()
+plot(difference)
+
+
