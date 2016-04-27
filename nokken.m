@@ -849,12 +849,12 @@ output_motion = (max(S(1:361))-min(S(1:361)))*gamma;
 %size(gamma)
 %size(crit_rise_input)
 
-max_plot = max(gamma-crit_rise_input) * 1.2;
 min_plot = min(gamma-crit_rise_input) * 1.2;
+max_plot = max(gamma-crit_rise_input) * 1.2;
 
 figure()
 plot(tau,gamma-crit_rise_input)
-axis([24 25 min_plot max_plot])
+axis([times_repeating-1 times_repeating min_plot max_plot])
 
     % Calculate forces
 alpha_multiple = repmat(alpha,times_repeating,1);
@@ -863,37 +863,57 @@ spring_force = F_v0 + k*follower_motion;
 spring_force_adjusted = 80 + k*follower_motion;
 transient_force = k_follower*(output_motion - follower_motion);
 
-size(transient_force)
-size(cos(pi/180*alpha_multiple))
+%size(transient_force)
+%size(cos(pi/180*alpha_multiple))
 
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
 contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_multiple);
 
-% Plot results
+% % Plot results
+min_contact_x = 361*(times_repeating-1);
+max_contact_x = 361*(times_repeating);
+min_contact_y = min(contact_force)*1.2;
+max_contact_y = max(contact_force)*1.2;
+
+
 figure('Name', 'Overgangsverschijnsel krachten multirise', 'NumberTitle', 'off');
-subplot(1,2,1)
-plot(spring_force, 'g-.')
-hold on
-plot(transient_force, 'r--')
-plot(contact_force, 'b')
-plot(zeros(size(contact_force)), 'k:')
+plot(contact_force)
+axis([min_contact_x max_contact_x min_contact_y max_contact_y])
 
-subplot(1,2,2)
-plot(spring_force_adjusted, 'g-.')
-hold on
-plot(transient_force, 'r--')
-plot(contact_force_adjusted, 'b')
-plot(zeros(size(contact_force)), 'k:')
 
-ylimits=get(gca,'Ylim');
-ylim=ylimits(2)-ylimits(1);
-y_legend(1)=ylimits(2)-ylim*.1;
-y_legend(2)=ylimits(2)-ylim*.15;
-y_legend(3)=ylimits(2)-ylim*.2;
-xlimits=get(gca,'Xlim');
-xlim=xlimits(2)-xlimits(1);
-x_legend=xlimits(1)+.60*xlim;
-set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
-set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
-set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
-hold off
+min_contact_y = min(contact_force_adjusted)*1.2;
+max_contact_y = max(contact_force_adjusted)*1.2;
+
+
+figure('Name', 'Overgangsverschijnsel krachten multirise adjusted spring', 'NumberTitle', 'off');
+plot(contact_force_adjusted)
+axis([min_contact_x max_contact_x min_contact_y max_contact_y])
+
+
+% figure('Name', 'Overgangsverschijnsel krachten multirise', 'NumberTitle', 'off');
+% subplot(1,2,1)
+% plot(spring_force, 'g-.')
+% hold on
+% plot(transient_force, 'r--')
+% plot(contact_force, 'b')
+% plot(zeros(size(contact_force)), 'k:')
+% 
+% subplot(1,2,2)
+% plot(spring_force_adjusted, 'g-.')
+% hold on
+% plot(transient_force, 'r--')
+% plot(contact_force_adjusted, 'b')
+% plot(zeros(size(contact_force)), 'k:')
+% 
+% ylimits=get(gca,'Ylim');
+% ylim=ylimits(2)-ylimits(1);
+% y_legend(1)=ylimits(2)-ylim*.1;
+% y_legend(2)=ylimits(2)-ylim*.15;
+% y_legend(3)=ylimits(2)-ylim*.2;
+% xlimits=get(gca,'Xlim');
+% xlim=xlimits(2)-xlimits(1);
+% x_legend=xlimits(1)+.60*xlim;
+% set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
+% set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
+% set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
+% hold off
