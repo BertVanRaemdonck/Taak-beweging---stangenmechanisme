@@ -809,3 +809,108 @@ set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
 set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
 set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
 hold off
+
+
+%% Multi rise case
+
+% beta_d1 = 30;
+% beta_d2 = 40;
+% beta_d3 = 20;
+% beta_d4 = 30;
+% beta_r1 = 90;
+% beta_r2 = 85;
+% beta_r3 = 65;
+% 
+% tau1 = beta_d1/360;
+% tau2 = (beta_d1 + beta_r1)/360;
+% tau3 = (beta_d1 + beta_r1 + beta_d2)/360;
+% tau4 = (beta_d1 + beta_r1 + beta_d2 + beta_r2)/360;
+% tau5 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3)/360;
+% tau6 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3 + beta_r3)/360;
+
+lambda_tilde = T_cycle / t_n;
+
+numerator = (2*pi*lambda_tilde)^2;
+denominator = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
+sys = tf(numerator, denominator);
+
+times_repeating = 25;
+
+Ts = 1/361;
+tau = 0:Ts:times_repeating;
+%crit_rise_input = zeros(size(tau));
+crit_rise_input = S(1:361) / (max(S(1:361))-min(S(1:361)));
+
+crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a column vector wich repeats itself "times_repeating" times
+
+%size(tau)                      % Niet dezelfde grootte, maar het werkt wel   ??
+%size(crit_rise_input)
+
+crit_rise_input = [crit_rise_input; 0];
+
+%crit_rise_input = transpose(crit_rise_input);
+
+init_rise = 0;
+init_vel = 0;
+[A,B,C,D] = tf2ss(numerator, denominator);
+X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+figure()
+lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
+gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
+
+follower_motion = (max(S(1:361))-min(S(1:361)))*crit_rise_input;
+output_motion = (max(S(1:361))-min(S(1:361)))*gamma;
+
+%size(follower_motion)
+%size(output_motion)
+%size(gamma)
+%size(crit_rise_input)
+
+max_plot = max(gamma-crit_rise_input) * 1.2;
+min_plot = min(gamma-crit_rise_input) * 1.2;
+
+figure()
+plot(tau,gamma-crit_rise_input)
+axis([24 25 min_plot max_plot])
+
+    % Calculate forces
+alpha_multiple = repmat(alpha,times_repeating,1);
+alpha_multiple = [alpha_multiple; 0];
+spring_force = F_v0 + k*follower_motion;
+spring_force_adjusted = 80 + k*follower_motion;
+transient_force = k_follower*(output_motion - follower_motion);
+
+size(transient_force)
+size(cos(pi/180*alpha_multiple))
+
+contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
+contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_multiple);
+
+% Plot results
+figure('Name', 'Overgangsverschijnsel krachten multirise', 'NumberTitle', 'off');
+subplot(1,2,1)
+plot(spring_force, 'g-.')
+hold on
+plot(transient_force, 'r--')
+plot(contact_force, 'b')
+plot(zeros(size(contact_force)), 'k:')
+
+subplot(1,2,2)
+plot(spring_force_adjusted, 'g-.')
+hold on
+plot(transient_force, 'r--')
+plot(contact_force_adjusted, 'b')
+plot(zeros(size(contact_force)), 'k:')
+
+ylimits=get(gca,'Ylim');
+ylim=ylimits(2)-ylimits(1);
+y_legend(1)=ylimits(2)-ylim*.1;
+y_legend(2)=ylimits(2)-ylim*.15;
+y_legend(3)=ylimits(2)-ylim*.2;
+xlimits=get(gca,'Xlim');
+xlim=xlimits(2)-xlimits(1);
+x_legend=xlimits(1)+.60*xlim;
+set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
+set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
+set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
+hold off
