@@ -655,7 +655,7 @@ d_flywheel = sqrt((I*8)/m_flywheel)     % diameter of an disc type flywheel
 
 % Disc flywheel in a chosen material and with available space
 rho_steel = 7800;                       % in kg/ m^3
-R_flywheel = 0.25;                      % in m
+R_flywheel = 0.20;                      % in m
 
 t_flywheel = (2*I)/(pi*(R_flywheel^4)*rho_steel)
 
