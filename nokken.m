@@ -13,7 +13,6 @@ close all;
 home_directory = pwd;
 mot_law_location = strcat(home_directory, '\nok_hefwet.mot');
 ext_load_location = strcat(home_directory, '\nok_externe_krachten.exl');
-transient_location = strcat(home_directory, '\nok_overgangsverschijnsel.mot');
 % %mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
 % %mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
 % mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
@@ -659,15 +658,15 @@ t_flywheel = (2*I)/(pi*(R_flywheel^4)*rho_steel)
 
 %% 4) Dynamics of a flexible follower
 
-% Values critical rise/fall
+% 4.1) Values critical rise/fall
 beta_min = 330-265;                 % minimal angle of a rise in degrees
 t_min = beta_min*(pi/180) / omega;  % minimal time of a rise in seconds
 
-% Calculate minimal follower stiffness
+% 4.2) Calculate minimal follower stiffness
 k_follower = m_follower*(0.75*2*pi/(zeta*t_min))^2-k*1000;  % Spring constant of the follower in N/m
 k_follower = k_follower/1000;                               % Spring constant of the follower in N/mm
 
-% Numerical simulation cam/follower system
+% 4.3) Numerical simulation cam/follower system
 omega_n = sqrt(1000*(k_follower+k)/m_follower);
 t_n = 2*pi/omega_n;
 lambda = t_min / t_n;
@@ -694,7 +693,7 @@ figure()
 lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
 gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
 
-% Approximate analysis
+% 4.4) Approximate analysis
 Q = (2*pi)^2;
 N = 3;
 A1_approx = Q/(2*pi*lambda)^N;    % Amplitude of response @tau=1. Closely approximates the result of the numerical analysis
@@ -737,92 +736,57 @@ h = title({'Nauwkeurigheid van de benaderende analyse'; ''});
 set(gca,'Visible','off');
 set(h,'Visible','on')
 
-% Force response
-follower_motion = (max(S(266:331))-min(S(266:331)))*crit_rise_input;
-output_motion = (max(S(266:331))-min(S(266:331)))*gamma.';
+% 4.5) Force response
+    
+    % Redo simulation to get values in degree form
+T_s = 1/66;
+tau = 0:T_s:6;
+crit_rise_input = zeros(size(tau));
+crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
 
+init_rise = 1;
+init_vel = 0;
+[A,B,C,D] = tf2ss(numerator, denominator);
+X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+gamma = lsim(A,B,C,D, crit_rise_input, tau, X0); 
+
+follower_motion = (max(S(266:331))-min(S(266:331)))*crit_rise_input(1:361);
+output_motion = (max(S(266:331))-min(S(266:331)))*gamma(1:361).';
+
+    % Calculate forces
+alpha_single = alpha(266:331);
+alpha_single = [alpha_single.' alpha(332)*ones(1,295)];
 spring_force = F_v0 + k*follower_motion;
+spring_force_adjusted = 80 + k*follower_motion;
 transient_force = k_follower*(output_motion - follower_motion);
+contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_single);
+contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_single);
 
-figure()
-plot(spring_force + transient_force)
-% plot(output_motion)
-% hold on
-% plot(follower_motion)
-% hold off
+    % Plot results
+figure('Name', 'Overgangsverschijnsel krachten', 'NumberTitle', 'off');
+subplot(1,2,1)
+plot(spring_force, 'g-.')
+hold on
+plot(transient_force, 'r--')
+plot(contact_force, 'b')
+plot(zeros(size(contact_force)), 'k:')
 
+subplot(1,2,2)
+plot(spring_force_adjusted, 'g-.')
+hold on
+plot(transient_force, 'r--')
+plot(contact_force_adjusted, 'b')
+plot(zeros(size(contact_force)), 'k:')
 
-    % Redo the simulation, to get gamma in the right format for matcam
-%     T_s = 1/66;
-%     tau = 0:T_s:6;
-%     crit_rise_input = zeros(size(tau));
-%     crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
-% 
-%     init_rise = 1;
-%     init_vel = 0;
-%     [A,B,C,D] = tf2ss(numerator, denominator);
-%     X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
-%     gamma_d = lsim(A,B,C,D, crit_rise_input, tau, X0);
-%     amplitude_gamma_d = (max(S(266:331))-min(S(266:331)));
-%     gamma_d = amplitude_gamma_d*gamma_d(1:361); % The response. Each index now corresponds to an angle in degrees.
-%     gamma_d = [amplitude_gamma_d*ones(265,1) ; gamma_d(1:96)];
-    % Redo the macam calculations with the new motion law
-
-%     if 1 == 1                                       % Recalibration matcam
-%     
-%         matcam()
-%         % setting the additional parameters for the analysis
-%         set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
-%         set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
-%         set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
-%         set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
-%         set(bcr_edit, 'string', num2str(R_0));
-%         set(rof_edit, 'string', num2str(R_v));
-%         set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
-%         set(contourgrad_edit, 'string', '0');
-%         set(mass_edit, 'string', num2str(m_follower));
-%         set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
-%         set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
-%         set(rpm_edit, 'string', num2str(cam_rpm));
-% 
-%         % loading the files with the motion law and load profile
-%         if exist(mot_law_location, 'file') == 2
-%             matcam('genmotlawload', transient_location)
-%         else
-%             matcam('genmotlawload')
-%         end
-% 
-%         if exist(ext_load_location, 'file') == 2
-%             matcam('genextloadload', ext_load_location)
-%         else
-%             matcam('genextloadload')
-%         end
-% 
-%         matcam('calc')
-%         % Making matcam variables locally accessible
-% 
-%         S = Stot;                                       % Lift in mm
-%         V = Vtot;                                       % Velocity in mm/degree
-%         A = Atot;                                       % Acceleration in mm/degree^2
-% 
-%         theta = tetatot;                                % Cam angle in degrees
-%         theta_rad = tetatotrad;                         % Cam angle in radians
-% 
-%         alpha = alfa;                                   % Pressure angle
-% 
-%         F_spring = force_spring;                        % Spring force
-%         F_load = force_load;                            % External load
-% 
-%         F_acc = force_acc;                              % Inertial force
-%         F_tot = force_tot;                              % Total force
-% 
-%         F_x = force_x;                                  % Total force in x direction
-%         F_y = force_y;                                  % Total force in y direction
-% 
-%         radius_of_curvature = roc;                      % Radius curvature
-% 
-%         % Close matcam window
-%         %matcam_figure = gcf;
-%         %close(matcam_figure.Number)
-%     end 
-
+ylimits=get(gca,'Ylim');
+ylim=ylimits(2)-ylimits(1);
+y_legend(1)=ylimits(2)-ylim*.1;
+y_legend(2)=ylimits(2)-ylim*.15;
+y_legend(3)=ylimits(2)-ylim*.2;
+xlimits=get(gca,'Xlim');
+xlim=xlimits(2)-xlimits(1);
+x_legend=xlimits(1)+.60*xlim;
+set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
+set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
+set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
+hold off
