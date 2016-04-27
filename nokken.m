@@ -826,10 +826,25 @@ crit_rise_input = S(1:361) / (max(S(1:361))-min(S(1:361)));
 
 crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a column vector wich repeats itself "times_repeating" times
 
-init_rise = 1;
+%size(tau)                      % Niet dezelfde grootte, maar het werkt wel   ??
+%size(crit_rise_input)
+
+crit_rise_input = [crit_rise_input; 0];
+
+init_rise = 0;
 init_vel = 0;
 [A,B,C,D] = tf2ss(numerator, denominator);
 X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
 figure()
 lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
 gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
+
+follower_motion = (max(S(1:361))-min(S(1:361))).*crit_rise_input;
+output_motion = (max(S(1:361))-min(S(1:361))).*gamma.';
+
+max_plot = max(gamma-crit_rise_input) * 1.2;
+min_plot = min(gamma-crit_rise_input) * 1.2;
+
+figure()
+plot(tau,gamma-crit_rise_input)
+axis([24 25 min_plot max_plot])
