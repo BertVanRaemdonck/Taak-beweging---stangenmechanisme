@@ -792,3 +792,40 @@ set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
 set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
 set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
 hold off
+
+
+%% Multi rise case
+
+% beta_d1 = 30;
+% beta_d2 = 40;
+% beta_d3 = 20;
+% beta_d4 = 30;
+% beta_r1 = 90;
+% beta_r2 = 85;
+% beta_r3 = 65;
+% 
+% tau1 = beta_d1/360;
+% tau2 = (beta_d1 + beta_r1)/360;
+% tau3 = (beta_d1 + beta_r1 + beta_d2)/360;
+% tau4 = (beta_d1 + beta_r1 + beta_d2 + beta_r2)/360;
+% tau5 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3)/360;
+% tau6 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3 + beta_r3)/360;
+
+lambda_tilde = T_cycle / t_n;
+
+numerator = (2*pi*lambda_tilde)^2;
+denominator = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
+sys = tf(numerator, denominator);
+
+Ts = 1/361;
+tau = 0:Ts:25;
+crit_rise_input = zeros(size(tau));
+crit_rise_input(1:361) = S(1:361) / (max(S(1:361))-min(S(1:361)));
+
+init_rise = 1;
+init_vel = 0;
+[A,B,C,D] = tf2ss(numerator, denominator);
+X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+figure()
+lsim(A,B,C,D, crit_rise_input, tau, X0);            % picture
+gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
