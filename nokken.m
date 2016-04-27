@@ -14,12 +14,7 @@ home_directory = pwd;
 mot_law_location = strcat(home_directory, '\nok_hefwet.mot');
 ext_load_location = strcat(home_directory, '\nok_externe_krachten.exl');
 transient_location = strcat(home_directory, '\nok_overgangsverschijnsel.mot');
-% %mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
-% %mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-% mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
-% %ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
-% %ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
-% ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+
 
 % assigned values
 m_follower = 20;
@@ -557,6 +552,9 @@ P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).
 P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2)).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );      % instantaneous power calculated by values of matcam
 
 
+% Extra calculation from derivative function
+conversion_V = (0.001*180)/pi               % from mm/° to m/rad
+P3 = F_tot .*(omega*ones(size(S))) .* (V*conversion_V) .* cosd(alpha);
 
 figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
@@ -573,6 +571,11 @@ title('Graph of difference P1 and P2')
 % figure()                                          % Extra control plot
 % plot(P2-P2_2)
 % title('Graph of difference P2 and P2_2')
+
+ figure()                                          % Extra control plot
+ plot(P1-P3)
+ title('Graph of difference P1 and P3')
+
 
 
 
