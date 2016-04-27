@@ -817,10 +817,14 @@ numerator = (2*pi*lambda_tilde)^2;
 denominator = [1, 2*zeta*(2*pi*lambda_tilde), (2*pi*lambda_tilde)^2];
 sys = tf(numerator, denominator);
 
+times_repeating = 25;
+
 Ts = 1/361;
-tau = 0:Ts:25;
-crit_rise_input = zeros(size(tau));
-crit_rise_input(1:361) = S(1:361) / (max(S(1:361))-min(S(1:361)));
+tau = 0:Ts:times_repeating;
+%crit_rise_input = zeros(size(tau));
+crit_rise_input = S(1:361) / (max(S(1:361))-min(S(1:361)));
+
+crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a column vector wich repeats itself "times_repeating" times
 
 init_rise = 1;
 init_vel = 0;
