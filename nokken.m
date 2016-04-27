@@ -6,15 +6,20 @@ close all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPORTANT
 %
-% To get this program to run smoothly, please fill in the location of the
-% motion law and external load files on your computer
+% To get this program to run smoothly, please make sure you have the
+% nok_hefwet.mot, nok_externe_krachten.exl and
+% nok_overgangsverschijnsel.mot files in the same directory as this script.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
-mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
-%mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
-%ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
-ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
-%ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
+home_directory = pwd;
+mot_law_location = strcat(home_directory, '\nok_hefwet.mot');
+ext_load_location = strcat(home_directory, '\nok_externe_krachten.exl');
+transient_location = strcat(home_directory, '\nok_overgangsverschijnsel.mot');
+% %mot_law_location = 'C:\Users\Michiel\Documents\taak beweging\nok_hefwet.mot'; 
+% %mot_law_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_hefwet.mot';
+% mot_law_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_hefwet.mot';
+% %ext_load_location = 'C:\Users\Michiel\Documents\taak beweging\nok_externe_krachten.exl';
+% %ext_load_location = 'E:\Data\KULeuven\3de bachelor\2de semester\Beweging\Taak nokken\Taak-beweging-stangenmechanisme\nok_externe_krachten.exl';
+% ext_load_location = 'C:\Users\Bert\School\Beweging en trillingen\Code\nok_externe_krachten.exl';
 
 % assigned values
 m_follower = 20;
@@ -86,9 +91,6 @@ global roc;                                     % Radius curvature
 radius_of_curvature = roc;
 global Rtotrad
 
-% test to see if the loading of the variables workes
-%figure()
-%plot(alpha)
 
 %% 2) Calculating motion laws
 
@@ -544,9 +546,9 @@ if 1 == 1                                       % Recalibration matcam
     R_tot = R_0 + R_v;                              % Total distance between center of rotation and center of follower
     R_tot_rad = Rtotrad;
     
-     % Close matcam window
-%     matcam_figure = gcf;
-%     close(matcam_figure.Number)
+    % Close matcam window
+    %matcam_figure = gcf;
+    %close(matcam_figure.Number)
 end 
 
 P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );         % instantaneous power
@@ -728,4 +730,92 @@ h = title({'Nauwkeurigheid van de benaderende analyse'; ''});
 set(gca,'Visible','off');
 set(h,'Visible','on')
 
+% Force response
+follower_motion = (max(S(266:331))-min(S(266:331)))*crit_rise_input;
+output_motion = (max(S(266:331))-min(S(266:331)))*gamma.';
+
+spring_force = F_v0 + k*follower_motion;
+transient_force = k_follower*(output_motion - follower_motion);
+
+figure()
+plot(spring_force + transient_force)
+% plot(output_motion)
+% hold on
+% plot(follower_motion)
+% hold off
+
+
+    % Redo the simulation, to get gamma in the right format for matcam
+%     T_s = 1/66;
+%     tau = 0:T_s:6;
+%     crit_rise_input = zeros(size(tau));
+%     crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
+% 
+%     init_rise = 1;
+%     init_vel = 0;
+%     [A,B,C,D] = tf2ss(numerator, denominator);
+%     X0 = [1/C(2)*init_vel; 1/C(2)*init_rise];
+%     gamma_d = lsim(A,B,C,D, crit_rise_input, tau, X0);
+%     amplitude_gamma_d = (max(S(266:331))-min(S(266:331)));
+%     gamma_d = amplitude_gamma_d*gamma_d(1:361); % The response. Each index now corresponds to an angle in degrees.
+%     gamma_d = [amplitude_gamma_d*ones(265,1) ; gamma_d(1:96)];
+    % Redo the macam calculations with the new motion law
+
+%     if 1 == 1                                       % Recalibration matcam
+%     
+%         matcam()
+%         % setting the additional parameters for the analysis
+%         set(genmotlaw_startangle_edit, 'string', '330');            % not relevant for calculations, just keep matcam from throwing errors
+%         set(genmotlaw_endangle_edit, 'string', '360');              % not relevant for calculations, just keep matcam from throwing errors
+%         set(genmotlaw_startlift_edit, 'string', '0');               % not relevant for calculations, just keep matcam from throwing errors
+%         set(genmotlaw_endlift_edit, 'string', '0');                 % not relevant for calculations, just keep matcam from throwing errors
+%         set(bcr_edit, 'string', num2str(R_0));
+%         set(rof_edit, 'string', num2str(R_v));
+%         set(exc_edit, 'string', num2str(eccentricity));             % Analysis with an eccentric follower
+%         set(contourgrad_edit, 'string', '0');
+%         set(mass_edit, 'string', num2str(m_follower));
+%         set(spring_edit, 'string', num2str(k));                     % Analysis with a spring 
+%         set(sprload_edit, 'string', num2str(F_v0));                 % Analysis with a spring
+%         set(rpm_edit, 'string', num2str(cam_rpm));
+% 
+%         % loading the files with the motion law and load profile
+%         if exist(mot_law_location, 'file') == 2
+%             matcam('genmotlawload', transient_location)
+%         else
+%             matcam('genmotlawload')
+%         end
+% 
+%         if exist(ext_load_location, 'file') == 2
+%             matcam('genextloadload', ext_load_location)
+%         else
+%             matcam('genextloadload')
+%         end
+% 
+%         matcam('calc')
+%         % Making matcam variables locally accessible
+% 
+%         S = Stot;                                       % Lift in mm
+%         V = Vtot;                                       % Velocity in mm/degree
+%         A = Atot;                                       % Acceleration in mm/degree^2
+% 
+%         theta = tetatot;                                % Cam angle in degrees
+%         theta_rad = tetatotrad;                         % Cam angle in radians
+% 
+%         alpha = alfa;                                   % Pressure angle
+% 
+%         F_spring = force_spring;                        % Spring force
+%         F_load = force_load;                            % External load
+% 
+%         F_acc = force_acc;                              % Inertial force
+%         F_tot = force_tot;                              % Total force
+% 
+%         F_x = force_x;                                  % Total force in x direction
+%         F_y = force_y;                                  % Total force in y direction
+% 
+%         radius_of_curvature = roc;                      % Radius curvature
+% 
+%         % Close matcam window
+%         %matcam_figure = gcf;
+%         %close(matcam_figure.Number)
+%     end 
 
