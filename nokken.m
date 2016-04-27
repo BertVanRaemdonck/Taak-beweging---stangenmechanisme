@@ -759,9 +759,22 @@ output_motion = (max(S(266:331))-min(S(266:331)))*gamma(1:361).';
 alpha_single = alpha(266:331);
 alpha_single = [alpha_single.' alpha(332)*ones(1,295)];
 spring_force = F_v0 + k*follower_motion;
-spring_force_adjusted = 80 + k*follower_motion;
-transient_force = k_follower*(output_motion - follower_motion);
+transient_force = k_follower*(follower_motion - output_motion);
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_single);
+
+    % Calculate the spring constant needed to maintain contact
+k_adjusted = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66))
+k_adjusted = ceil(k_adjusted);
+
+    % Calculate the preload needed to maintain contact
+compensation = -min(F_v0 + transient_force(66:length(transient_force)));
+F_v0_adjusted = F_v0;
+if compensation > 0
+    F_v0_adjusted = F_v0_adjusted + ceil(compensation);
+end   
+
+    % Calculate the new forces after adjustment of the spring constant and preload
+spring_force_adjusted = F_v0_adjusted + k_adjusted*follower_motion;
 contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_single);
 
     % Plot results
@@ -771,14 +784,18 @@ plot(spring_force, 'g-.')
 hold on
 plot(transient_force, 'r--')
 plot(contact_force, 'b')
-plot(zeros(size(contact_force)), 'k:')
+plot([1 361], [0 0], 'k:')
+xlabel('nokhoek \beta [\degree]');
+ylabel('krachten [N]');
 
 subplot(1,2,2)
 plot(spring_force_adjusted, 'g-.')
 hold on
 plot(transient_force, 'r--')
 plot(contact_force_adjusted, 'b')
-plot(zeros(size(contact_force)), 'k:')
+plot([1 361], [0 0], 'k:')
+xlabel('nokhoek \beta [\degree]');
+ylabel('krachten [N]');
 
 ylimits=get(gca,'Ylim');
 ylim=ylimits(2)-ylimits(1);
