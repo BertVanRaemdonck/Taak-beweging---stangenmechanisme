@@ -345,7 +345,7 @@ title('Graph of total contact force, double rotation speed')
 
 % Doubling the rotation speed, different spring
 
-F_v0_double = 150;                               % Spring preload [N]   (chosen by hand)
+F_v0_double = 80;                               % Spring preload [N]   (chosen by hand)
 
 double_omega = (2*pi*double_rpm)/60;
 
