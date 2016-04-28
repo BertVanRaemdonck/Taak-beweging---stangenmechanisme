@@ -762,25 +762,20 @@ spring_force = F_v0 + k*follower_motion;
 transient_force = k_follower*(follower_motion - output_motion);
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_single);
 
-
-k_adjusted = k_double;          % Eerste benadering van de veerconstante, wordt erna opnieuw berekend
-
-% Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adjusted*follower_motion(66:length(transient_force)));   % Veer helpt
-F_v0_adjusted = F_v0;
-if compensation > 0
-    F_v0_adjusted = F_v0_adjusted + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
-end   
-
     % Calculate the spring constant needed to maintain contact
-k_adjusted = max((-transient_force(1:66)-F_v0_adjusted)./ follower_motion(1:66))
-k_adjusted = 5*ceil(k_adjusted/5);          % Rounds up to next multiple of 5
+k_adj_single = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66));
+k_adj_single = 5*ceil(k_adj_single/5)
 
-    
-
+    % Calculate the preload needed to maintain contact
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_single*follower_motion(66:length(transient_force)));   % Veer helpt
+F_v0_adj_single = F_v0;
+if compensation > 0
+    F_v0_adj_single = F_v0_adj_single + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
+end   
+   
     % Calculate the new forces after adjustment of the spring constant and preload
-spring_force_adjusted = F_v0_adjusted + k_adjusted*follower_motion;
-contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_single);
+spring_force_adj_single = F_v0_adj_single + k_adj_single*follower_motion;
+contact_force_adj_single = (spring_force_adj_single + transient_force) ./ cos(pi/180*alpha_single);
 
     % Plot results
 figure('Name', 'Overgangsverschijnsel krachten', 'NumberTitle', 'off');
@@ -794,10 +789,10 @@ xlabel('nokhoek \beta [\degree]');
 ylabel('krachten [N]');
 
 subplot(1,2,2)
-plot(spring_force_adjusted, 'g-.')
+plot(spring_force_adj_single, 'g-.')
 hold on
 plot(transient_force, 'r--')
-plot(contact_force_adjusted, 'b')
+plot(contact_force_adj_single, 'b')
 plot([1 361], [0 0], 'k:')
 xlabel('nokhoek \beta [\degree]');
 ylabel('krachten [N]');
@@ -881,31 +876,26 @@ title('gamma-crit rise input multi rise')
 axis([times_repeating-1 times_repeating min_plot max_plot])
 
     % Calculate forces
-alpha_multiple = repmat(alpha,times_repeating,1);
-alpha_multiple = [alpha_multiple; 0];           % anders niet dezelfde lengte
+alpha_multi = repmat(alpha,times_repeating,1);
+alpha_multi = [alpha_multi; 0];           % anders niet dezelfde lengte
 spring_force = F_v0 + k*follower_motion;
 transient_force = k_follower*(output_motion - follower_motion);
-contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
+contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multi);
 
-%size(transient_force)
-%size(cos(pi/180*alpha_multiple))
-k_adjusted = k_double;              % Schatting van een betere k, wordt erna opnieuw berekend
+    % Calculate the spring constant needed to maintain contact
+k_adj_multi = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66));
+k_adj_multi = 5*ceil(k_adj_single/5)
 
     % Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)) +k_adjusted*follower_motion(66:length(transient_force)));   % Aangepaste veer van single rise helpt
-F_v0_adjusted = F_v0;
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_single*follower_motion(66:length(transient_force)));   % Veer helpt
+F_v0_adj_multi = F_v0;
 if compensation > 0
-    F_v0_adjusted = F_v0_adjusted + 5*ceil(compensation/5)      % Rounds up to next multiple of 5
-end   
-
-% Calculate the spring constant needed to maintain contact
-k_adjusted = max((-transient_force(1:66)-F_v0_adjusted)./ follower_motion(1:66))
-k_adjusted = 5*ceil(k_adjusted/5);          % rounds up to the next multiple of 5
+    F_v0_adj_multi = F_v0_adj_multi + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
+end
 
     % Calculate the new forces after adjustment of the spring constant and preload
-spring_force_adjusted = F_v0_adjusted + k_adjusted*follower_motion;
-contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_multiple);
-
+spring_force_adj_multi = F_v0_adj_multi + k_adj_multi*follower_motion;
+contact_force_adj_multi = (spring_force_adj_multi + transient_force) ./ cos(pi/180*alpha_multi);
 
 % % Plot results
 min_contact_x = 361*(times_repeating-1);
@@ -919,12 +909,12 @@ plot(contact_force)
 axis([min_contact_x max_contact_x min_contact_y max_contact_y])
 
 
-min_contact_y_adjusted = min(contact_force_adjusted)*1.2;
-max_contact_y_adjusted = max(contact_force_adjusted)*1.2;
+min_contact_y_adjusted = min(contact_force_adj_multi)*1.2;
+max_contact_y_adjusted = max(contact_force_adj_multi)*1.2;
 
 
 figure('Name', 'Overgangsverschijnsel krachten multirise adjusted spring', 'NumberTitle', 'off');
-plot(contact_force_adjusted)
+plot(contact_force_adj_multi)
 axis([min_contact_x max_contact_x min_contact_y_adjusted max_contact_y_adjusted])
 
 
@@ -937,7 +927,7 @@ ylabel('contact kracht [N]');
 axis([min_contact_x max_contact_x min_contact_y max_contact_y]);
 
 subplot(1,2,2)
-plot(contact_force_adjusted)
+plot(contact_force_adj_multi)
 xlabel('nokhoek \beta [\degree]');
 ylabel('contact kracht [N]');
 axis([min_contact_x max_contact_x min_contact_y_adjusted max_contact_y_adjusted])
