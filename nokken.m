@@ -202,7 +202,7 @@ gamma = 0;                                      % Angle between follower and ver
 
 conversie_factor = (180^2)/(pi^2*1000);         % Conversion factor of converting [(kg*rad^2)/(s^2*°^2)] to [(N*rad^2)/mm]
 
-% Min teken moet erbij, maar doet dan ambetant
+
 k = max((-F_load - F_v0*ones(size(S)) - m_follower.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
 
 k = 5*ceil(k/5);                                % Rounds k up to the next integer wich is a multiple of 5, in order to have a strong enough spring
@@ -545,7 +545,6 @@ if 1 == 1                                       % Recalibration matcam
 end 
 
 P2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot^2 - eccentricity^2) + S).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );         % instantaneous power
-% Wel hetzelfde, formule zou nu moeten kloppen 
 
 P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2)).* 0.001).*sind(alpha)) + (eccentricity*0.001.*cosd(alpha)) );      % instantaneous power calculated by values of matcam
 
@@ -677,10 +676,7 @@ numerator = (2*pi*lambda)^2;
 denominator = [1, 2*zeta*(2*pi*lambda), (2*pi*lambda)^2];
 sys = tf(numerator, denominator);
 
-% T_s = 1/66;
-% tau = 0:T_s:5;
-% crit_rise_input = zeros(size(tau));
-% crit_rise_input(1:66) = S(266:331) / (max(S(266:331))-min(S(266:331)));
+
 Ts = 1/200;
 tau = 0:Ts:5;
 tau_rise = tau(1:1/Ts);
@@ -814,21 +810,6 @@ hold off
 
 %% Multi rise case
 
-% beta_d1 = 30;
-% beta_d2 = 40;
-% beta_d3 = 20;
-% beta_d4 = 30;
-% beta_r1 = 90;
-% beta_r2 = 85;
-% beta_r3 = 65;
-% 
-% tau1 = beta_d1/360;
-% tau2 = (beta_d1 + beta_r1)/360;
-% tau3 = (beta_d1 + beta_r1 + beta_d2)/360;
-% tau4 = (beta_d1 + beta_r1 + beta_d2 + beta_r2)/360;
-% tau5 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3)/360;
-% tau6 = (beta_d1 + beta_r1 + beta_d2 + beta_r2 + beta_d3 + beta_r3)/360;
-
 lambda_tilde = T_cycle / t_n;
 
 numerator = (2*pi*lambda_tilde)^2;
@@ -839,17 +820,13 @@ times_repeating = 25;
 
 Ts = 1/361;
 tau = 0:Ts:times_repeating;
-%crit_rise_input = zeros(size(tau));
+
 crit_rise_input = S(1:361) / (max(S(1:361))-min(S(1:361)));
 
 crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a column vector wich repeats itself "times_repeating" times
 
-%size(tau)                      % Niet dezelfde grootte, maar het werkt wel   ??
-%size(crit_rise_input)
-
 crit_rise_input = [crit_rise_input; 0];         % Anders niet dezelfde lengte
 
-%crit_rise_input = transpose(crit_rise_input);
 
 init_rise = 0;
 init_vel = 0;
@@ -862,10 +839,6 @@ gamma = lsim(A,B,C,D, crit_rise_input, tau, X0);    % saving data
 follower_motion = (max(S(1:361))-min(S(1:361)))*crit_rise_input;
 output_motion = (max(S(1:361))-min(S(1:361)))*gamma;
 
-%size(follower_motion)
-%size(output_motion)
-%size(gamma)
-%size(crit_rise_input)
 
 min_plot = min(gamma-crit_rise_input) * 1.2;
 max_plot = max(gamma-crit_rise_input) * 1.2;
@@ -884,10 +857,10 @@ contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multi);
 
     % Calculate the spring constant needed to maintain contact
 k_adj_multi = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66));
-k_adj_multi = 5*ceil(k_adj_single/5)
+k_adj_multi = 5*ceil(k_adj_multi/5)
 
     % Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_single*follower_motion(66:length(transient_force)));   % Veer helpt
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_multi*follower_motion(66:length(transient_force)));   % Veer helpt
 F_v0_adj_multi = F_v0;
 if compensation > 0
     F_v0_adj_multi = F_v0_adj_multi + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
@@ -934,31 +907,3 @@ axis([min_contact_x max_contact_x min_contact_y_adjusted max_contact_y_adjusted]
 
 hold off
 
-
-% figure('Name', 'Overgangsverschijnsel krachten multirise', 'NumberTitle', 'off');
-% subplot(1,2,1)
-% plot(spring_force, 'g-.')
-% hold on
-% plot(transient_force, 'r--')
-% plot(contact_force, 'b')
-% plot(zeros(size(contact_force)), 'k:')
-% 
-% subplot(1,2,2)
-% plot(spring_force_adjusted, 'g-.')
-% hold on
-% plot(transient_force, 'r--')
-% plot(contact_force_adjusted, 'b')
-% plot(zeros(size(contact_force)), 'k:')
-% 
-% ylimits=get(gca,'Ylim');
-% ylim=ylimits(2)-ylimits(1);
-% y_legend(1)=ylimits(2)-ylim*.1;
-% y_legend(2)=ylimits(2)-ylim*.15;
-% y_legend(3)=ylimits(2)-ylim*.2;
-% xlimits=get(gca,'Xlim');
-% xlim=xlimits(2)-xlimits(1);
-% x_legend=xlimits(1)+.60*xlim;
-% set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
-% set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
-% set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
-% hold off
