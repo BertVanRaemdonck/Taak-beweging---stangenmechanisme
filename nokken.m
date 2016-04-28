@@ -934,8 +934,4 @@ axis([min_contact_x max_contact_x min_contact_y max_contact_y])
 % set(text(x_legend,y_legend(1),'veerkracht (-\cdot-)'),'color',[0 1 0]);
 % set(text(x_legend,y_legend(2),'overgangsverschijnsel (- - -)'),'color',[1 0 0]);
 % set(text(x_legend,y_legend(3),'totale kracht (-)'),'color',[0 0 1]);
-<<<<<<< HEAD
 % hold off
-=======
-% hold off
->>>>>>> 3233a13f2ecb55dde55971eeb0e0e8219fd1ff28
