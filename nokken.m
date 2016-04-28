@@ -762,16 +762,21 @@ spring_force = F_v0 + k*follower_motion;
 transient_force = k_follower*(follower_motion - output_motion);
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_single);
 
-    % Calculate the spring constant needed to maintain contact
-k_adjusted = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66))
-k_adjusted = ceil(k_adjusted);
 
-    % Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)));
+k_adjusted = k_double;          % Eerste benadering van de veerconstante, wordt erna opnieuw berekend
+
+% Calculate the preload needed to maintain contact
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adjusted*follower_motion(66:length(transient_force)));   % Veer helpt
 F_v0_adjusted = F_v0;
 if compensation > 0
-    F_v0_adjusted = F_v0_adjusted + ceil(compensation);
+    F_v0_adjusted = F_v0_adjusted + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
 end   
+
+    % Calculate the spring constant needed to maintain contact
+k_adjusted = max((-transient_force(1:66)-F_v0_adjusted)./ follower_motion(1:66))
+k_adjusted = 5*ceil(k_adjusted/5);          % Rounds up to next multiple of 5
+
+    
 
     % Calculate the new forces after adjustment of the spring constant and preload
 spring_force_adjusted = F_v0_adjusted + k_adjusted*follower_motion;
@@ -847,7 +852,7 @@ crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a c
 %size(tau)                      % Niet dezelfde grootte, maar het werkt wel   ??
 %size(crit_rise_input)
 
-crit_rise_input = [crit_rise_input; 0];
+crit_rise_input = [crit_rise_input; 0];         % Anders niet dezelfde lengte
 
 %crit_rise_input = transpose(crit_rise_input);
 
@@ -872,20 +877,36 @@ max_plot = max(gamma-crit_rise_input) * 1.2;
 
 figure()
 plot(tau,gamma-crit_rise_input)
+title('gamma-crit rise input multi rise')
 axis([times_repeating-1 times_repeating min_plot max_plot])
 
     % Calculate forces
 alpha_multiple = repmat(alpha,times_repeating,1);
-alpha_multiple = [alpha_multiple; 0];
+alpha_multiple = [alpha_multiple; 0];           % anders niet dezelfde lengte
 spring_force = F_v0 + k*follower_motion;
-spring_force_adjusted = 80 + k*follower_motion;
 transient_force = k_follower*(output_motion - follower_motion);
+contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
 
 %size(transient_force)
 %size(cos(pi/180*alpha_multiple))
 
-contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
+k_adjusted = k_double;              % Schatting van een betere k, wordt erna opnieuw berekend
+
+    % Calculate the preload needed to maintain contact
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) +k_adjusted*follower_motion(66:length(transient_force)));   % Aangepaste veer van single rise helpt
+F_v0_adjusted = F_v0;
+if compensation > 0
+    F_v0_adjusted = F_v0_adjusted + 5*ceil(compensation/5)      % Rounds up to next multiple of 5
+end   
+
+% Calculate the spring constant needed to maintain contact
+k_adjusted = max((-transient_force(1:66)-F_v0_adjusted)./ follower_motion(1:66))
+k_adjusted = 5*ceil(k_adjusted/5);          % rounds up to the next multiple of 5
+
+    % Calculate the new forces after adjustment of the spring constant and preload
+spring_force_adjusted = F_v0_adjusted + k_adjusted*follower_motion;
 contact_force_adjusted = (spring_force_adjusted + transient_force) ./ cos(pi/180*alpha_multiple);
+
 
 % % Plot results
 min_contact_x = 361*(times_repeating-1);
