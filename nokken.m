@@ -551,7 +551,7 @@ P2_2 = F_tot .*(omega*ones(size(S))) .*( ( ( (sqrt(R_tot_rad.^2 - eccentricity^2
 
 
 % Extra calculation from derivative function
-conversion_V = (0.001*180)/pi               % from mm/° to m/rad
+conversion_V = (0.001*180)/pi;               % from mm/° to m/rad
 P3 = F_tot .*(omega*ones(size(S))) .* (V*conversion_V) .* cosd(alpha);
 
 figure()
@@ -889,7 +889,6 @@ contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multiple);
 
 %size(transient_force)
 %size(cos(pi/180*alpha_multiple))
-
 k_adjusted = k_double;              % Schatting van een betere k, wordt erna opnieuw berekend
 
     % Calculate the preload needed to maintain contact
@@ -920,13 +919,30 @@ plot(contact_force)
 axis([min_contact_x max_contact_x min_contact_y max_contact_y])
 
 
-min_contact_y = min(contact_force_adjusted)*1.2;
-max_contact_y = max(contact_force_adjusted)*1.2;
+min_contact_y_adjusted = min(contact_force_adjusted)*1.2;
+max_contact_y_adjusted = max(contact_force_adjusted)*1.2;
 
 
 figure('Name', 'Overgangsverschijnsel krachten multirise adjusted spring', 'NumberTitle', 'off');
 plot(contact_force_adjusted)
-axis([min_contact_x max_contact_x min_contact_y max_contact_y])
+axis([min_contact_x max_contact_x min_contact_y_adjusted max_contact_y_adjusted])
+
+
+% Plot results
+figure('Name', 'Overgangsverschijnsel krachten multi rise', 'NumberTitle', 'off');
+subplot(1,2,1)
+plot(contact_force)
+xlabel('nokhoek \beta [\degree]');
+ylabel('contact kracht [N]');
+axis([min_contact_x max_contact_x min_contact_y max_contact_y]);
+
+subplot(1,2,2)
+plot(contact_force_adjusted)
+xlabel('nokhoek \beta [\degree]');
+ylabel('contact kracht [N]');
+axis([min_contact_x max_contact_x min_contact_y_adjusted max_contact_y_adjusted])
+
+hold off
 
 
 % figure('Name', 'Overgangsverschijnsel krachten multirise', 'NumberTitle', 'off');
