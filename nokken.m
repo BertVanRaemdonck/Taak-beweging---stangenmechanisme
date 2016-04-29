@@ -85,7 +85,7 @@ radius_of_curvature = roc;
 global Rtotrad
 
 
-%% 2) Calculating motion laws
+%% 2a) Calculating motion laws
 
 figure()
 plot(S)                                     % plotting the lift
@@ -101,7 +101,7 @@ title('Graph of acceleration')
 
 
 
-%% 2) Calculating cam dimensions:
+%% 2b) Calculating cam dimensions:
 
 % Without eccentricity
 
@@ -189,7 +189,7 @@ plot(alpha)                                     % plotting pressure angle
 title('Graph of pressure angle with eccentricity')
 
 
-%% 3) Calculation spring constant:
+%% 3a) Calculation spring constant:
 
 figure()
 plot(F_tot)                                     % plotting total contact force without a spring
@@ -203,7 +203,7 @@ gamma = 0;                                      % Angle between follower and ver
 conversie_factor = (180^2)/(pi^2*1000);         % Conversion factor of converting [(kg*rad^2)/(s^2*°^2)] to [(N*rad^2)/mm]
 
 
-k = max((-F_load - F_v0*ones(size(S)) - m_follower.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  weggedaan omdat zwaartekracht te verwaarlozen is
+k = max((-F_load - F_v0*ones(size(S)) - m_follower.*omega.*omega.*A.*conversie_factor )./S)               % - follower_mass*g*cos(gamma)*ones(size(S))  deleted from original equation because gravity is negligible
 
 k = 5*ceil(k/5);                                % Rounds k up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
@@ -345,7 +345,7 @@ F_v0_double = 80;                               % Spring preload [N]   (chosen b
 double_omega = (2*pi*double_rpm)/60;
 
 % Min teken moet erbij, maar doet dan ambetant
-k_double = max((-F_load - F_v0_double*ones(size(S)) - m_follower.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) weggedaan omdat zwaartekracht te verwaarlozen is, geeft ook te zwakke veer
+k_double = max((-F_load - F_v0_double*ones(size(S)) - m_follower.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) deleted from original equation because gravity is negligible
 
 k_double = 5*ceil(k_double/5);                  % Rounds k_double up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
@@ -411,7 +411,7 @@ figure()
 plot(F_tot)                                     % plotting total contact force with the same spring and double the rotation speed
 title('Graph of total contact force, double rotation speed, different spring')
 
-%% 3) Calculation instantaneous power
+%% 3b) Calculation instantaneous power
 
 if 1 == 1                                       % Recalibration matcam
     
@@ -557,7 +557,7 @@ figure()
 plot(P2)                                     % plotting total contact force with the same spring and double the rotation speed
 title('Graph of instantaneous power 2')      
 
-figure()
+figure()                                     % plotting difference between the two equations
 plot(P1-P2)
 title('Graph of difference P1 and P2')
 
@@ -569,14 +569,14 @@ title('Graph of difference P1 and P2')
 % plot(P2-P2_2)
 % title('Graph of difference P2 and P2_2')
 
- figure()                                          % Extra control plot
+ figure()                                          % Extra control plot to verify the deriven equation
  plot(P1-P3)
  title('Graph of difference P1 and P3')
 
 
 
 
-%% 3) Calculation average power usage
+%% 3c) Calculation average power usage
 
 % Defining integration boundaries:
 theta_min = 1;
@@ -598,7 +598,7 @@ P_average1 = P_tot1(theta_max)/(theta_max - theta_min)      % width of the inter
 P_average2 = P_tot2(theta_max)/(theta_max - theta_min)
 
 
-%% 3) Calculation torque and dimensions flywheel
+%% 3d) Calculation torque and dimensions flywheel
 
 M21 = -P1 ./ (omega*ones(size(S)));
 
@@ -625,7 +625,7 @@ theta_M = find(At==max(At)) - 1;
 
 precision = 0.1;
 
-theta_m_torque = find(abs(M21-M_average) < precision ) -1;
+theta_m_torque = find(abs(M21-M_average) < precision ) -1;              % if you want to know theta_m and theta_M, look at the first and last value in this vector
 %theta_M_torque = find(abs(M21-M_average) < precision ,1,last) -1        commando last doesn't work, should have calculated the last value wich suffices
 % Gives the same values as above!!!   --> extra control
 
@@ -636,7 +636,7 @@ title('Graph of needed work')
 
 i = theta_m;
 K = 0.1;                            % speed variations between -5% and +5%
-Am = 0;                             % maximum work surplus (in Nm°)
+Am = 0;                             % maximum work surplus (in Nm°)  (start value)
 while i < theta_M
     Am = Am + (M21(i) - (M_average) + (M21(i+1) - M_average))/2;
     i=i+1;
@@ -763,7 +763,7 @@ k_adj_single = max((-transient_force(1:66)-F_v0)./ follower_motion(1:66));
 k_adj_single = 5*ceil(k_adj_single/5)
 
     % Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_single*follower_motion(66:length(transient_force)));   % Veer helpt
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_single*follower_motion(66:length(transient_force)));   % Spring helps lowering the needed preload
 F_v0_adj_single = F_v0;
 if compensation > 0
     F_v0_adj_single = F_v0_adj_single + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
@@ -808,7 +808,8 @@ hold off
 
 
 
-%% Multi rise case
+%% 4.6) Multi rise case
+% Very simular to the single rise case
 
 lambda_tilde = T_cycle / t_n;
 
@@ -825,8 +826,7 @@ crit_rise_input = S(1:361) / (max(S(1:361))-min(S(1:361)));
 
 crit_rise_input = repmat(crit_rise_input,times_repeating,1);        % Making a column vector wich repeats itself "times_repeating" times
 
-crit_rise_input = [crit_rise_input; 0];         % Anders niet dezelfde lengte
-
+crit_rise_input = [crit_rise_input; 0];         % Otherwise not the same length as the other vectors
 
 init_rise = 0;
 init_vel = 0;
@@ -850,7 +850,7 @@ axis([times_repeating-1 times_repeating min_plot max_plot])
 
     % Calculate forces
 alpha_multi = repmat(alpha,times_repeating,1);
-alpha_multi = [alpha_multi; 0];           % anders niet dezelfde lengte
+alpha_multi = [alpha_multi; 0];           % Otherwise not the same length as the other vectors
 spring_force = F_v0 + k*follower_motion;
 transient_force = k_follower*(follower_motion - output_motion);
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multi);
@@ -860,8 +860,8 @@ k_adj_multi = max((-transient_force(1:361*times_repeating)-F_v0)./ follower_moti
 k_adj_multi = 5*ceil(k_adj_multi/5)
 
     % Calculate the preload needed to maintain contact
-compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_multi*follower_motion(66:length(transient_force)));   % Veer helpt
-F_v0_adj_multi = F_v0;
+compensation = -min(F_v0 + transient_force(66:length(transient_force)) + k_adj_multi*follower_motion(66:length(transient_force)));   % Spring helps to diminish the needed preload
+F_v0_adj_multi = F_v0
 if compensation > 0
     F_v0_adj_multi = F_v0_adj_multi + 5*ceil(compensation/5)          % Rounds up to next multiple of 5
 end
@@ -917,7 +917,7 @@ transient_force = k_follower*(follower_motion-output_motion);
 contact_force = (spring_force + transient_force) ./ cos(pi/180*alpha_multi);
 
 
-k_adjusted = k_double;              % Schatting van een betere k, wordt erna opnieuw berekend, maar zal niet veel verschillen
+k_adjusted = k_double;                  % Estimation of a better spring constant, is recalculated below
 
     % Calculate the preload needed to maintain contact
 compensation = -min(F_v0 + transient_force(1:361*times_repeating) + k_adjusted*follower_motion(1:361*times_repeating));   % Aangepaste veer van single rise helpt
