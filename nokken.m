@@ -7,8 +7,8 @@ close all;
 % IMPORTANT
 %
 % To get this program to run smoothly, please make sure you have the
-% nok_hefwet.mot, nok_externe_krachten.exl and
-% nok_overgangsverschijnsel.mot files in the same directory as this script.
+% nok_hefwet.mot, nok_externe_krachten.exl files in the same directory as 
+% this script.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 home_directory = pwd;
 mot_law_location = strcat(home_directory, '\nok_hefwet.mot');
@@ -339,14 +339,10 @@ plot(F_tot)                                     % plotting total contact force w
 title('Graph of total contact force, double rotation speed')
 
 % Doubling the rotation speed, different spring
-
 F_v0_double = 80;                               % Spring preload [N]   (chosen by hand)
-
 double_omega = (2*pi*double_rpm)/60;
 
-% Min teken moet erbij, maar doet dan ambetant
-k_double = max((-F_load - F_v0_double*ones(size(S)) - m_follower.*double_omega.*double_omega.*A.*conversie_factor )./S)   % - follower_mass*g*cos(gamma)*ones(size(S)) weggedaan omdat zwaartekracht te verwaarlozen is, geeft ook te zwakke veer
-
+k_double = max((-F_load - F_v0_double*ones(size(S)) - m_follower.*double_omega.*double_omega.*A.*conversie_factor )./S)
 k_double = 5*ceil(k_double/5);                  % Rounds k_double up to the next integer wich is a multiple of 5, in order to have a strong enough spring
 
 if 1 == 1                                       % Recalibration matcam
@@ -561,14 +557,6 @@ figure()
 plot(P1-P2)
 title('Graph of difference P1 and P2')
 
-% figure()                                          % Extra control plot
-% plot(P1-P1_2)
-% title('Graph of difference P1 and P1_2')
-
-% figure()                                          % Extra control plot
-% plot(P2-P2_2)
-% title('Graph of difference P2 and P2_2')
-
  figure()                                          % Extra control plot
  plot(P1-P3)
  title('Graph of difference P1 and P3')
@@ -626,8 +614,6 @@ theta_M = find(At==max(At)) - 1;
 precision = 0.1;
 
 theta_m_torque = find(abs(M21-M_average) < precision ) -1;
-%theta_M_torque = find(abs(M21-M_average) < precision ,1,last) -1        commando last doesn't work, should have calculated the last value wich suffices
-% Gives the same values as above!!!   --> extra control
 
 
 figure()
